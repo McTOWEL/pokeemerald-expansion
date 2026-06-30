@@ -388,6 +388,7 @@ LittlerootTown_EventScript_GoSaveBirchTrigger::
 	end
 
 LittlerootTown_EventScript_TownSign::
+	warp MAP_SHADY_ROOM, 255, 5, 5
 	msgbox LittlerootTown_Text_TownSign, MSGBOX_SIGN
 	end
 

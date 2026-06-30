@@ -1,0 +1,22 @@
+mapscripts SHADY_ROOM_MapScripts {}
+
+script ShadyRoom_EventScript_Gentleman {
+    msgbox(ShadyRoom_Text_Gentleman, MSGBOX_NPC)
+}
+
+script ShadyRoom_EventScript_Assistant {
+    msgbox(ShadyRoom_Text_Gentleman, MSGBOX_NPC)
+}
+
+script ShadyRoom_EventScript_Merchant {
+    msgbox(ShadyRoom_Text_Gentleman, MSGBOX_NPC)
+}
+
+script ShadyRoom_EventScript_Abra {
+    msgbox(ShadyRoom_Text_Gentleman, MSGBOX_NPC)
+}
+
+text ShadyRoom_Text_Gentleman {
+    "Hey.\n"
+    "What's up?"
+}
