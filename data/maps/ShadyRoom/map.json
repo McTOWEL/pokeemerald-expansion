@@ -1,9 +1,9 @@
 {
-  "id": "MAP_SHADY_ROOM",
-  "name": "SHADY_ROOM",
-  "layout": "LAYOUT_SHADY_ROOM",
+  "id": "MAP_SHADYROOM",
+  "name": "ShadyRoom",
+  "layout": "LAYOUT_SHADYROOM",
   "music": "MUS_DUMMY",
-  "region_map_section": "MAPSEC_SHADY_ROOM",
+  "region_map_section": "MAPSEC_SHADYROOM",
   "requires_flash": false,
   "weather": "WEATHER_NONE",
   "map_type": "MAP_TYPE_NONE",

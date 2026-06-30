@@ -1738,4 +1738,4 @@ EventScript_PalletTown_PlayersHouse_2F_TurnOnPC::
 	.include "data/scripts/apricorn_tree.inc"
 	.include "data/scripts/wild_encounter.inc"
 
-	.include "data/maps/SHADY_ROOM/scripts.inc"
+	.include "data/maps/ShadyRoom/scripts.inc"

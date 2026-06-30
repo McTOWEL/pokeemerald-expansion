@@ -1,4 +1,4 @@
-mapscripts SHADY_ROOM_MapScripts {}
+mapscripts ShadyRoom_MapScripts {}
 
 script ShadyRoom_EventScript_Gentleman {
     msgbox(ShadyRoom_Text_Gentleman, MSGBOX_NPC)

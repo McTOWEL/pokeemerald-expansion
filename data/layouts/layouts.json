@@ -9325,14 +9325,14 @@
       "layout_version": "frlg"
     },
     {
-      "id": "LAYOUT_SHADY_ROOM",
-      "name": "SHADY_ROOM_Layout",
+      "id": "LAYOUT_SHADYROOM",
+      "name": "ShadyRoom_Layout",
       "width": 8,
       "height": 8,
       "primary_tileset": "gTileset_Building",
       "secondary_tileset": "gTileset_BikeShop",
-      "border_filepath": "data/layouts/SHADY_ROOM/border.bin",
-      "blockdata_filepath": "data/layouts/SHADY_ROOM/map.bin"
+      "border_filepath": "data/layouts/ShadyRoom/border.bin",
+      "blockdata_filepath": "data/layouts/ShadyRoom/map.bin"
     }
   ]
 }
