@@ -6905,3 +6905,11 @@ bool32 HasShedinjaHPHandling(enum Species species)
         return TRUE;
     return FALSE;
 }
+
+void IsNatureSameAsCurrent(void)
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gSpecialVar_0x8004];
+    u8 currentNature = GetMonData(mon, MON_DATA_HIDDEN_NATURE);
+
+    gSpecialVar_Result = (currentNature == gSpecialVar_0x8005);
+}

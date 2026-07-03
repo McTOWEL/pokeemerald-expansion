@@ -1,22 +1,208 @@
 mapscripts ShadyRoom_MapScripts {}
 
 script ShadyRoom_EventScript_Gentleman {
-    msgbox(ShadyRoom_Text_Gentleman, MSGBOX_NPC)
+    lock
+    faceplayer
+
+    buffernumberstring(STR_VAR_1, VAR_TOKEN_BALANCE)
+    setvar(VAR_RESULT, FALSE)
+    msgbox(ShadyRoom_Text_Gentleman_Greeting)
+
+    while (var(VAR_RESULT) != MULTI_B_PRESSED) {
+        call(ShadyRoom_EventScript_Gentleman_Menu)
+    }
+
+    closemessage
+    release
+}
+
+script ShadyRoom_EventScript_Gentleman_Menu {
+    setvar(VAR_0x8004, SCROLL_MULTI_GENTLEMAN_SERVICES)
+
+    message(ShadyRoom_Text_Gentleman_Menu)
+    waitmessage
+
+    special(ShowScrollableMultichoice)
+
+    switch (var(VAR_RESULT)) {
+        case 0:
+            call(ShadyRoom_EventScript_Gentleman_ChangeNature)
+
+        case 1:
+            call(ShadyRoom_EventScript_Gentleman_ChangeAbility)
+
+        case 2:
+            call(ShadyRoom_EventScript_Gentleman_ChangeHiddenAbility)
+
+        case 3:
+            call(ShadyRoom_EventScript_Gentleman_MaxIV)
+
+        case 4:
+            setvar(VAR_RESULT, MULTI_B_PRESSED)
+
+        case MULTI_B_PRESSED:
+            return
+    }
+}
+
+script ShadyRoom_EventScript_Gentleman_SelectPokemon {
+    special(ChoosePartyMon)
+
+    if (var(VAR_0x8004) == PARTY_NOTHING_CHOSEN) {
+        setvar(VAR_SERVICE_SELECTION_OK, FALSE)
+        return
+    }
+
+    special(IsSelectedMonEgg)
+
+    if (var(VAR_RESULT) == TRUE) {
+        msgbox(ShadyRoom_Text_Gentleman_CantSelectEgg)
+        setvar(VAR_SERVICE_SELECTION_OK, FALSE)
+        return
+    }
+
+    setvar(VAR_SERVICE_SELECTION_OK, TRUE)
+    return
+}
+
+script ShadyRoom_EventScript_Gentleman_CheckTokens {
+    if (var(VAR_TOKEN_BALANCE) == 0) {
+        msgbox(ShadyRoom_Text_Gentleman_NoTokens)
+        setvar(VAR_RESULT, MULTI_B_PRESSED)
+        return
+    }
+
+    if (var(VAR_TOKEN_BALANCE) < VAR_SERVICE_COST) {
+        msgbox(ShadyRoom_Text_Gentleman_InsufficientTokens)
+        setvar(VAR_SERVICE_SELECTION_OK, FALSE)
+        return
+    }
+
+    setvar(VAR_SERVICE_SELECTION_OK, TRUE)
+    return
+}
+
+script ShadyRoom_EventScript_Gentleman_ChangeNature {
+    setvar(VAR_SERVICE_COST, 2)
+    call(ShadyRoom_EventScript_Gentleman_CheckTokens)
+    if (var(VAR_SERVICE_SELECTION_OK) == FALSE || var(VAR_RESULT) == MULTI_B_PRESSED) {
+        return
+    }
+
+    msgbox(ShadyRoom_Text_Gentleman_NatureCost, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    call(ShadyRoom_EventScript_Gentleman_SelectPokemon)
+    if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+
+    copyvar(VAR_0x8006, VAR_0x8004)
+	setvar(VAR_0x8004, SCROLL_MULTI_NATURE_PICKER)
+	special(ShowScrollableMultichoice)
+
+    if (var(VAR_RESULT) == MULTI_B_PRESSED) {
+        return
+    }
+
+    copyvar(VAR_0x8004, VAR_0x8006)
+    copyvar(VAR_0x8005, VAR_RESULT)
+
+    special(IsNatureSameAsCurrent)
+    if (var(VAR_RESULT) == TRUE) {
+        msgbox(ShadyRoom_Text_Gentleman_SameNature)
+        return
+    }
+    
+    copyvar(VAR_RESULT, VAR_0x8005)
+    special(SetHiddenNature)
+    subvar(VAR_TOKEN_BALANCE, VAR_SERVICE_COST)
+    msgbox(ShadyRoom_Text_Gentleman_NatureChanged)
+    setvar(VAR_RESULT, MULTI_B_PRESSED)
+}
+
+script ShadyRoom_EventScript_Gentleman_ChangeAbility {
+    msgbox(ShadyRoom_Text_Placeholder)
+    return
+}
+
+script ShadyRoom_EventScript_Gentleman_ChangeHiddenAbility {
+    msgbox(ShadyRoom_Text_Placeholder)
+    return
+}
+
+script ShadyRoom_EventScript_Gentleman_MaxIV {
+    msgbox(ShadyRoom_Text_Placeholder)
+    return
 }
 
 script ShadyRoom_EventScript_Assistant {
-    msgbox(ShadyRoom_Text_Gentleman, MSGBOX_NPC)
+    lock
+    faceplayer
+    msgbox(ShadyRoom_Text_Placeholder)
+    release
 }
 
 script ShadyRoom_EventScript_Merchant {
-    msgbox(ShadyRoom_Text_Gentleman, MSGBOX_NPC)
+    lock
+    faceplayer
+    addvar(VAR_TOKEN_BALANCE, 1)
+    msgbox(ShadyRoom_Text_Placeholder)
+    release
 }
 
 script ShadyRoom_EventScript_Abra {
-    msgbox(ShadyRoom_Text_Gentleman, MSGBOX_NPC)
+    lock
+    faceplayer
+    msgbox(ShadyRoom_Text_Placeholder)
+    release
 }
 
-text ShadyRoom_Text_Gentleman {
-    "Hey.\n"
-    "What's up?"
+text ShadyRoom_Text_Placeholder {
+    "This feature hasn't been implemented yet."
+}
+
+text ShadyRoom_Text_Gentleman_Greeting {
+    "GENTLEMAN: Keep your voice down...\n"
+    "Let's see. You have {STR_VAR_1} unit(s) of credit.\p"
+    "I specialize in... off-the-record\n"
+    "modifications. What do you need?"
+}
+
+text ShadyRoom_Text_Gentleman_Menu {
+    "What can I do for you?"
+}
+
+text ShadyRoom_Text_Gentleman_CantSelectEgg {
+    "An Egg? Let's wait until it hatches\n"
+	"before we start rewriting its DNA."
+}
+
+text ShadyRoom_Text_Gentleman_InsufficientTokens {
+	"Look, I like you, but I don't work\n"
+    "pro bono. You're short on credit.\p"
+    "Come back when you can afford my rates."
+}
+
+text ShadyRoom_Text_Gentleman_NoTokens {
+    "Come now, let's not waste time.\n"
+    "Your line of credit is tapped out."
+}
+
+text ShadyRoom_Text_Gentleman_NatureCost {
+    "A complete shift in Nature, is it?\n"
+	"That will run you one unit of credit.\p"
+	"Do we have a deal?$"
+}
+
+text ShadyRoom_Text_Gentleman_SameNature {
+    "My friend, it already behaves like that.\n"
+    "Don't play games with me. What do you really need?$"
+}
+
+text ShadyRoom_Text_Gentleman_NatureChanged {
+    "Pleasure doing business with you.\n"
+    "Its mindset has been... optimized.$"
 }

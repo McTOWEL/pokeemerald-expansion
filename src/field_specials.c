@@ -2502,6 +2502,26 @@ void ShowScrollableMultichoice(void)
         task->tScrollOffset = sElevatorScroll;
         task->tSelectedRow = sElevatorCursorPos;
         break;
+    case SCROLL_MULTI_GENTLEMAN_SERVICES:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 5;
+        task->tLeft = 10;
+        task->tTop = 1;
+        task->tWidth = 30;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
+    case SCROLL_MULTI_NATURE_PICKER:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 25;
+        task->tLeft = 15;
+        task->tTop = 1;
+        task->tWidth = 16;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
     default:
         gSpecialVar_Result = MULTI_B_PRESSED;
         DestroyTask(taskId);
@@ -2689,7 +2709,44 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_2F,
         gText_1F,
         gText_Exit,
-    }
+    },
+    [SCROLL_MULTI_GENTLEMAN_SERVICES] =
+    {
+        COMPOUND_STRING("CHANGE NATURE {CLEAR_TO 120}{COLOR BLUE}{FONT_SMALL}2 credit"),
+        COMPOUND_STRING("CHANGE ABILITY {CLEAR_TO 120}{COLOR BLUE}{FONT_SMALL}2 credit"),
+        COMPOUND_STRING("GIVE HIDDEN ABILITY {CLEAR_TO 120}{COLOR BLUE}{FONT_SMALL}4 credit"),
+        COMPOUND_STRING("MAX AN IV {CLEAR_TO 120}{COLOR BLUE}{FONT_SMALL}2 credit"),
+        gText_Exit,
+    },
+    [SCROLL_MULTI_NATURE_PICKER] =
+    {
+        COMPOUND_STRING("HARDY"),
+        COMPOUND_STRING("LONELY  {CLEAR_TO 50}{COLOR RED}+ATK {COLOR BLUE}-DEF"),
+        COMPOUND_STRING("BRAVE   {CLEAR_TO 50}{COLOR RED}+ATK {COLOR BLUE}-SPE"),
+        COMPOUND_STRING("ADAMANT {CLEAR_TO 50}{COLOR RED}+ATK {COLOR BLUE}-SPA"),
+        COMPOUND_STRING("NAUGHTY {CLEAR_TO 50}{COLOR RED}+ATK {COLOR BLUE}-SPD"),
+        COMPOUND_STRING("BOLD    {CLEAR_TO 50}{COLOR RED}+DEF {COLOR BLUE}-ATK"),
+        COMPOUND_STRING("DOCILE"),
+        COMPOUND_STRING("RELAXED {CLEAR_TO 50}{COLOR RED}+DEF {COLOR BLUE}-SPE"),
+        COMPOUND_STRING("IMPISH  {CLEAR_TO 50}{COLOR RED}+DEF {COLOR BLUE}-SPA"),
+        COMPOUND_STRING("LAX     {CLEAR_TO 50}{COLOR RED}+DEF {COLOR BLUE}-SPD"),
+        COMPOUND_STRING("TIMID   {CLEAR_TO 50}{COLOR RED}+SPE {COLOR BLUE}-ATK"),
+        COMPOUND_STRING("HASTY   {CLEAR_TO 50}{COLOR RED}+SPE {COLOR BLUE}-DEF"),
+        COMPOUND_STRING("SERIOUS"),
+        COMPOUND_STRING("JOLLY   {CLEAR_TO 50}{COLOR RED}+SPE {COLOR BLUE}-SPA"),
+        COMPOUND_STRING("NAIVE   {CLEAR_TO 50}{COLOR RED}+SPE {COLOR BLUE}-SPD"),
+        COMPOUND_STRING("MODEST  {CLEAR_TO 50}{COLOR RED}+SPA {COLOR BLUE}-ATK"),
+        COMPOUND_STRING("MILD    {CLEAR_TO 50}{COLOR RED}+SPA {COLOR BLUE}-DEF"),
+        COMPOUND_STRING("QUIET   {CLEAR_TO 50}{COLOR RED}+SPA {COLOR BLUE}-SPE"),
+        COMPOUND_STRING("BASHFUL"),
+        COMPOUND_STRING("RASH    {CLEAR_TO 50}{COLOR RED}+SPA {COLOR BLUE}-SPD"),
+        COMPOUND_STRING("CALM    {CLEAR_TO 50}{COLOR RED}+SPD {COLOR BLUE}-ATK"),
+        COMPOUND_STRING("GENTLE  {CLEAR_TO 50}{COLOR RED}+SPD {COLOR BLUE}-DEF"),
+        COMPOUND_STRING("SASSY   {CLEAR_TO 50}{COLOR RED}+SPD {COLOR BLUE}-SPE"),
+        COMPOUND_STRING("CAREFUL {CLEAR_TO 50}{COLOR RED}+SPD {COLOR BLUE}-SPA"),
+        COMPOUND_STRING("QUIRKY"),
+    },
+
 };
 
 static void Task_ShowScrollableMultichoice(u8 taskId)
