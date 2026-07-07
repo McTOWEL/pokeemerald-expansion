@@ -957,6 +957,8 @@ u32 GiveScriptedMonToPlayer(struct Pokemon *mon, u8 slot);
 void ChangePokemonNicknameWithCallback(void (*callback)(void));
 bool32 HasShedinjaHPHandling(enum Species species);
 void IsNatureSameAsCurrent(void);
+void MonHasHiddenAbility(void);
+void SetAbilitySlot(void);
 
 static inline u32 OWE_GetMovementTypeFromSpecies(enum Species speciesId)
 {

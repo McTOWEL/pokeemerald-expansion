@@ -29,10 +29,10 @@ script ShadyRoom_EventScript_Gentleman_Menu {
             call(ShadyRoom_EventScript_Gentleman_ChangeNature)
 
         case 1:
-            call(ShadyRoom_EventScript_Gentleman_ChangeAbility)
+            call(ShadyRoom_EventScript_Gentleman_HiddenAbility)
 
         case 2:
-            call(ShadyRoom_EventScript_Gentleman_ChangeHiddenAbility)
+            call(ShadyRoom_EventScript_Gentleman_RegularAbility)
 
         case 3:
             call(ShadyRoom_EventScript_Gentleman_MaxIV)
@@ -123,14 +123,69 @@ script ShadyRoom_EventScript_Gentleman_ChangeNature {
     setvar(VAR_RESULT, MULTI_B_PRESSED)
 }
 
-script ShadyRoom_EventScript_Gentleman_ChangeAbility {
-    msgbox(ShadyRoom_Text_Placeholder)
-    return
+script ShadyRoom_EventScript_Gentleman_HiddenAbility {
+    setvar(VAR_SERVICE_COST, 4)
+    call(ShadyRoom_EventScript_Gentleman_CheckTokens)
+    if (var(VAR_SERVICE_SELECTION_OK) == FALSE || var(VAR_RESULT) == MULTI_B_PRESSED) {
+        return
+    }
+
+    msgbox(ShadyRoom_Text_Gentleman_HiddenAbilityCost, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    call(ShadyRoom_EventScript_Gentleman_SelectPokemon)
+    if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+
+    special(MonHasHiddenAbility)
+    if (var(VAR_RESULT) == TRUE) {
+        msgbox(ShadyRoom_Text_Gentleman_AlreadyHiddenAbility)
+        return
+    }
+
+    msgbox(ShadyRoom_Text_Gentleman_HiddenAbilityConfirm, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    setvar(VAR_0x8005, 2)
+    special(SetAbilitySlot)
+
+    subvar(VAR_TOKEN_BALANCE, VAR_SERVICE_COST)
+    msgbox(ShadyRoom_Text_Gentleman_HAApplied)
+    setvar(VAR_RESULT, MULTI_B_PRESSED)
 }
 
-script ShadyRoom_EventScript_Gentleman_ChangeHiddenAbility {
-    msgbox(ShadyRoom_Text_Placeholder)
-    return
+script ShadyRoom_EventScript_Gentleman_RegularAbility {
+    msgbox(ShadyRoom_Text_Gentleman_RestoreAbilityOffer, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    call(ShadyRoom_EventScript_Gentleman_SelectPokemon)
+    if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+
+    special(MonHasHiddenAbility)
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox(ShadyRoom_Text_Gentleman_AlreadyRegularAbility)
+        return
+    }
+
+    msgbox(ShadyRoom_Text_Gentleman_RestoreAbilityConfirm, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    setvar(VAR_0x8005, 0)
+    special(SetAbilitySlot)
+
+    msgbox(ShadyRoom_Text_Gentleman_AbilityRestored)
+    setvar(VAR_RESULT, MULTI_B_PRESSED)
 }
 
 script ShadyRoom_EventScript_Gentleman_MaxIV {
@@ -205,4 +260,50 @@ text ShadyRoom_Text_Gentleman_SameNature {
 text ShadyRoom_Text_Gentleman_NatureChanged {
     "Pleasure doing business with you.\n"
     "Its mindset has been... optimized.$"
+}
+
+text ShadyRoom_Text_Gentleman_HiddenAbilityCost {
+	"Ah, looking for the premium stock?\n"
+	"Unlocking a Hidden Ability isn't cheap.\p"
+	"That will run you four units of credit.\p"
+	"Do we have a deal?"
+}
+
+text ShadyRoom_Text_Gentleman_AlreadyHiddenAbility {
+    "My work is already done.\n"
+    "This one's carrying the premium package.\p"
+    "No sense charging you twice.$"
+}
+
+text ShadyRoom_Text_Gentleman_HiddenAbilityConfirm {
+    "I can unlock {STR_VAR_1} for this one.\n"
+	"Shall I proceed?$"
+}
+
+text ShadyRoom_Text_Gentleman_HAApplied {
+    "There. The latent potential has been\n"
+	"unlocked. Keep this between us, eh?$"
+}
+
+text ShadyRoom_Text_Gentleman_RestoreAbilityOffer {
+    "Want to put things back the way\n"
+    "nature intended?\p"
+    "I can restore its standard Ability.\n"
+    "No charge. Do we have a deal?$"
+}
+
+text ShadyRoom_Text_Gentleman_AlreadyRegularAbility {
+    "Looks to me like this one's already\n"
+    "running the factory settings.\p"
+    "Nothing for me to do.$"
+}
+
+text ShadyRoom_Text_Gentleman_RestoreAbilityConfirm {
+    "I can restore {STR_VAR_1} for this one.\n"
+    "Shall I proceed?$"
+}
+
+text ShadyRoom_Text_Gentleman_AbilityRestored {
+    "There. Back to the standard model.\n"
+    "Sometimes less attention is the best disguise.$"
 }

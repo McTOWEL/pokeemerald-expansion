@@ -640,3 +640,5 @@ gSpecials::
 	def_special StickerManGetBragFlags
 	def_special CheckAddCoins
 	def_special IsNatureSameAsCurrent
+	def_special MonHasHiddenAbility
+	def_special SetAbilitySlot

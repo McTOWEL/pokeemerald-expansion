@@ -6913,3 +6913,30 @@ void IsNatureSameAsCurrent(void)
 
     gSpecialVar_Result = (currentNature == gSpecialVar_0x8005);
 }
+
+void MonHasHiddenAbility(void)
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gSpecialVar_0x8004];
+    u8 abilityNum = GetMonData(mon, MON_DATA_ABILITY_NUM);
+    u16 species = GetMonData(mon, MON_DATA_SPECIES);
+
+    if (abilityNum == 2)
+    {
+        gSpecialVar_Result = TRUE;
+        StringCopy(gStringVar1, gAbilitiesInfo[GetAbilityBySpecies(species, 0)].name);
+    }
+    else
+    {
+        gSpecialVar_Result = FALSE;
+        StringCopy(gStringVar1, gAbilitiesInfo[GetAbilityBySpecies(species, 2)].name);
+    }
+}
+
+void SetAbilitySlot(void)
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gSpecialVar_0x8004];
+
+    SetMonData(mon, MON_DATA_ABILITY_NUM, &gSpecialVar_0x8005);
+
+    CalculateMonStats(mon);
+}
