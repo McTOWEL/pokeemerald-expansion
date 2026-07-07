@@ -189,8 +189,50 @@ script ShadyRoom_EventScript_Gentleman_RegularAbility {
 }
 
 script ShadyRoom_EventScript_Gentleman_MaxIV {
-    msgbox(ShadyRoom_Text_Placeholder)
-    return
+    setvar(VAR_SERVICE_COST, 2)
+    call(ShadyRoom_EventScript_Gentleman_CheckTokens)
+    if (var(VAR_SERVICE_SELECTION_OK) == FALSE || var(VAR_RESULT) == MULTI_B_PRESSED) {
+        return
+    }
+
+    msgbox(ShadyRoom_Text_Gentleman_IVCost, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    call(ShadyRoom_EventScript_Gentleman_SelectPokemon)
+    if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+
+    msgbox("Which stat would you like to train?")
+    copyvar(VAR_0x8006, VAR_0x8004) # Save Party Index safely in 0x8006
+
+    setvar(VAR_0x8004, SCROLL_MULTI_IV_PICKER)
+    special(ShowScrollableMultichoice)
+    if (var(VAR_RESULT) == MULTI_B_PRESSED) {
+        return
+    }
+
+    copyvar(VAR_0x8005, VAR_RESULT)
+
+    special(BufferAndCheckIV)
+
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox(ShadyRoom_Text_Gentleman_IVAlreadyMax)
+        return
+    }
+
+    msgbox(ShadyRoom_Text_Gentleman_IVConfirm, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    special(ApplyIVMax)
+
+    subvar(VAR_TOKEN_BALANCE, VAR_SERVICE_COST)
+    msgbox(ShadyRoom_Text_Gentleman_IVMaxed)
+    setvar(VAR_RESULT, MULTI_B_PRESSED)
 }
 
 script ShadyRoom_EventScript_Assistant {
@@ -249,17 +291,17 @@ text ShadyRoom_Text_Gentleman_NoTokens {
 text ShadyRoom_Text_Gentleman_NatureCost {
     "A complete shift in Nature, is it?\n"
 	"That will run you one unit of credit.\p"
-	"Do we have a deal?$"
+	"Do we have a deal?"
 }
 
 text ShadyRoom_Text_Gentleman_SameNature {
     "My friend, it already behaves like that.\n"
-    "Don't play games with me. What do you really need?$"
+    "Don't play games with me. What do you really need?"
 }
 
 text ShadyRoom_Text_Gentleman_NatureChanged {
     "Pleasure doing business with you.\n"
-    "Its mindset has been... optimized.$"
+    "Its mindset has been... optimized."
 }
 
 text ShadyRoom_Text_Gentleman_HiddenAbilityCost {
@@ -272,38 +314,60 @@ text ShadyRoom_Text_Gentleman_HiddenAbilityCost {
 text ShadyRoom_Text_Gentleman_AlreadyHiddenAbility {
     "My work is already done.\n"
     "This one's carrying the premium package.\p"
-    "No sense charging you twice.$"
+    "No sense charging you twice."
 }
 
 text ShadyRoom_Text_Gentleman_HiddenAbilityConfirm {
     "I can unlock {STR_VAR_1} for this one.\n"
-	"Shall I proceed?$"
+	"Shall I proceed?"
 }
 
 text ShadyRoom_Text_Gentleman_HAApplied {
     "There. The latent potential has been\n"
-	"unlocked. Keep this between us, eh?$"
+	"unlocked. Keep this between us, eh?"
 }
 
 text ShadyRoom_Text_Gentleman_RestoreAbilityOffer {
     "Want to put things back the way\n"
     "nature intended?\p"
     "I can restore its standard Ability.\n"
-    "No charge. Do we have a deal?$"
+    "No charge. Do we have a deal?"
 }
 
 text ShadyRoom_Text_Gentleman_AlreadyRegularAbility {
     "Looks to me like this one's already\n"
     "running the factory settings.\p"
-    "Nothing for me to do.$"
+    "Nothing for me to do."
 }
 
 text ShadyRoom_Text_Gentleman_RestoreAbilityConfirm {
     "I can restore {STR_VAR_1} for this one.\n"
-    "Shall I proceed?$"
+    "Shall I proceed?"
 }
 
 text ShadyRoom_Text_Gentleman_AbilityRestored {
     "There. Back to the standard model.\n"
-    "Sometimes less attention is the best disguise.$"
+    "Sometimes less attention is the best disguise."
+}
+
+text ShadyRoom_Text_Gentleman_IVCost {
+    "Ah, maxing out potential? Radical changes\n"
+    "carry a steeper premium.\p"
+    "That will cost two units of credit.\n"
+    "Do we have a deal?"
+}
+
+text ShadyRoom_Text_Gentleman_IVAlreadyMax {
+	"That stat is already at its peak.\n"
+	"No point wasting credit on it."
+}
+
+text ShadyRoom_Text_Gentleman_IVConfirm {
+    "I can push its {STR_VAR_1} to the\n"
+    "absolute limit. Shall I proceed?"
+}
+
+text ShadyRoom_Text_Gentleman_IVMaxed {
+	"Perfect. You won't find a cleaner\n"
+	"modification job anywhere else."
 }

@@ -642,3 +642,5 @@ gSpecials::
 	def_special IsNatureSameAsCurrent
 	def_special MonHasHiddenAbility
 	def_special SetAbilitySlot
+	def_special ApplyIVMax
+	def_special BufferAndCheckIV

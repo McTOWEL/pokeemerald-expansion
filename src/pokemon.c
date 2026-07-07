@@ -6940,3 +6940,96 @@ void SetAbilitySlot(void)
 
     CalculateMonStats(mon);
 }
+
+void BufferAndCheckIV(void)
+{
+    u16 menuChoice = VarGet(VAR_0x8005);
+    u16 partyIndex = VarGet(VAR_0x8006);
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][partyIndex];
+    
+    u8 ivField = 0;
+    u8 hyperTrainField = 0;
+
+    switch (menuChoice)
+    {
+        case 0: // Menu Item 1: HP
+            ivField = MON_DATA_HP_IV; 
+            hyperTrainField = MON_DATA_HYPER_TRAINED_HP;
+            StringCopy(gStringVar1, gText_HP4);
+            break;
+        case 1: // Menu Item 2: Attack
+            ivField = MON_DATA_ATK_IV; 
+            hyperTrainField = MON_DATA_HYPER_TRAINED_ATK;
+            StringCopy(gStringVar1, gText_Attack);
+            break;
+        case 2: // Menu Item 3: Defense
+            ivField = MON_DATA_DEF_IV; 
+            hyperTrainField = MON_DATA_HYPER_TRAINED_DEF;
+            StringCopy(gStringVar1, gText_Defense);
+            break;
+        case 3: // Menu Item 4: Sp. Attack
+            ivField = MON_DATA_SPATK_IV; 
+            hyperTrainField = MON_DATA_HYPER_TRAINED_SPATK;
+            StringCopy(gStringVar1, gText_SpAtk);
+            break;
+        case 4: // Menu Item 5: Sp. Defense
+            ivField = MON_DATA_SPDEF_IV; 
+            hyperTrainField = MON_DATA_HYPER_TRAINED_SPDEF;
+            StringCopy(gStringVar1, gText_SpDef);
+            break;
+        case 5: // Menu Item 6: Speed
+            ivField = MON_DATA_SPEED_IV; 
+            hyperTrainField = MON_DATA_HYPER_TRAINED_SPEED;
+            StringCopy(gStringVar1, gText_Speed);
+            break;
+        default: 
+            gSpecialVar_Result = FALSE;
+            return;
+    }
+
+    // Fail if already Trained or if the natural IV is already 31
+    if (GetMonData(mon, hyperTrainField) || GetMonData(mon, ivField) >= MAX_PER_STAT_IVS)
+    {
+        gSpecialVar_Result = FALSE; 
+    }
+    else
+    {
+        gSpecialVar_Result = TRUE; 
+    }
+}
+
+void ApplyIVMax(void)
+{
+    u16 menuChoice = VarGet(VAR_0x8005);
+    u16 partyIndex = VarGet(VAR_0x8006);
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][partyIndex];
+    
+    u8 hyperTrainField = 0;
+
+    switch (menuChoice)
+    {
+        case 0: // Menu Item 1: HP
+            hyperTrainField = MON_DATA_HYPER_TRAINED_HP;
+            break;
+        case 1: // Menu Item 2: Attack
+            hyperTrainField = MON_DATA_HYPER_TRAINED_ATK;
+            break;
+        case 2: // Menu Item 3: Defense
+            hyperTrainField = MON_DATA_HYPER_TRAINED_DEF;
+            break;
+        case 3: // Menu Item 4: Sp. Attack
+            hyperTrainField = MON_DATA_HYPER_TRAINED_SPATK;
+            break;
+        case 4: // Menu Item 5: Sp. Defense
+            hyperTrainField = MON_DATA_HYPER_TRAINED_SPDEF;
+            break;
+        case 5: // Menu Item 6: Speed
+            hyperTrainField = MON_DATA_HYPER_TRAINED_SPEED;
+            break;
+    }
+
+    bool32 data = TRUE;
+    SetMonData(mon, hyperTrainField, &data);
+    CalculateMonStats(mon);
+
+}

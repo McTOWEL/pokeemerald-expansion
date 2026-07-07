@@ -315,137 +315,232 @@ ShadyRoom_EventScript_Gentleman_RegularAbility_11:
 
 ShadyRoom_EventScript_Gentleman_MaxIV::
 # 192 "data/maps/ShadyRoom/scripts.pory"
-	msgbox ShadyRoom_Text_Placeholder
+	setvar VAR_SERVICE_COST, 2
+# 193 "data/maps/ShadyRoom/scripts.pory"
+	call ShadyRoom_EventScript_Gentleman_CheckTokens
+# 194 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_SERVICE_SELECTION_OK, FALSE
+	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_2
+# 194 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, MULTI_B_PRESSED
+	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_2
+# 198 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Gentleman_IVCost, MSGBOX_YESNO
+# 199 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, NO
+	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_7
+# 203 "data/maps/ShadyRoom/scripts.pory"
+	call ShadyRoom_EventScript_Gentleman_SelectPokemon
+# 204 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_SERVICE_SELECTION_OK, FALSE
+	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_10
+# 208 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_EventScript_Gentleman_MaxIV_Text_0
+# 209 "data/maps/ShadyRoom/scripts.pory"
+	copyvar VAR_0x8006, VAR_0x8004
+# 211 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_0x8004, SCROLL_MULTI_IV_PICKER
+# 212 "data/maps/ShadyRoom/scripts.pory"
+	special ShowScrollableMultichoice
+# 213 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, MULTI_B_PRESSED
+	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_13
+# 217 "data/maps/ShadyRoom/scripts.pory"
+	copyvar VAR_0x8005, VAR_RESULT
+# 219 "data/maps/ShadyRoom/scripts.pory"
+	special BufferAndCheckIV
+# 221 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, FALSE
+	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_16
+# 226 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Gentleman_IVConfirm, MSGBOX_YESNO
+# 227 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, NO
+	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_19
+# 231 "data/maps/ShadyRoom/scripts.pory"
+	special ApplyIVMax
+# 233 "data/maps/ShadyRoom/scripts.pory"
+	subvar VAR_TOKEN_BALANCE, VAR_SERVICE_COST
+# 234 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Gentleman_IVMaxed
+# 235 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_RESULT, MULTI_B_PRESSED
+	return
+
+ShadyRoom_EventScript_Gentleman_MaxIV_2:
+	return
+
+ShadyRoom_EventScript_Gentleman_MaxIV_7:
+	return
+
+ShadyRoom_EventScript_Gentleman_MaxIV_10:
+	return
+
+ShadyRoom_EventScript_Gentleman_MaxIV_13:
+	return
+
+ShadyRoom_EventScript_Gentleman_MaxIV_16:
+# 222 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Gentleman_IVAlreadyMax
+	return
+
+ShadyRoom_EventScript_Gentleman_MaxIV_19:
 	return
 
 
 ShadyRoom_EventScript_Assistant::
-# 197 "data/maps/ShadyRoom/scripts.pory"
+# 239 "data/maps/ShadyRoom/scripts.pory"
 	lock
-# 198 "data/maps/ShadyRoom/scripts.pory"
+# 240 "data/maps/ShadyRoom/scripts.pory"
 	faceplayer
-# 199 "data/maps/ShadyRoom/scripts.pory"
+# 241 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Placeholder
-# 200 "data/maps/ShadyRoom/scripts.pory"
+# 242 "data/maps/ShadyRoom/scripts.pory"
 	release
 	return
 
 
 ShadyRoom_EventScript_Merchant::
-# 204 "data/maps/ShadyRoom/scripts.pory"
+# 246 "data/maps/ShadyRoom/scripts.pory"
 	lock
-# 205 "data/maps/ShadyRoom/scripts.pory"
+# 247 "data/maps/ShadyRoom/scripts.pory"
 	faceplayer
-# 206 "data/maps/ShadyRoom/scripts.pory"
+# 248 "data/maps/ShadyRoom/scripts.pory"
 	addvar VAR_TOKEN_BALANCE, 1
-# 207 "data/maps/ShadyRoom/scripts.pory"
+# 249 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Placeholder
-# 208 "data/maps/ShadyRoom/scripts.pory"
+# 250 "data/maps/ShadyRoom/scripts.pory"
 	release
 	return
 
 
 ShadyRoom_EventScript_Abra::
-# 212 "data/maps/ShadyRoom/scripts.pory"
+# 254 "data/maps/ShadyRoom/scripts.pory"
 	lock
-# 213 "data/maps/ShadyRoom/scripts.pory"
+# 255 "data/maps/ShadyRoom/scripts.pory"
 	faceplayer
-# 214 "data/maps/ShadyRoom/scripts.pory"
+# 256 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Placeholder
-# 215 "data/maps/ShadyRoom/scripts.pory"
+# 257 "data/maps/ShadyRoom/scripts.pory"
 	release
 	return
 
 
+ShadyRoom_EventScript_Gentleman_MaxIV_Text_0:
+# 208 "data/maps/ShadyRoom/scripts.pory"
+	.string "Which stat would you like to train?$"
+
 ShadyRoom_Text_Placeholder::
-# 218 "data/maps/ShadyRoom/scripts.pory"
+# 260 "data/maps/ShadyRoom/scripts.pory"
 	.string "This feature hasn't been implemented yet.$"
 
 ShadyRoom_Text_Gentleman_Greeting::
-# 222 "data/maps/ShadyRoom/scripts.pory"
+# 264 "data/maps/ShadyRoom/scripts.pory"
 	.string "GENTLEMAN: Keep your voice down...\n"
 	.string "Let's see. You have {STR_VAR_1} unit(s) of credit.\p"
 	.string "I specialize in... off-the-record\n"
 	.string "modifications. What do you need?$"
 
 ShadyRoom_Text_Gentleman_Menu::
-# 229 "data/maps/ShadyRoom/scripts.pory"
+# 271 "data/maps/ShadyRoom/scripts.pory"
 	.string "What can I do for you?$"
 
 ShadyRoom_Text_Gentleman_CantSelectEgg::
-# 233 "data/maps/ShadyRoom/scripts.pory"
+# 275 "data/maps/ShadyRoom/scripts.pory"
 	.string "An Egg? Let's wait until it hatches\n"
 	.string "before we start rewriting its DNA.$"
 
 ShadyRoom_Text_Gentleman_InsufficientTokens::
-# 238 "data/maps/ShadyRoom/scripts.pory"
+# 280 "data/maps/ShadyRoom/scripts.pory"
 	.string "Look, I like you, but I don't work\n"
 	.string "pro bono. You're short on credit.\p"
 	.string "Come back when you can afford my rates.$"
 
 ShadyRoom_Text_Gentleman_NoTokens::
-# 244 "data/maps/ShadyRoom/scripts.pory"
+# 286 "data/maps/ShadyRoom/scripts.pory"
 	.string "Come now, let's not waste time.\n"
 	.string "Your line of credit is tapped out.$"
 
 ShadyRoom_Text_Gentleman_NatureCost::
-# 249 "data/maps/ShadyRoom/scripts.pory"
+# 291 "data/maps/ShadyRoom/scripts.pory"
 	.string "A complete shift in Nature, is it?\n"
 	.string "That will run you one unit of credit.\p"
 	.string "Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_SameNature::
-# 255 "data/maps/ShadyRoom/scripts.pory"
+# 297 "data/maps/ShadyRoom/scripts.pory"
 	.string "My friend, it already behaves like that.\n"
 	.string "Don't play games with me. What do you really need?$"
 
 ShadyRoom_Text_Gentleman_NatureChanged::
-# 260 "data/maps/ShadyRoom/scripts.pory"
+# 302 "data/maps/ShadyRoom/scripts.pory"
 	.string "Pleasure doing business with you.\n"
 	.string "Its mindset has been... optimized.$"
 
 ShadyRoom_Text_Gentleman_HiddenAbilityCost::
-# 265 "data/maps/ShadyRoom/scripts.pory"
+# 307 "data/maps/ShadyRoom/scripts.pory"
 	.string "Ah, looking for the premium stock?\n"
 	.string "Unlocking a Hidden Ability isn't cheap.\p"
 	.string "That will run you four units of credit.\p"
 	.string "Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_AlreadyHiddenAbility::
-# 272 "data/maps/ShadyRoom/scripts.pory"
+# 314 "data/maps/ShadyRoom/scripts.pory"
 	.string "My work is already done.\n"
 	.string "This one's carrying the premium package.\p"
 	.string "No sense charging you twice.$"
 
 ShadyRoom_Text_Gentleman_HiddenAbilityConfirm::
-# 278 "data/maps/ShadyRoom/scripts.pory"
+# 320 "data/maps/ShadyRoom/scripts.pory"
 	.string "I can unlock {STR_VAR_1} for this one.\n"
 	.string "Shall I proceed?$"
 
 ShadyRoom_Text_Gentleman_HAApplied::
-# 283 "data/maps/ShadyRoom/scripts.pory"
+# 325 "data/maps/ShadyRoom/scripts.pory"
 	.string "There. The latent potential has been\n"
 	.string "unlocked. Keep this between us, eh?$"
 
 ShadyRoom_Text_Gentleman_RestoreAbilityOffer::
-# 288 "data/maps/ShadyRoom/scripts.pory"
+# 330 "data/maps/ShadyRoom/scripts.pory"
 	.string "Want to put things back the way\n"
 	.string "nature intended?\p"
 	.string "I can restore its standard Ability.\n"
 	.string "No charge. Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_AlreadyRegularAbility::
-# 295 "data/maps/ShadyRoom/scripts.pory"
+# 337 "data/maps/ShadyRoom/scripts.pory"
 	.string "Looks to me like this one's already\n"
 	.string "running the factory settings.\p"
 	.string "Nothing for me to do.$"
 
 ShadyRoom_Text_Gentleman_RestoreAbilityConfirm::
-# 301 "data/maps/ShadyRoom/scripts.pory"
+# 343 "data/maps/ShadyRoom/scripts.pory"
 	.string "I can restore {STR_VAR_1} for this one.\n"
 	.string "Shall I proceed?$"
 
 ShadyRoom_Text_Gentleman_AbilityRestored::
-# 306 "data/maps/ShadyRoom/scripts.pory"
+# 348 "data/maps/ShadyRoom/scripts.pory"
 	.string "There. Back to the standard model.\n"
 	.string "Sometimes less attention is the best disguise.$"
+
+ShadyRoom_Text_Gentleman_IVCost::
+# 353 "data/maps/ShadyRoom/scripts.pory"
+	.string "Ah, maxing out potential? Radical changes\n"
+	.string "carry a steeper premium.\p"
+	.string "That will cost two units of credit.\n"
+	.string "Do we have a deal?$"
+
+ShadyRoom_Text_Gentleman_IVAlreadyMax::
+# 360 "data/maps/ShadyRoom/scripts.pory"
+	.string "That stat is already at its peak.\n"
+	.string "No point wasting credit on it.$"
+
+ShadyRoom_Text_Gentleman_IVConfirm::
+# 365 "data/maps/ShadyRoom/scripts.pory"
+	.string "I can push its {STR_VAR_1} to the\n"
+	.string "absolute limit. Shall I proceed?$"
+
+ShadyRoom_Text_Gentleman_IVMaxed::
+# 370 "data/maps/ShadyRoom/scripts.pory"
+	.string "Perfect. You won't find a cleaner\n"
+	.string "modification job anywhere else.$"

@@ -959,6 +959,8 @@ bool32 HasShedinjaHPHandling(enum Species species);
 void IsNatureSameAsCurrent(void);
 void MonHasHiddenAbility(void);
 void SetAbilitySlot(void);
+void ApplyIVMax(void);
+void BufferAndCheckIV(void);
 
 static inline u32 OWE_GetMovementTypeFromSpecies(enum Species speciesId)
 {

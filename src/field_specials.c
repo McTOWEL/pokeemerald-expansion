@@ -2522,6 +2522,16 @@ void ShowScrollableMultichoice(void)
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
         break;
+    case SCROLL_MULTI_IV_PICKER:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 6;
+        task->tLeft = 15;
+        task->tTop = 1;
+        task->tWidth = 24;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
     default:
         gSpecialVar_Result = MULTI_B_PRESSED;
         DestroyTask(taskId);
@@ -2746,6 +2756,15 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         COMPOUND_STRING("CAREFUL {CLEAR_TO 50}{COLOR RED}+SPD {COLOR BLUE}-SPA"),
         COMPOUND_STRING("QUIRKY"),
     },
+    [SCROLL_MULTI_IV_PICKER] =
+    {
+        COMPOUND_STRING("HP"),
+        COMPOUND_STRING("ATTACK"),
+        COMPOUND_STRING("DEFENSE"),
+        COMPOUND_STRING("SP. ATK"),
+        COMPOUND_STRING("SP. DEF"),
+        COMPOUND_STRING("SPEED"),
+    }
 
 };
 
