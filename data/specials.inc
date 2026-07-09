@@ -644,3 +644,5 @@ gSpecials::
 	def_special SetAbilitySlot
 	def_special ApplyIVMax
 	def_special BufferAndCheckIV
+	def_special ApplyStatus
+	def_special SetPokemonToPercentHP

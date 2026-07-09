@@ -393,35 +393,214 @@ ShadyRoom_EventScript_Assistant::
 	lock
 # 240 "data/maps/ShadyRoom/scripts.pory"
 	faceplayer
-# 241 "data/maps/ShadyRoom/scripts.pory"
-	msgbox ShadyRoom_Text_Placeholder
 # 242 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_RESULT, FALSE
+# 243 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_Greeting
+ShadyRoom_EventScript_Assistant_2:
+# 245 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, MULTI_B_PRESSED
+	goto_if_ne ShadyRoom_EventScript_Assistant_3
+# 249 "data/maps/ShadyRoom/scripts.pory"
+	closemessage
+# 250 "data/maps/ShadyRoom/scripts.pory"
 	release
+	return
+
+ShadyRoom_EventScript_Assistant_3:
+# 246 "data/maps/ShadyRoom/scripts.pory"
+	call ShadyRoom_EventScript_Assistant_Menu
+	goto ShadyRoom_EventScript_Assistant_2
+
+
+ShadyRoom_EventScript_Assistant_Menu::
+# 254 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_0x8004, SCROLL_MULTI_ASSISTANT_SERVICES
+# 256 "data/maps/ShadyRoom/scripts.pory"
+	message ShadyRoom_Text_Assistant_Menu
+# 257 "data/maps/ShadyRoom/scripts.pory"
+	waitmessage
+# 259 "data/maps/ShadyRoom/scripts.pory"
+	special ShowScrollableMultichoice
+# 261 "data/maps/ShadyRoom/scripts.pory"
+	switch VAR_RESULT
+# 262 "data/maps/ShadyRoom/scripts.pory"
+	case 0, ShadyRoom_EventScript_Assistant_Menu_2
+# 265 "data/maps/ShadyRoom/scripts.pory"
+	case 1, ShadyRoom_EventScript_Assistant_Menu_3
+# 268 "data/maps/ShadyRoom/scripts.pory"
+	case 2, ShadyRoom_EventScript_Assistant_Menu_4
+# 271 "data/maps/ShadyRoom/scripts.pory"
+	case MULTI_B_PRESSED, ShadyRoom_EventScript_Assistant_Menu_5
+	return
+
+ShadyRoom_EventScript_Assistant_Menu_2:
+# 263 "data/maps/ShadyRoom/scripts.pory"
+	call ShadyRoom_EventScript_Assistant_SetStatus
+	return
+
+ShadyRoom_EventScript_Assistant_Menu_3:
+# 266 "data/maps/ShadyRoom/scripts.pory"
+	call ShadyRoom_EventScript_Assistant_SetDamage
+	return
+
+ShadyRoom_EventScript_Assistant_Menu_4:
+# 269 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_RESULT, MULTI_B_PRESSED
+	return
+
+ShadyRoom_EventScript_Assistant_Menu_5:
+	return
+
+
+ShadyRoom_EventScript_Assistant_SetStatus::
+# 277 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_StatusFlavor, MSGBOX_YESNO
+# 278 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, NO
+	goto_if_eq ShadyRoom_EventScript_Assistant_SetStatus_2
+# 282 "data/maps/ShadyRoom/scripts.pory"
+	call ShadyRoom_EventScript_Gentleman_SelectPokemon
+# 283 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_SERVICE_SELECTION_OK, FALSE
+	goto_if_eq ShadyRoom_EventScript_Assistant_SetStatus_5
+# 287 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_EventScript_Assistant_SetStatus_Text_0
+# 288 "data/maps/ShadyRoom/scripts.pory"
+	copyvar VAR_0x8006, VAR_0x8004
+# 290 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_0x8004, SCROLL_MULTI_STATUS_PICKER
+# 291 "data/maps/ShadyRoom/scripts.pory"
+	special ShowScrollableMultichoice
+# 293 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, MULTI_B_PRESSED
+	goto_if_eq ShadyRoom_EventScript_Assistant_SetStatus_8
+# 297 "data/maps/ShadyRoom/scripts.pory"
+	copyvar VAR_0x8005, VAR_RESULT
+# 299 "data/maps/ShadyRoom/scripts.pory"
+	special ApplyStatus
+# 301 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_0x8005, 6
+	goto_if_eq ShadyRoom_EventScript_Assistant_SetStatus_11
+# 305 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_StatusInflicted
+ShadyRoom_EventScript_Assistant_SetStatus_10:
+# 307 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_RESULT, MULTI_B_PRESSED
+	return
+
+ShadyRoom_EventScript_Assistant_SetStatus_2:
+	return
+
+ShadyRoom_EventScript_Assistant_SetStatus_5:
+	return
+
+ShadyRoom_EventScript_Assistant_SetStatus_8:
+	return
+
+ShadyRoom_EventScript_Assistant_SetStatus_11:
+# 302 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_StatusCured
+	goto ShadyRoom_EventScript_Assistant_SetStatus_10
+
+
+ShadyRoom_EventScript_Assistant_SetDamage::
+# 311 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_DamageFlavor, MSGBOX_YESNO
+# 312 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, NO
+	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_2
+# 316 "data/maps/ShadyRoom/scripts.pory"
+	call ShadyRoom_EventScript_Gentleman_SelectPokemon
+# 317 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_SERVICE_SELECTION_OK, FALSE
+	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_5
+# 321 "data/maps/ShadyRoom/scripts.pory"
+	copyvar VAR_0x8006, VAR_0x8004
+# 323 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_0x8004, SCROLL_MULTI_DAMAGE_PICKER
+# 324 "data/maps/ShadyRoom/scripts.pory"
+	special ShowScrollableMultichoice
+# 326 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, MULTI_B_PRESSED
+	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_8
+# 330 "data/maps/ShadyRoom/scripts.pory"
+	copyvar VAR_0x8005, VAR_RESULT
+# 333 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_0x8005, 7
+	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_11
+ShadyRoom_EventScript_Assistant_SetDamage_10:
+# 357 "data/maps/ShadyRoom/scripts.pory"
+	special SetPokemonToPercentHP
+# 358 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_DamageApplied
+# 359 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_RESULT, MULTI_B_PRESSED
+	return
+
+ShadyRoom_EventScript_Assistant_SetDamage_2:
+	return
+
+ShadyRoom_EventScript_Assistant_SetDamage_5:
+	return
+
+ShadyRoom_EventScript_Assistant_SetDamage_8:
+	return
+
+ShadyRoom_EventScript_Assistant_SetDamage_11:
+# 334 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_EventScript_Assistant_SetDamage_Text_0
+# 336 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_0x8004, SCROLL_MULTI_NUMBER_PICKER
+# 337 "data/maps/ShadyRoom/scripts.pory"
+	special ShowScrollableMultichoice
+# 339 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, MULTI_B_PRESSED
+	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_14
+# 343 "data/maps/ShadyRoom/scripts.pory"
+	copyvar VAR_0x8007, VAR_RESULT
+# 345 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_EventScript_Assistant_SetDamage_Text_1
+# 347 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_0x8004, SCROLL_MULTI_NUMBER_PICKER
+# 348 "data/maps/ShadyRoom/scripts.pory"
+	special ShowScrollableMultichoice
+# 350 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, MULTI_B_PRESSED
+	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_17
+# 354 "data/maps/ShadyRoom/scripts.pory"
+	copyvar VAR_0x8008, VAR_RESULT
+	goto ShadyRoom_EventScript_Assistant_SetDamage_10
+
+ShadyRoom_EventScript_Assistant_SetDamage_14:
+	return
+
+ShadyRoom_EventScript_Assistant_SetDamage_17:
 	return
 
 
 ShadyRoom_EventScript_Merchant::
-# 246 "data/maps/ShadyRoom/scripts.pory"
+# 363 "data/maps/ShadyRoom/scripts.pory"
 	lock
-# 247 "data/maps/ShadyRoom/scripts.pory"
+# 364 "data/maps/ShadyRoom/scripts.pory"
 	faceplayer
-# 248 "data/maps/ShadyRoom/scripts.pory"
+# 365 "data/maps/ShadyRoom/scripts.pory"
 	addvar VAR_TOKEN_BALANCE, 1
-# 249 "data/maps/ShadyRoom/scripts.pory"
+# 366 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Placeholder
-# 250 "data/maps/ShadyRoom/scripts.pory"
+# 367 "data/maps/ShadyRoom/scripts.pory"
 	release
 	return
 
 
 ShadyRoom_EventScript_Abra::
-# 254 "data/maps/ShadyRoom/scripts.pory"
+# 371 "data/maps/ShadyRoom/scripts.pory"
 	lock
-# 255 "data/maps/ShadyRoom/scripts.pory"
+# 372 "data/maps/ShadyRoom/scripts.pory"
 	faceplayer
-# 256 "data/maps/ShadyRoom/scripts.pory"
+# 373 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Placeholder
-# 257 "data/maps/ShadyRoom/scripts.pory"
+# 374 "data/maps/ShadyRoom/scripts.pory"
 	release
 	return
 
@@ -430,117 +609,167 @@ ShadyRoom_EventScript_Gentleman_MaxIV_Text_0:
 # 208 "data/maps/ShadyRoom/scripts.pory"
 	.string "Which stat would you like to train?$"
 
+ShadyRoom_EventScript_Assistant_SetStatus_Text_0:
+# 287 "data/maps/ShadyRoom/scripts.pory"
+	.string "Which status would you like to inflict?$"
+
+ShadyRoom_EventScript_Assistant_SetDamage_Text_0:
+# 334 "data/maps/ShadyRoom/scripts.pory"
+	.string "Custom HP %\nTens digit (0-9):$"
+
+ShadyRoom_EventScript_Assistant_SetDamage_Text_1:
+# 345 "data/maps/ShadyRoom/scripts.pory"
+	.string "Custom HP %\nOnes digit (0-9):$"
+
 ShadyRoom_Text_Placeholder::
-# 260 "data/maps/ShadyRoom/scripts.pory"
+# 377 "data/maps/ShadyRoom/scripts.pory"
 	.string "This feature hasn't been implemented yet.$"
 
 ShadyRoom_Text_Gentleman_Greeting::
-# 264 "data/maps/ShadyRoom/scripts.pory"
+# 381 "data/maps/ShadyRoom/scripts.pory"
 	.string "GENTLEMAN: Keep your voice down...\n"
 	.string "Let's see. You have {STR_VAR_1} unit(s) of credit.\p"
 	.string "I specialize in... off-the-record\n"
 	.string "modifications. What do you need?$"
 
 ShadyRoom_Text_Gentleman_Menu::
-# 271 "data/maps/ShadyRoom/scripts.pory"
-	.string "What can I do for you?$"
+# 388 "data/maps/ShadyRoom/scripts.pory"
+	.string "What can I do for you?\n"
+	.string "You have {STR_VAR_1} unit(s) of credit.$"
 
 ShadyRoom_Text_Gentleman_CantSelectEgg::
-# 275 "data/maps/ShadyRoom/scripts.pory"
+# 393 "data/maps/ShadyRoom/scripts.pory"
 	.string "An Egg? Let's wait until it hatches\n"
 	.string "before we start rewriting its DNA.$"
 
 ShadyRoom_Text_Gentleman_InsufficientTokens::
-# 280 "data/maps/ShadyRoom/scripts.pory"
+# 398 "data/maps/ShadyRoom/scripts.pory"
 	.string "Look, I like you, but I don't work\n"
 	.string "pro bono. You're short on credit.\p"
 	.string "Come back when you can afford my rates.$"
 
 ShadyRoom_Text_Gentleman_NoTokens::
-# 286 "data/maps/ShadyRoom/scripts.pory"
+# 404 "data/maps/ShadyRoom/scripts.pory"
 	.string "Come now, let's not waste time.\n"
 	.string "Your line of credit is tapped out.$"
 
 ShadyRoom_Text_Gentleman_NatureCost::
-# 291 "data/maps/ShadyRoom/scripts.pory"
+# 409 "data/maps/ShadyRoom/scripts.pory"
 	.string "A complete shift in Nature, is it?\n"
-	.string "That will run you one unit of credit.\p"
+	.string "That will run you two units of credit.\p"
 	.string "Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_SameNature::
-# 297 "data/maps/ShadyRoom/scripts.pory"
+# 415 "data/maps/ShadyRoom/scripts.pory"
 	.string "My friend, it already behaves like that.\n"
 	.string "Don't play games with me. What do you really need?$"
 
 ShadyRoom_Text_Gentleman_NatureChanged::
-# 302 "data/maps/ShadyRoom/scripts.pory"
+# 420 "data/maps/ShadyRoom/scripts.pory"
 	.string "Pleasure doing business with you.\n"
 	.string "Its mindset has been... optimized.$"
 
 ShadyRoom_Text_Gentleman_HiddenAbilityCost::
-# 307 "data/maps/ShadyRoom/scripts.pory"
+# 425 "data/maps/ShadyRoom/scripts.pory"
 	.string "Ah, looking for the premium stock?\n"
 	.string "Unlocking a Hidden Ability isn't cheap.\p"
 	.string "That will run you four units of credit.\p"
 	.string "Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_AlreadyHiddenAbility::
-# 314 "data/maps/ShadyRoom/scripts.pory"
+# 432 "data/maps/ShadyRoom/scripts.pory"
 	.string "My work is already done.\n"
 	.string "This one's carrying the premium package.\p"
 	.string "No sense charging you twice.$"
 
 ShadyRoom_Text_Gentleman_HiddenAbilityConfirm::
-# 320 "data/maps/ShadyRoom/scripts.pory"
+# 438 "data/maps/ShadyRoom/scripts.pory"
 	.string "I can unlock {STR_VAR_1} for this one.\n"
 	.string "Shall I proceed?$"
 
 ShadyRoom_Text_Gentleman_HAApplied::
-# 325 "data/maps/ShadyRoom/scripts.pory"
+# 443 "data/maps/ShadyRoom/scripts.pory"
 	.string "There. The latent potential has been\n"
 	.string "unlocked. Keep this between us, eh?$"
 
 ShadyRoom_Text_Gentleman_RestoreAbilityOffer::
-# 330 "data/maps/ShadyRoom/scripts.pory"
+# 448 "data/maps/ShadyRoom/scripts.pory"
 	.string "Want to put things back the way\n"
 	.string "nature intended?\p"
 	.string "I can restore its standard Ability.\n"
 	.string "No charge. Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_AlreadyRegularAbility::
-# 337 "data/maps/ShadyRoom/scripts.pory"
+# 455 "data/maps/ShadyRoom/scripts.pory"
 	.string "Looks to me like this one's already\n"
 	.string "running the factory settings.\p"
 	.string "Nothing for me to do.$"
 
 ShadyRoom_Text_Gentleman_RestoreAbilityConfirm::
-# 343 "data/maps/ShadyRoom/scripts.pory"
+# 461 "data/maps/ShadyRoom/scripts.pory"
 	.string "I can restore {STR_VAR_1} for this one.\n"
 	.string "Shall I proceed?$"
 
 ShadyRoom_Text_Gentleman_AbilityRestored::
-# 348 "data/maps/ShadyRoom/scripts.pory"
+# 466 "data/maps/ShadyRoom/scripts.pory"
 	.string "There. Back to the standard model.\n"
 	.string "Sometimes less attention is the best disguise.$"
 
 ShadyRoom_Text_Gentleman_IVCost::
-# 353 "data/maps/ShadyRoom/scripts.pory"
+# 471 "data/maps/ShadyRoom/scripts.pory"
 	.string "Ah, maxing out potential? Radical changes\n"
 	.string "carry a steeper premium.\p"
 	.string "That will cost two units of credit.\n"
 	.string "Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_IVAlreadyMax::
-# 360 "data/maps/ShadyRoom/scripts.pory"
+# 478 "data/maps/ShadyRoom/scripts.pory"
 	.string "That stat is already at its peak.\n"
 	.string "No point wasting credit on it.$"
 
 ShadyRoom_Text_Gentleman_IVConfirm::
-# 365 "data/maps/ShadyRoom/scripts.pory"
+# 483 "data/maps/ShadyRoom/scripts.pory"
 	.string "I can push its {STR_VAR_1} to the\n"
 	.string "absolute limit. Shall I proceed?$"
 
 ShadyRoom_Text_Gentleman_IVMaxed::
-# 370 "data/maps/ShadyRoom/scripts.pory"
+# 488 "data/maps/ShadyRoom/scripts.pory"
 	.string "Perfect. You won't find a cleaner\n"
 	.string "modification job anywhere else.$"
+
+ShadyRoom_Text_Assistant_Greeting::
+# 493 "data/maps/ShadyRoom/scripts.pory"
+	.string "ASSISTANT: Please state your request.\n"
+	.string "The Gentleman has approved my services.\p"
+	.string "I will handle any procedures you require.$"
+
+ShadyRoom_Text_Assistant_Menu::
+# 499 "data/maps/ShadyRoom/scripts.pory"
+	.string "Available procedures?$"
+
+ShadyRoom_Text_Assistant_StatusFlavor::
+# 503 "data/maps/ShadyRoom/scripts.pory"
+	.string "Status manipulation is a simple\n"
+	.string "procedure when properly monitored.\p"
+	.string "Shall we begin?$"
+
+ShadyRoom_Text_Assistant_StatusCured::
+# 509 "data/maps/ShadyRoom/scripts.pory"
+	.string "Status condition removed.\n"
+	.string "The subject has returned to normal.$"
+
+ShadyRoom_Text_Assistant_StatusInflicted::
+# 514 "data/maps/ShadyRoom/scripts.pory"
+	.string "Procedure complete.\n"
+	.string "The requested condition has been applied.$"
+
+ShadyRoom_Text_Assistant_DamageFlavor::
+# 519 "data/maps/ShadyRoom/scripts.pory"
+	.string "I will apply controlled damage.\n"
+	.string "Minor discomfort is to be expected.\p"
+	.string "Try not to move.$"
+
+ShadyRoom_Text_Assistant_DamageApplied::
+# 525 "data/maps/ShadyRoom/scripts.pory"
+	.string "Procedure complete.\n"
+	.string "The subject is within acceptable limits.$"

@@ -2527,7 +2527,47 @@ void ShowScrollableMultichoice(void)
         task->tNumItems = 6;
         task->tLeft = 15;
         task->tTop = 1;
-        task->tWidth = 24;
+        task->tWidth = 12;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
+    case SCROLL_MULTI_ASSISTANT_SERVICES:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 3;
+        task->tLeft = 15;
+        task->tTop = 1;
+        task->tWidth = 16;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
+    case SCROLL_MULTI_STATUS_PICKER:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 7;
+        task->tLeft = 15;
+        task->tTop = 1;
+        task->tWidth = 16;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
+    case SCROLL_MULTI_DAMAGE_PICKER:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 7;
+        task->tLeft = 15;
+        task->tTop = 1;
+        task->tWidth = 16;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
+    case SCROLL_MULTI_NUMBER_PICKER:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 10;
+        task->tLeft = 15;
+        task->tTop = 1;
+        task->tWidth = 16;
         task->tHeight = 12;
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
@@ -2764,8 +2804,47 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         COMPOUND_STRING("SP. ATK"),
         COMPOUND_STRING("SP. DEF"),
         COMPOUND_STRING("SPEED"),
-    }
-
+    },
+    [SCROLL_MULTI_ASSISTANT_SERVICES] =
+    {
+        COMPOUND_STRING("SET STATUS {CLEAR_TO 80}{COLOR BLUE}{FONT_SMALL}FREE"),
+        COMPOUND_STRING("SET DAMAGE {CLEAR_TO 80}{COLOR BLUE}{FONT_SMALL}FREE"),
+        gText_Exit,
+    },
+    [SCROLL_MULTI_STATUS_PICKER] =
+    {
+        COMPOUND_STRING("BURN"),
+        COMPOUND_STRING("POISON"),
+        COMPOUND_STRING("TOXIC"),
+        COMPOUND_STRING("PARALYSIS"),
+        COMPOUND_STRING("FROSTBITE"),
+        COMPOUND_STRING("SLEEP"),
+        COMPOUND_STRING("CURE"),
+    },
+    [SCROLL_MULTI_DAMAGE_PICKER] =
+    {
+        COMPOUND_STRING("FULL"),
+        COMPOUND_STRING("75%"),
+        COMPOUND_STRING("66%"),
+        COMPOUND_STRING("50%"),
+        COMPOUND_STRING("33%"),
+        COMPOUND_STRING("25%"),
+        COMPOUND_STRING("1 HP"),
+        COMPOUND_STRING("CUSTOM %"),
+    },
+    [SCROLL_MULTI_NUMBER_PICKER] =
+    {
+        COMPOUND_STRING("0"),
+        COMPOUND_STRING("1"),
+        COMPOUND_STRING("2"),
+        COMPOUND_STRING("3"),
+        COMPOUND_STRING("4"),
+        COMPOUND_STRING("5"),
+        COMPOUND_STRING("6"),
+        COMPOUND_STRING("7"),
+        COMPOUND_STRING("8"),
+        COMPOUND_STRING("9"),
+    },
 };
 
 static void Task_ShowScrollableMultichoice(u8 taskId)

@@ -7033,3 +7033,91 @@ void ApplyIVMax(void)
     CalculateMonStats(mon);
 
 }
+
+void ApplyStatus(void)
+{
+    u16 menuChoice = VarGet(VAR_0x8005);
+    u16 partyIndex = VarGet(VAR_0x8006);
+
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][partyIndex];
+    u32 status = STATUS1_NONE;
+
+    switch (menuChoice)
+    {
+        case 0: status = STATUS1_BURN; break;
+        case 1: status = STATUS1_POISON; break;
+        case 2: status = STATUS1_TOXIC_POISON; break;
+        case 3: status = STATUS1_PARALYSIS; break;
+        case 4: status = STATUS1_FROSTBITE; break;
+        case 5: status = STATUS1_SLEEP_TURN(3); break; // Sets sleep for 3 turns
+        case 6: status = STATUS1_NONE; break;          // Cures the status
+        default: return; // Invalid choice, exit safely
+    }
+
+    // Apply the status to the chosen Pokémon
+    SetMonData(mon, MON_DATA_STATUS, &status);
+}
+
+void SetPokemonToPercentHP(void)
+{
+    u16 menuChoice = VarGet(VAR_0x8005);
+    u16 partyIndex = VarGet(VAR_0x8006);
+
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][partyIndex];
+    u32 percent = 0;
+    u32 hp = 0;
+
+    switch (menuChoice)
+    {
+        case 0: // FULL
+            percent = 100;
+            break;
+        case 1: // 75%
+            percent = 75;
+            break;
+        case 2: // 66%
+            percent = 66;
+            break;
+        case 3: // 50%
+            percent = 50;
+            break;
+        case 4: // 33%
+            percent = 33;
+            break;
+        case 5: // 25%
+            percent = 25;
+            break;
+        case 6: // 1 HP
+            hp = 1;
+            break;
+        case 7: // CUSTOM %
+            u32 tens = VarGet(VAR_0x8007);
+            u32 ones = VarGet(VAR_0x8008);
+
+            percent = tens * 10 + ones;
+
+            if (percent == 0) {
+                hp = 1;
+            }
+            break;
+    }
+
+    if (hp == 1) 
+    {
+        u16 targetHp  = 1;
+        SetMonData(mon, MON_DATA_HP, &targetHp);
+    }
+    else
+    {
+        u16 maxHp = GetMonData(mon, MON_DATA_MAX_HP);
+
+        u16 targetHp = (maxHp * percent) / 100;
+
+        if (targetHp == 0)
+        {
+            targetHp = 1;
+        }
+
+        SetMonData(mon, MON_DATA_HP, &targetHp);
+    }
+}

@@ -206,7 +206,7 @@ script ShadyRoom_EventScript_Gentleman_MaxIV {
     }
 
     msgbox("Which stat would you like to train?")
-    copyvar(VAR_0x8006, VAR_0x8004) # Save Party Index safely in 0x8006
+    copyvar(VAR_0x8006, VAR_0x8004) # Save Party Index in 0x8006
 
     setvar(VAR_0x8004, SCROLL_MULTI_IV_PICKER)
     special(ShowScrollableMultichoice)
@@ -238,8 +238,125 @@ script ShadyRoom_EventScript_Gentleman_MaxIV {
 script ShadyRoom_EventScript_Assistant {
     lock
     faceplayer
-    msgbox(ShadyRoom_Text_Placeholder)
+
+    setvar(VAR_RESULT, FALSE)
+    msgbox(ShadyRoom_Text_Assistant_Greeting)
+
+    while (var(VAR_RESULT) != MULTI_B_PRESSED) {
+        call(ShadyRoom_EventScript_Assistant_Menu)
+    }
+
+    closemessage
     release
+}
+
+script ShadyRoom_EventScript_Assistant_Menu {
+        setvar(VAR_0x8004, SCROLL_MULTI_ASSISTANT_SERVICES)
+
+    message(ShadyRoom_Text_Assistant_Menu)
+    waitmessage
+
+    special(ShowScrollableMultichoice)
+
+    switch (var(VAR_RESULT)) {
+        case 0:
+            call(ShadyRoom_EventScript_Assistant_SetStatus)
+
+        case 1:
+            call(ShadyRoom_EventScript_Assistant_SetDamage)
+
+        case 2:
+            setvar(VAR_RESULT, MULTI_B_PRESSED)
+
+        case MULTI_B_PRESSED:
+            return
+    }
+}
+
+script ShadyRoom_EventScript_Assistant_SetStatus {
+    msgbox(ShadyRoom_Text_Assistant_StatusFlavor, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    call(ShadyRoom_EventScript_Gentleman_SelectPokemon)
+    if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+
+    msgbox("Which status would you like to inflict?")
+    copyvar(VAR_0x8006, VAR_0x8004) # Save Party Index in 0x8006
+
+    setvar(VAR_0x8004, SCROLL_MULTI_STATUS_PICKER)
+    special(ShowScrollableMultichoice)
+
+    if (var(VAR_RESULT) == MULTI_B_PRESSED) {
+        return
+    }
+
+    copyvar(VAR_0x8005, VAR_RESULT)
+
+    special(ApplyStatus)
+
+    if (var(VAR_0x8005) == 6) {
+        msgbox(ShadyRoom_Text_Assistant_StatusCured)
+    }
+    else {
+        msgbox(ShadyRoom_Text_Assistant_StatusInflicted)
+    }
+    setvar(VAR_RESULT, MULTI_B_PRESSED)
+}
+
+script ShadyRoom_EventScript_Assistant_SetDamage {
+    msgbox(ShadyRoom_Text_Assistant_DamageFlavor, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    call(ShadyRoom_EventScript_Gentleman_SelectPokemon)
+    if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+
+    copyvar(VAR_0x8006, VAR_0x8004) # Save Party Index in 0x8006
+
+    setvar(VAR_0x8004, SCROLL_MULTI_DAMAGE_PICKER)
+    special(ShowScrollableMultichoice)
+
+    if (var(VAR_RESULT) == MULTI_B_PRESSED) {
+        return
+    }
+
+    copyvar(VAR_0x8005, VAR_RESULT)
+
+
+    if (var(VAR_0x8005) == 7) {
+        msgbox("Custom HP %\nTens digit (0-9):")
+
+        setvar(VAR_0x8004, SCROLL_MULTI_NUMBER_PICKER)
+        special(ShowScrollableMultichoice)
+
+        if (var(VAR_RESULT) == MULTI_B_PRESSED) {
+        return
+        }
+
+        copyvar(VAR_0x8007, VAR_RESULT)
+
+        msgbox("Custom HP %\nOnes digit (0-9):")
+
+        setvar(VAR_0x8004, SCROLL_MULTI_NUMBER_PICKER)
+        special(ShowScrollableMultichoice)
+
+        if (var(VAR_RESULT) == MULTI_B_PRESSED) {
+        return
+        }
+
+        copyvar(VAR_0x8008, VAR_RESULT)
+    }
+
+    special(SetPokemonToPercentHP)
+    msgbox(ShadyRoom_Text_Assistant_DamageApplied)
+    setvar(VAR_RESULT, MULTI_B_PRESSED)
 }
 
 script ShadyRoom_EventScript_Merchant {
@@ -269,7 +386,8 @@ text ShadyRoom_Text_Gentleman_Greeting {
 }
 
 text ShadyRoom_Text_Gentleman_Menu {
-    "What can I do for you?"
+    "What can I do for you?\n"
+    "You have {STR_VAR_1} unit(s) of credit."
 }
 
 text ShadyRoom_Text_Gentleman_CantSelectEgg {
@@ -290,7 +408,7 @@ text ShadyRoom_Text_Gentleman_NoTokens {
 
 text ShadyRoom_Text_Gentleman_NatureCost {
     "A complete shift in Nature, is it?\n"
-	"That will run you one unit of credit.\p"
+	"That will run you two units of credit.\p"
 	"Do we have a deal?"
 }
 
@@ -370,4 +488,41 @@ text ShadyRoom_Text_Gentleman_IVConfirm {
 text ShadyRoom_Text_Gentleman_IVMaxed {
 	"Perfect. You won't find a cleaner\n"
 	"modification job anywhere else."
+}
+
+text ShadyRoom_Text_Assistant_Greeting {
+    "ASSISTANT: Please state your request.\n"
+    "The Gentleman has approved my services.\p"
+    "I will handle any procedures you require."
+}
+
+text ShadyRoom_Text_Assistant_Menu {
+    "Available procedures?"
+}
+
+text ShadyRoom_Text_Assistant_StatusFlavor {
+    "Status manipulation is a simple\n"
+    "procedure when properly monitored.\p"
+    "Shall we begin?"
+}
+
+text ShadyRoom_Text_Assistant_StatusCured {
+    "Status condition removed.\n"
+    "The subject has returned to normal."
+}
+
+text ShadyRoom_Text_Assistant_StatusInflicted {
+    "Procedure complete.\n"
+    "The requested condition has been applied."
+}
+
+text ShadyRoom_Text_Assistant_DamageFlavor {
+    "I will apply controlled damage.\n"
+    "Minor discomfort is to be expected.\p"
+    "Try not to move."
+}
+
+text ShadyRoom_Text_Assistant_DamageApplied {
+    "Procedure complete.\n"
+    "The subject is within acceptable limits."
 }
