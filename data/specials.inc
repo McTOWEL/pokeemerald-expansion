@@ -646,3 +646,6 @@ gSpecials::
 	def_special BufferAndCheckIV
 	def_special ApplyStatus
 	def_special SetPokemonToPercentHP
+	def_special MerchantMenu, waitstate=1
+	def_special GetMerchantItemInfo
+	def_special TryPurchaseMerchantItem

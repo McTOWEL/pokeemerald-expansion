@@ -188,6 +188,9 @@ static const u8 sText_Winona[] = _("WINONA");
 static const u8 sText_Phoebe[] = _("PHOEBE");
 static const u8 sText_Glacia[] = _("GLACIA");
 
+static const u8 *const *sDynamicScrollableMultichoiceOptions = NULL;
+static u8 sDynamicScrollableMultichoiceNumItems = 0;
+
 void Special_ShowDiploma(void)
 {
     SetMainCallback2(CB2_ShowDiploma);
@@ -2572,6 +2575,16 @@ void ShowScrollableMultichoice(void)
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
         break;
+    case SCROLL_MULTI_DYNAMIC:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = sDynamicScrollableMultichoiceNumItems;
+        task->tLeft = 1;
+        task->tTop = 1;
+        task->tWidth = 16;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
     default:
         gSpecialVar_Result = MULTI_B_PRESSED;
         DestroyTask(taskId);
@@ -2865,7 +2878,13 @@ static void Task_ShowScrollableMultichoice(u8 taskId)
 
     for (width = 0, i = 0; i < task->tNumItems; i++)
     {
-        const u8 *text = sScrollableMultichoiceOptions[gSpecialVar_0x8004][i];
+        const u8 *text;
+
+        if (task->tScrollMultiId == SCROLL_MULTI_DYNAMIC)
+            text = sDynamicScrollableMultichoiceOptions[i];
+        else
+            text = sScrollableMultichoiceOptions[task->tScrollMultiId][i];
+
         sScrollableMultichoice_ListMenuItem[i].name = text;
         sScrollableMultichoice_ListMenuItem[i].id = i;
         width = DisplayTextAndGetWidth(text, width);
@@ -5933,4 +5952,14 @@ bool8 CheckAddCoins(void)
         return FALSE;
     else
         return TRUE;
+}
+
+void ShowDynamicScrollableMultichoice(const u8 *const *options, u8 numItems)
+{
+    sDynamicScrollableMultichoiceOptions = options;
+    sDynamicScrollableMultichoiceNumItems = numItems;
+
+    gSpecialVar_0x8004 = SCROLL_MULTI_DYNAMIC;
+
+    ShowScrollableMultichoice();
 }

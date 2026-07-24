@@ -963,6 +963,7 @@ void BufferAndCheckIV(void);
 void ApplyIVMax(void);
 void ApplyStatus(void);
 void SetPokemonToPercentHP(void);
+void MerchantMenu(void);
 
 static inline u32 OWE_GetMovementTypeFromSpecies(enum Species speciesId)
 {

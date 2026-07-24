@@ -251,7 +251,7 @@ script ShadyRoom_EventScript_Assistant {
 }
 
 script ShadyRoom_EventScript_Assistant_Menu {
-        setvar(VAR_0x8004, SCROLL_MULTI_ASSISTANT_SERVICES)
+    setvar(VAR_0x8004, SCROLL_MULTI_ASSISTANT_SERVICES)
 
     message(ShadyRoom_Text_Assistant_Menu)
     waitmessage
@@ -362,14 +362,49 @@ script ShadyRoom_EventScript_Assistant_SetDamage {
 script ShadyRoom_EventScript_Merchant {
     lock
     faceplayer
-    addvar(VAR_TOKEN_BALANCE, 1)
-    msgbox(ShadyRoom_Text_Placeholder)
+
+    setvar(VAR_RESULT, FALSE)
+    msgbox(ShadyRoom_Text_Merchant_Greeting)
+
+    while (var(VAR_RESULT) != MULTI_B_PRESSED) {
+        call(ShadyRoom_EventScript_Merchant_Menu)
+    }
+
+    closemessage
     release
+}
+
+script ShadyRoom_EventScript_Merchant_Menu {
+    buffernumberstring(STR_VAR_3, VAR_TOKEN_BALANCE)
+    msgbox(ShadyRoom_Text_Merchant_Menu)
+    waitmessage
+
+    special(MerchantMenu)
+    if (var(VAR_RESULT) == MULTI_B_PRESSED) {
+        return
+    }
+
+    copyvar(VAR_0x8004, VAR_RESULT)
+    special(GetMerchantItemInfo)
+
+    msgbox(ShadyRoom_Text_Merchant_PurchaseConfirm, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    special(TryPurchaseMerchantItem)
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox(ShadyRoom_Text_Merchant_InsufficientFunds)
+        return
+    }
+
+    msgbox(ShadyRoom_Text_Merchant_PurchaseCommit)
 }
 
 script ShadyRoom_EventScript_Abra {
     lock
     faceplayer
+    addvar(VAR_TOKEN_BALANCE, 1)
     msgbox(ShadyRoom_Text_Placeholder)
     release
 }
@@ -525,4 +560,26 @@ text ShadyRoom_Text_Assistant_DamageFlavor {
 text ShadyRoom_Text_Assistant_DamageApplied {
     "Procedure complete.\n"
     "The subject is within acceptable limits."
+}
+
+text ShadyRoom_Text_Merchant_Greeting {
+    "Hey dude"
+}
+
+text ShadyRoom_Text_Merchant_Menu {
+    "What would you like to purchase?\n"
+    "You have {STR_VAR_3} credit(s)"
+}
+
+text ShadyRoom_Text_Merchant_PurchaseConfirm {
+    "Would you like to buy\n"
+    "{STR_VAR_2} for {STR_VAR_1} credit(s)?"
+}
+
+text ShadyRoom_Text_Merchant_PurchaseCommit {
+    "Purchase confirmed!"
+}
+
+text ShadyRoom_Text_Merchant_InsufficientFunds {
+    "You ain't got enough money, homeboy"
 }

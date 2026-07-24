@@ -7121,3 +7121,96 @@ void SetPokemonToPercentHP(void)
         SetMonData(mon, MON_DATA_HP, &targetHp);
     }
 }
+
+struct MerchantItem
+{
+    u16 itemId;
+    u16 price;
+    u16 flagId;
+};
+
+static const struct MerchantItem sMerchantItems[] =
+{
+    { ITEM_CHOICE_BAND,    5, FLAG_BOUGHT_CHOICE_BAND },
+    { ITEM_CHOICE_SPECS,   5, FLAG_BOUGHT_CHOICE_SPECS },
+    { ITEM_CHOICE_SCARF,   5, FLAG_BOUGHT_CHOICE_SCARF },
+    { ITEM_LIFE_ORB,       5, FLAG_BOUGHT_LIFE_ORB },
+    { ITEM_EXPERT_BELT,    5, FLAG_BOUGHT_EXPERT_BELT },
+    { ITEM_LOADED_DICE,    5, FLAG_BOUGHT_LOADED_DICE },
+    { ITEM_PUNCHING_GLOVE, 5, FLAG_BOUGHT_PUNCHING_GLOVE },
+    { ITEM_WHITE_HERB,     5, FLAG_BOUGHT_WHITE_HERB },
+    { ITEM_POWER_HERB,     5, FLAG_BOUGHT_POWER_HERB },
+    { ITEM_EJECT_PACK,     5, FLAG_BOUGHT_EJECT_PACK },
+    { ITEM_AIR_BALLOON,    5, FLAG_BOUGHT_AIR_BALLOON },
+    { ITEM_LEFTOVERS,      5, FLAG_BOUGHT_LEFTOVERS },
+    { ITEM_BLACK_SLUDGE,   5, FLAG_BOUGHT_BLACK_SLUDGE },
+    { ITEM_ASSAULT_VEST,   5, FLAG_BOUGHT_ASSAULT_VEST },
+    { ITEM_ROCKY_HELMET,   5, FLAG_BOUGHT_ROCKY_HELMET },
+};
+
+#define MERCHANT_ITEM_COUNT ARRAY_COUNT(sMerchantItems)
+#define MERCHANT_MENU_STRING_LENGTH 48
+
+static u8 sMerchantStringBuffers[MERCHANT_ITEM_COUNT][MERCHANT_MENU_STRING_LENGTH];
+static const u8 *sMerchantMenu[MERCHANT_ITEM_COUNT];
+static u8 sSelectedMerchantSlot;
+
+static void BuildMerchantMenuEntry(u8 slot, const u8 *itemName, u16 price, bool32 soldOut)
+{
+    static const u8 sText_SoldOut[] = _("{COLOR RED}SOLD OUT");
+    static const u8 sText_MenuSpacing[] = _(" {CLEAR_TO 100}{FONT_SMALL}");
+    static const u8 sText_Credit[] = _(" credit");
+    static const u8 sText_Blue[] = _("{COLOR BLUE}");
+
+    StringCopy(sMerchantStringBuffers[slot], itemName);
+    StringAppend(sMerchantStringBuffers[slot], sText_MenuSpacing);
+
+    if (soldOut)
+    {
+        StringAppend(sMerchantStringBuffers[slot], sText_SoldOut);
+    }
+    else
+    {
+        ConvertIntToDecimalStringN(gStringVar1, price, STR_CONV_MODE_LEFT_ALIGN, 2);
+        StringAppend(sMerchantStringBuffers[slot], sText_Blue);
+        StringAppend(sMerchantStringBuffers[slot], gStringVar1);
+        StringAppend(sMerchantStringBuffers[slot], sText_Credit);
+    }
+
+    sMerchantMenu[slot] = sMerchantStringBuffers[slot];
+}
+
+void MerchantMenu(void) 
+{
+    u8 i;
+
+    for (i = 0; i < MERCHANT_ITEM_COUNT; i++)
+    {
+        BuildMerchantMenuEntry(i, GetItemName(sMerchantItems[i].itemId), sMerchantItems[i].price, FlagGet(sMerchantItems[i].flagId));
+    }
+
+    ShowDynamicScrollableMultichoice(sMerchantMenu, MERCHANT_ITEM_COUNT);
+}
+
+void GetMerchantItemInfo(void)
+{
+    sSelectedMerchantSlot = gSpecialVar_0x8004; // slot index passed in from script
+    StringCopy(gStringVar2, GetItemName(sMerchantItems[sSelectedMerchantSlot].itemId));
+    ConvertIntToDecimalStringN(gStringVar1, sMerchantItems[sSelectedMerchantSlot].price, STR_CONV_MODE_LEFT_ALIGN, 2);
+}
+
+void TryPurchaseMerchantItem(void)
+{
+    const struct MerchantItem *item = &sMerchantItems[sSelectedMerchantSlot];
+
+    if (VarGet(VAR_TOKEN_BALANCE) < item->price)
+    {
+        gSpecialVar_Result = FALSE;
+        return;
+    }
+
+    VarSet(VAR_TOKEN_BALANCE, VarGet(VAR_TOKEN_BALANCE) - item->price);
+    AddBagItem(item->itemId, 1);
+    FlagSet(item->flagId);
+    gSpecialVar_Result = TRUE;
+}

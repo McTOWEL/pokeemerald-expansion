@@ -584,23 +584,78 @@ ShadyRoom_EventScript_Merchant::
 	lock
 # 364 "data/maps/ShadyRoom/scripts.pory"
 	faceplayer
-# 365 "data/maps/ShadyRoom/scripts.pory"
-	addvar VAR_TOKEN_BALANCE, 1
 # 366 "data/maps/ShadyRoom/scripts.pory"
-	msgbox ShadyRoom_Text_Placeholder
+	setvar VAR_RESULT, FALSE
 # 367 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Merchant_Greeting
+ShadyRoom_EventScript_Merchant_2:
+# 369 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, MULTI_B_PRESSED
+	goto_if_ne ShadyRoom_EventScript_Merchant_3
+# 373 "data/maps/ShadyRoom/scripts.pory"
+	closemessage
+# 374 "data/maps/ShadyRoom/scripts.pory"
 	release
+	return
+
+ShadyRoom_EventScript_Merchant_3:
+# 370 "data/maps/ShadyRoom/scripts.pory"
+	call ShadyRoom_EventScript_Merchant_Menu
+	goto ShadyRoom_EventScript_Merchant_2
+
+
+ShadyRoom_EventScript_Merchant_Menu::
+# 378 "data/maps/ShadyRoom/scripts.pory"
+	buffernumberstring STR_VAR_3, VAR_TOKEN_BALANCE
+# 379 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Merchant_Menu
+# 380 "data/maps/ShadyRoom/scripts.pory"
+	waitmessage
+# 382 "data/maps/ShadyRoom/scripts.pory"
+	special MerchantMenu
+# 383 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, MULTI_B_PRESSED
+	goto_if_eq ShadyRoom_EventScript_Merchant_Menu_2
+# 387 "data/maps/ShadyRoom/scripts.pory"
+	copyvar VAR_0x8004, VAR_RESULT
+# 388 "data/maps/ShadyRoom/scripts.pory"
+	special GetMerchantItemInfo
+# 390 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Merchant_PurchaseConfirm, MSGBOX_YESNO
+# 391 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, NO
+	goto_if_eq ShadyRoom_EventScript_Merchant_Menu_5
+# 395 "data/maps/ShadyRoom/scripts.pory"
+	special TryPurchaseMerchantItem
+# 396 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, FALSE
+	goto_if_eq ShadyRoom_EventScript_Merchant_Menu_8
+# 401 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Merchant_PurchaseCommit
+	return
+
+ShadyRoom_EventScript_Merchant_Menu_2:
+	return
+
+ShadyRoom_EventScript_Merchant_Menu_5:
+	return
+
+ShadyRoom_EventScript_Merchant_Menu_8:
+# 397 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Merchant_InsufficientFunds
 	return
 
 
 ShadyRoom_EventScript_Abra::
-# 371 "data/maps/ShadyRoom/scripts.pory"
+# 405 "data/maps/ShadyRoom/scripts.pory"
 	lock
-# 372 "data/maps/ShadyRoom/scripts.pory"
+# 406 "data/maps/ShadyRoom/scripts.pory"
 	faceplayer
-# 373 "data/maps/ShadyRoom/scripts.pory"
+# 407 "data/maps/ShadyRoom/scripts.pory"
+	addvar VAR_TOKEN_BALANCE, 1
+# 408 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Placeholder
-# 374 "data/maps/ShadyRoom/scripts.pory"
+# 409 "data/maps/ShadyRoom/scripts.pory"
 	release
 	return
 
@@ -622,154 +677,176 @@ ShadyRoom_EventScript_Assistant_SetDamage_Text_1:
 	.string "Custom HP %\nOnes digit (0-9):$"
 
 ShadyRoom_Text_Placeholder::
-# 377 "data/maps/ShadyRoom/scripts.pory"
+# 412 "data/maps/ShadyRoom/scripts.pory"
 	.string "This feature hasn't been implemented yet.$"
 
 ShadyRoom_Text_Gentleman_Greeting::
-# 381 "data/maps/ShadyRoom/scripts.pory"
+# 416 "data/maps/ShadyRoom/scripts.pory"
 	.string "GENTLEMAN: Keep your voice down...\n"
 	.string "Let's see. You have {STR_VAR_1} unit(s) of credit.\p"
 	.string "I specialize in... off-the-record\n"
 	.string "modifications. What do you need?$"
 
 ShadyRoom_Text_Gentleman_Menu::
-# 388 "data/maps/ShadyRoom/scripts.pory"
+# 423 "data/maps/ShadyRoom/scripts.pory"
 	.string "What can I do for you?\n"
 	.string "You have {STR_VAR_1} unit(s) of credit.$"
 
 ShadyRoom_Text_Gentleman_CantSelectEgg::
-# 393 "data/maps/ShadyRoom/scripts.pory"
+# 428 "data/maps/ShadyRoom/scripts.pory"
 	.string "An Egg? Let's wait until it hatches\n"
 	.string "before we start rewriting its DNA.$"
 
 ShadyRoom_Text_Gentleman_InsufficientTokens::
-# 398 "data/maps/ShadyRoom/scripts.pory"
+# 433 "data/maps/ShadyRoom/scripts.pory"
 	.string "Look, I like you, but I don't work\n"
 	.string "pro bono. You're short on credit.\p"
 	.string "Come back when you can afford my rates.$"
 
 ShadyRoom_Text_Gentleman_NoTokens::
-# 404 "data/maps/ShadyRoom/scripts.pory"
+# 439 "data/maps/ShadyRoom/scripts.pory"
 	.string "Come now, let's not waste time.\n"
 	.string "Your line of credit is tapped out.$"
 
 ShadyRoom_Text_Gentleman_NatureCost::
-# 409 "data/maps/ShadyRoom/scripts.pory"
+# 444 "data/maps/ShadyRoom/scripts.pory"
 	.string "A complete shift in Nature, is it?\n"
 	.string "That will run you two units of credit.\p"
 	.string "Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_SameNature::
-# 415 "data/maps/ShadyRoom/scripts.pory"
+# 450 "data/maps/ShadyRoom/scripts.pory"
 	.string "My friend, it already behaves like that.\n"
 	.string "Don't play games with me. What do you really need?$"
 
 ShadyRoom_Text_Gentleman_NatureChanged::
-# 420 "data/maps/ShadyRoom/scripts.pory"
+# 455 "data/maps/ShadyRoom/scripts.pory"
 	.string "Pleasure doing business with you.\n"
 	.string "Its mindset has been... optimized.$"
 
 ShadyRoom_Text_Gentleman_HiddenAbilityCost::
-# 425 "data/maps/ShadyRoom/scripts.pory"
+# 460 "data/maps/ShadyRoom/scripts.pory"
 	.string "Ah, looking for the premium stock?\n"
 	.string "Unlocking a Hidden Ability isn't cheap.\p"
 	.string "That will run you four units of credit.\p"
 	.string "Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_AlreadyHiddenAbility::
-# 432 "data/maps/ShadyRoom/scripts.pory"
+# 467 "data/maps/ShadyRoom/scripts.pory"
 	.string "My work is already done.\n"
 	.string "This one's carrying the premium package.\p"
 	.string "No sense charging you twice.$"
 
 ShadyRoom_Text_Gentleman_HiddenAbilityConfirm::
-# 438 "data/maps/ShadyRoom/scripts.pory"
+# 473 "data/maps/ShadyRoom/scripts.pory"
 	.string "I can unlock {STR_VAR_1} for this one.\n"
 	.string "Shall I proceed?$"
 
 ShadyRoom_Text_Gentleman_HAApplied::
-# 443 "data/maps/ShadyRoom/scripts.pory"
+# 478 "data/maps/ShadyRoom/scripts.pory"
 	.string "There. The latent potential has been\n"
 	.string "unlocked. Keep this between us, eh?$"
 
 ShadyRoom_Text_Gentleman_RestoreAbilityOffer::
-# 448 "data/maps/ShadyRoom/scripts.pory"
+# 483 "data/maps/ShadyRoom/scripts.pory"
 	.string "Want to put things back the way\n"
 	.string "nature intended?\p"
 	.string "I can restore its standard Ability.\n"
 	.string "No charge. Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_AlreadyRegularAbility::
-# 455 "data/maps/ShadyRoom/scripts.pory"
+# 490 "data/maps/ShadyRoom/scripts.pory"
 	.string "Looks to me like this one's already\n"
 	.string "running the factory settings.\p"
 	.string "Nothing for me to do.$"
 
 ShadyRoom_Text_Gentleman_RestoreAbilityConfirm::
-# 461 "data/maps/ShadyRoom/scripts.pory"
+# 496 "data/maps/ShadyRoom/scripts.pory"
 	.string "I can restore {STR_VAR_1} for this one.\n"
 	.string "Shall I proceed?$"
 
 ShadyRoom_Text_Gentleman_AbilityRestored::
-# 466 "data/maps/ShadyRoom/scripts.pory"
+# 501 "data/maps/ShadyRoom/scripts.pory"
 	.string "There. Back to the standard model.\n"
 	.string "Sometimes less attention is the best disguise.$"
 
 ShadyRoom_Text_Gentleman_IVCost::
-# 471 "data/maps/ShadyRoom/scripts.pory"
+# 506 "data/maps/ShadyRoom/scripts.pory"
 	.string "Ah, maxing out potential? Radical changes\n"
 	.string "carry a steeper premium.\p"
 	.string "That will cost two units of credit.\n"
 	.string "Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_IVAlreadyMax::
-# 478 "data/maps/ShadyRoom/scripts.pory"
+# 513 "data/maps/ShadyRoom/scripts.pory"
 	.string "That stat is already at its peak.\n"
 	.string "No point wasting credit on it.$"
 
 ShadyRoom_Text_Gentleman_IVConfirm::
-# 483 "data/maps/ShadyRoom/scripts.pory"
+# 518 "data/maps/ShadyRoom/scripts.pory"
 	.string "I can push its {STR_VAR_1} to the\n"
 	.string "absolute limit. Shall I proceed?$"
 
 ShadyRoom_Text_Gentleman_IVMaxed::
-# 488 "data/maps/ShadyRoom/scripts.pory"
+# 523 "data/maps/ShadyRoom/scripts.pory"
 	.string "Perfect. You won't find a cleaner\n"
 	.string "modification job anywhere else.$"
 
 ShadyRoom_Text_Assistant_Greeting::
-# 493 "data/maps/ShadyRoom/scripts.pory"
+# 528 "data/maps/ShadyRoom/scripts.pory"
 	.string "ASSISTANT: Please state your request.\n"
 	.string "The Gentleman has approved my services.\p"
 	.string "I will handle any procedures you require.$"
 
 ShadyRoom_Text_Assistant_Menu::
-# 499 "data/maps/ShadyRoom/scripts.pory"
+# 534 "data/maps/ShadyRoom/scripts.pory"
 	.string "Available procedures?$"
 
 ShadyRoom_Text_Assistant_StatusFlavor::
-# 503 "data/maps/ShadyRoom/scripts.pory"
+# 538 "data/maps/ShadyRoom/scripts.pory"
 	.string "Status manipulation is a simple\n"
 	.string "procedure when properly monitored.\p"
 	.string "Shall we begin?$"
 
 ShadyRoom_Text_Assistant_StatusCured::
-# 509 "data/maps/ShadyRoom/scripts.pory"
+# 544 "data/maps/ShadyRoom/scripts.pory"
 	.string "Status condition removed.\n"
 	.string "The subject has returned to normal.$"
 
 ShadyRoom_Text_Assistant_StatusInflicted::
-# 514 "data/maps/ShadyRoom/scripts.pory"
+# 549 "data/maps/ShadyRoom/scripts.pory"
 	.string "Procedure complete.\n"
 	.string "The requested condition has been applied.$"
 
 ShadyRoom_Text_Assistant_DamageFlavor::
-# 519 "data/maps/ShadyRoom/scripts.pory"
+# 554 "data/maps/ShadyRoom/scripts.pory"
 	.string "I will apply controlled damage.\n"
 	.string "Minor discomfort is to be expected.\p"
 	.string "Try not to move.$"
 
 ShadyRoom_Text_Assistant_DamageApplied::
-# 525 "data/maps/ShadyRoom/scripts.pory"
+# 560 "data/maps/ShadyRoom/scripts.pory"
 	.string "Procedure complete.\n"
 	.string "The subject is within acceptable limits.$"
+
+ShadyRoom_Text_Merchant_Greeting::
+# 565 "data/maps/ShadyRoom/scripts.pory"
+	.string "Hey dude$"
+
+ShadyRoom_Text_Merchant_Menu::
+# 569 "data/maps/ShadyRoom/scripts.pory"
+	.string "What would you like to purchase?\n"
+	.string "You have {STR_VAR_3} credit(s)$"
+
+ShadyRoom_Text_Merchant_PurchaseConfirm::
+# 574 "data/maps/ShadyRoom/scripts.pory"
+	.string "Would you like to buy\n"
+	.string "{STR_VAR_2} for {STR_VAR_1} credit(s)?$"
+
+ShadyRoom_Text_Merchant_PurchaseCommit::
+# 579 "data/maps/ShadyRoom/scripts.pory"
+	.string "Purchase confirmed!$"
+
+ShadyRoom_Text_Merchant_InsufficientFunds::
+# 583 "data/maps/ShadyRoom/scripts.pory"
+	.string "You ain't got enough money, homeboy$"
