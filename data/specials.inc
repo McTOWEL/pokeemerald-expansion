@@ -648,4 +648,5 @@ gSpecials::
 	def_special SetPokemonToPercentHP
 	def_special MerchantMenu, waitstate=1
 	def_special GetMerchantItemInfo
-	def_special TryPurchaseMerchantItem
+	def_special CanAffordMerchantItem
+	def_special PurchaseMerchantItem

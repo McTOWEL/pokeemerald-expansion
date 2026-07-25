@@ -7199,15 +7199,19 @@ void GetMerchantItemInfo(void)
     ConvertIntToDecimalStringN(gStringVar1, sMerchantItems[sSelectedMerchantSlot].price, STR_CONV_MODE_LEFT_ALIGN, 2);
 }
 
-void TryPurchaseMerchantItem(void)
+void CanAffordMerchantItem(void)
 {
     const struct MerchantItem *item = &sMerchantItems[sSelectedMerchantSlot];
 
     if (VarGet(VAR_TOKEN_BALANCE) < item->price)
     {
         gSpecialVar_Result = FALSE;
-        return;
     }
+}
+
+void PurchaseMerchantItem(void)
+{
+    const struct MerchantItem *item = &sMerchantItems[sSelectedMerchantSlot];
 
     VarSet(VAR_TOKEN_BALANCE, VarGet(VAR_TOKEN_BALANCE) - item->price);
     AddBagItem(item->itemId, 1);

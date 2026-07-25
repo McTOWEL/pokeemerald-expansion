@@ -1,5 +1,7 @@
 mapscripts ShadyRoom_MapScripts {}
 
+const SERVICE_EGG = 2
+
 script ShadyRoom_EventScript_Gentleman {
     lock
     faceplayer
@@ -19,6 +21,7 @@ script ShadyRoom_EventScript_Gentleman {
 script ShadyRoom_EventScript_Gentleman_Menu {
     setvar(VAR_0x8004, SCROLL_MULTI_GENTLEMAN_SERVICES)
 
+    buffernumberstring(STR_VAR_1, VAR_TOKEN_BALANCE)
     message(ShadyRoom_Text_Gentleman_Menu)
     waitmessage
 
@@ -45,7 +48,7 @@ script ShadyRoom_EventScript_Gentleman_Menu {
     }
 }
 
-script ShadyRoom_EventScript_Gentleman_SelectPokemon {
+script ShadyRoom_EventScript_SelectPokemon {
     special(ChoosePartyMon)
 
     if (var(VAR_0x8004) == PARTY_NOTHING_CHOSEN) {
@@ -56,8 +59,7 @@ script ShadyRoom_EventScript_Gentleman_SelectPokemon {
     special(IsSelectedMonEgg)
 
     if (var(VAR_RESULT) == TRUE) {
-        msgbox(ShadyRoom_Text_Gentleman_CantSelectEgg)
-        setvar(VAR_SERVICE_SELECTION_OK, FALSE)
+        setvar(VAR_SERVICE_SELECTION_OK, SERVICE_EGG)
         return
     }
 
@@ -94,8 +96,12 @@ script ShadyRoom_EventScript_Gentleman_ChangeNature {
         return
     }
 
-    call(ShadyRoom_EventScript_Gentleman_SelectPokemon)
+    call(ShadyRoom_EventScript_SelectPokemon)
     if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+    elif (var(VAR_SERVICE_SELECTION_OK) == SERVICE_EGG) {
+        msgbox(ShadyRoom_Text_Gentleman_CantSelectEgg)
         return
     }
 
@@ -135,8 +141,12 @@ script ShadyRoom_EventScript_Gentleman_HiddenAbility {
         return
     }
 
-    call(ShadyRoom_EventScript_Gentleman_SelectPokemon)
+    call(ShadyRoom_EventScript_SelectPokemon)
     if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+    elif (var(VAR_SERVICE_SELECTION_OK) == SERVICE_EGG) {
+        msgbox(ShadyRoom_Text_Gentleman_CantSelectEgg)
         return
     }
 
@@ -165,8 +175,12 @@ script ShadyRoom_EventScript_Gentleman_RegularAbility {
         return
     }
 
-    call(ShadyRoom_EventScript_Gentleman_SelectPokemon)
+    call(ShadyRoom_EventScript_SelectPokemon)
     if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+    elif (var(VAR_SERVICE_SELECTION_OK) == SERVICE_EGG) {
+        msgbox(ShadyRoom_Text_Gentleman_CantSelectEgg)
         return
     }
 
@@ -200,8 +214,12 @@ script ShadyRoom_EventScript_Gentleman_MaxIV {
         return
     }
 
-    call(ShadyRoom_EventScript_Gentleman_SelectPokemon)
+    call(ShadyRoom_EventScript_SelectPokemon)
     if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+    elif (var(VAR_SERVICE_SELECTION_OK) == SERVICE_EGG) {
+        msgbox(ShadyRoom_Text_Gentleman_CantSelectEgg)
         return
     }
 
@@ -279,8 +297,12 @@ script ShadyRoom_EventScript_Assistant_SetStatus {
         return
     }
 
-    call(ShadyRoom_EventScript_Gentleman_SelectPokemon)
+    call(ShadyRoom_EventScript_SelectPokemon)
     if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+    elif (var(VAR_SERVICE_SELECTION_OK) == SERVICE_EGG) {
+        msgbox(ShadyRoom_Text_Assistant_CantSelectEgg)
         return
     }
 
@@ -313,8 +335,12 @@ script ShadyRoom_EventScript_Assistant_SetDamage {
         return
     }
 
-    call(ShadyRoom_EventScript_Gentleman_SelectPokemon)
+    call(ShadyRoom_EventScript_SelectPokemon)
     if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+    elif (var(VAR_SERVICE_SELECTION_OK) == SERVICE_EGG) {
+        msgbox(ShadyRoom_Text_Assistant_CantSelectEgg)
         return
     }
 
@@ -387,17 +413,18 @@ script ShadyRoom_EventScript_Merchant_Menu {
     copyvar(VAR_0x8004, VAR_RESULT)
     special(GetMerchantItemInfo)
 
-    msgbox(ShadyRoom_Text_Merchant_PurchaseConfirm, MSGBOX_YESNO)
-    if (var(VAR_RESULT) == NO) {
-        return
-    }
-
-    special(TryPurchaseMerchantItem)
+    special(CanAffordMerchantItem)
     if (var(VAR_RESULT) == FALSE) {
         msgbox(ShadyRoom_Text_Merchant_InsufficientFunds)
         return
     }
 
+    msgbox(ShadyRoom_Text_Merchant_PurchaseConfirm, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    special(PurchaseMerchantItem)
     msgbox(ShadyRoom_Text_Merchant_PurchaseCommit)
 }
 
@@ -405,6 +432,7 @@ script ShadyRoom_EventScript_Abra {
     lock
     faceplayer
     addvar(VAR_TOKEN_BALANCE, 1)
+    giveegg(SPECIES_RAYQUAZA)
     msgbox(ShadyRoom_Text_Placeholder)
     release
 }
@@ -426,8 +454,8 @@ text ShadyRoom_Text_Gentleman_Menu {
 }
 
 text ShadyRoom_Text_Gentleman_CantSelectEgg {
-    "An Egg? Let's wait until it hatches\n"
-	"before we start rewriting its DNA."
+    "An Egg? Too early. Come back when\n"
+    "there's something to work with."
 }
 
 text ShadyRoom_Text_Gentleman_InsufficientTokens {
@@ -449,7 +477,8 @@ text ShadyRoom_Text_Gentleman_NatureCost {
 
 text ShadyRoom_Text_Gentleman_SameNature {
     "My friend, it already behaves like that.\n"
-    "Don't play games with me. What do you really need?"
+    "No need to pay me for something that's\p"
+    "already been done."
 }
 
 text ShadyRoom_Text_Gentleman_NatureChanged {
@@ -465,8 +494,7 @@ text ShadyRoom_Text_Gentleman_HiddenAbilityCost {
 }
 
 text ShadyRoom_Text_Gentleman_AlreadyHiddenAbility {
-    "My work is already done.\n"
-    "This one's carrying the premium package.\p"
+    "This one's already received the upgrade\n"
     "No sense charging you twice."
 }
 
@@ -532,7 +560,12 @@ text ShadyRoom_Text_Assistant_Greeting {
 }
 
 text ShadyRoom_Text_Assistant_Menu {
-    "Available procedures?"
+    "Please specify your request."
+}
+
+text ShadyRoom_Text_Assistant_CantSelectEgg {
+    "The subject has not yet developed.\n"
+    "Procedure cannot be performed."
 }
 
 text ShadyRoom_Text_Assistant_StatusFlavor {
@@ -563,17 +596,22 @@ text ShadyRoom_Text_Assistant_DamageApplied {
 }
 
 text ShadyRoom_Text_Merchant_Greeting {
-    "Hey dude"
+    "Welcome. Please ignore the\n"
+    "suspicious atmosphere.\p"
+    "Everything here is completely\n"
+    "legitimate."
 }
 
 text ShadyRoom_Text_Merchant_Menu {
-    "What would you like to purchase?\n"
+    "Take a look.\n"
+    "If you don't see what you need,\p"
+    "I probably don't have it.\p"
     "You have {STR_VAR_3} credit(s)"
 }
 
 text ShadyRoom_Text_Merchant_PurchaseConfirm {
-    "Would you like to buy\n"
-    "{STR_VAR_2} for {STR_VAR_1} credit(s)?"
+    "{STR_VAR_2} for {STR_VAR_1} credit\n"
+    "Is that all you need?"
 }
 
 text ShadyRoom_Text_Merchant_PurchaseCommit {
@@ -581,5 +619,6 @@ text ShadyRoom_Text_Merchant_PurchaseCommit {
 }
 
 text ShadyRoom_Text_Merchant_InsufficientFunds {
-    "You ain't got enough money, homeboy"
+    "Come back when your credit catches\n"
+    "up with your ambition."
 }
