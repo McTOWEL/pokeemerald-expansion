@@ -9,15 +9,13 @@ u32 GetCurrentLevelCap(void)
 {
     static const u32 sLevelCapFlagMap[][2] =
     {
-        {FLAG_BADGE01_GET, 15},
-        {FLAG_BADGE02_GET, 19},
-        {FLAG_BADGE03_GET, 24},
-        {FLAG_BADGE04_GET, 29},
-        {FLAG_BADGE05_GET, 31},
-        {FLAG_BADGE06_GET, 33},
-        {FLAG_BADGE07_GET, 42},
-        {FLAG_BADGE08_GET, 46},
-        {FLAG_IS_CHAMPION, 58},
+        // placeholder levels, teams have not been designed yet, subject to change
+        {FLAG_TO_GYM_RUSTBORO_CAP,   16},
+        {FLAG_TO_RIVAL_RUSTBORO_CAP, 18},
+        {FLAG_TO_STEVEN_DEWFORD_CAP, 22},
+        {FLAG_TO_GYM_DEWFORD_CAP,    25},
+        {FLAG_TO_RIVAL_119_CAP,      30},
+  
     };
 
     u32 i;

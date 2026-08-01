@@ -110,6 +110,8 @@ enum {
     MENU_CATALOG_MOWER,
     MENU_CHANGE_FORM,
     MENU_CHANGE_ABILITY,
+    MENU_LEVEL_TO_CAP,
+    MENU_SET_LEVEL,
     MENU_FIELD_MOVES
 };
 
@@ -510,6 +512,14 @@ static const u8 sText_doneText[] = _("{STR_VAR_1}'s ability became\n{STR_VAR_2}!
 static const u8 sText_BasePointsResetToZero[] = _("{STR_VAR_1}'s base points\nwere all reset to zero!{PAUSE_UNTIL_PRESS}");
 static const u8 sText_CannotSendMonToBoxHM[] = _("Cannot send that mon to the box,\nbecause it knows a HM move.{PAUSE_UNTIL_PRESS}");
 static const u8 sText_CannotSendMonToBoxPartner[] = _("Cannot send a mon that doesn't\nbelong to you to the box.{PAUSE_UNTIL_PRESS}");
+
+static bool8 sManualLevelMode;
+static u8 sLevelWindowId;
+
+static void CursorCb_LevelToCap(u8);
+static void CursorCb_SetLevel(u8);
+static void Task_SetLevelInput(u8 taskId);
+static void DrawSetLevelWindow(u8 level);
 
 // static const data
 #include "data/party_menu.h"
@@ -2956,6 +2966,16 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
 
     sPartyMenuInternal->numActions = 0;
     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_SUMMARY);
+
+    u8 cap, level;
+    level = GetMonData(&mons[slotId], MON_DATA_LEVEL);
+    cap = GetCurrentLevelCap();
+
+    if (!InBattlePike() && (level < cap))
+    {
+        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_LEVEL_TO_CAP);
+        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_SET_LEVEL);
+    }
 
     // Add field moves to action list
     for (i = 0; i < MAX_MON_MOVES; i++)
@@ -5964,7 +5984,7 @@ static void Task_TryLearnNewMoves(u8 taskId)
 {
     u16 learnMove;
 
-    if (WaitFanfare(FALSE) && ((JOY_NEW(A_BUTTON)) || (JOY_NEW(B_BUTTON))))
+    if (sManualLevelMode || ((WaitFanfare(FALSE) && ((JOY_NEW(A_BUTTON)) || (JOY_NEW(B_BUTTON))))))
     {
         RemoveLevelUpStatsWindow();
         for (; sInitialLevel <= sFinalLevel; sInitialLevel++)
@@ -5975,8 +5995,18 @@ static void Task_TryLearnNewMoves(u8 taskId)
             switch (learnMove)
             {
             case 0: // No moves to learn
-                if (sInitialLevel >= sFinalLevel)
+                if (sManualLevelMode)
+                {
+                    if (sInitialLevel >= sFinalLevel)
+                    {
+                        sManualLevelMode = FALSE;
+                        gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+                    }
+                }
+                else if (sInitialLevel >= sFinalLevel)
+                {
                     PartyMenuTryEvolution(taskId);
+                }
                 break;
             case MON_HAS_MAX_MOVES:
                 DisplayMonNeedsToReplaceMove(taskId);
@@ -6005,7 +6035,17 @@ static void Task_TryLearningNextMove(u8 taskId)
         {
         case 0: // No moves to learn
             if (sInitialLevel >= sFinalLevel)
-                PartyMenuTryEvolution(taskId);
+            {
+                if (sManualLevelMode)
+                {
+                    sManualLevelMode = FALSE;
+                    gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+                }
+                else
+                {
+                    PartyMenuTryEvolution(taskId);
+                }
+            }
             break;
         case MON_HAS_MAX_MOVES:
             DisplayMonNeedsToReplaceMove(taskId);
@@ -8618,3 +8658,156 @@ s8 Test_UpdatePartySelectionSingleLayout(s8 slotId, s8 movementDir, bool8 choose
     return slotId;
 }
 #endif
+
+static void LevelMonToLevel(u8 taskId, u8 targetLevel)
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gPartyMenu.slotId];
+    u32 exp;
+
+    sInitialLevel = GetMonData(mon, MON_DATA_LEVEL);
+
+    exp = gExperienceTables[gSpeciesInfo[GetMonData(mon, MON_DATA_SPECIES)].growthRate][targetLevel];
+
+    SetMonData(mon, MON_DATA_EXP, &exp);
+    CalculateMonStats(mon);
+
+    UpdateMonDisplayInfoAfterRareCandy(gPartyMenu.slotId, mon);
+
+    sFinalLevel = GetMonData(mon, MON_DATA_LEVEL);
+
+    sInitialLevel++;
+
+    gPartyMenu.learnMoveState = 1;
+    sManualLevelMode = TRUE;
+    gTasks[taskId].func = Task_TryLearnNewMoves;
+}
+
+static void CursorCb_LevelToCap(u8 taskId)
+{
+    PlaySE(SE_SELECT);
+
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+
+    LevelMonToLevel(taskId, GetCurrentLevelCap());
+}
+
+static void CursorCb_SetLevel(u8 taskId)
+{
+    PlaySE(SE_SELECT);
+
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+
+    sLevelWindowId = AddWindow(&sPartyMenuLevelWindowTemplate);
+    DrawStdFrameWithCustomTileAndPalette(sLevelWindowId, TRUE, 0x4F, 13);
+
+    sInitialLevel = GetMonData(&gParties[B_TRAINER_PLAYER][gPartyMenu.slotId], MON_DATA_LEVEL);
+    gTasks[taskId].data[0] = sInitialLevel;
+
+    DrawSetLevelWindow(gTasks[taskId].data[0]);
+
+    gTasks[taskId].func = Task_SetLevelInput;
+}
+
+static void Task_SetLevelInput(u8 taskId)
+{
+    if (JOY_NEW(DPAD_UP))
+    {
+        if (gTasks[taskId].data[0] < GetCurrentLevelCap())
+            gTasks[taskId].data[0]++;
+
+        DrawSetLevelWindow(gTasks[taskId].data[0]);
+    }
+
+    if (JOY_NEW(DPAD_DOWN))
+    {
+        if (gTasks[taskId].data[0] > sInitialLevel)
+            gTasks[taskId].data[0]--;
+
+        DrawSetLevelWindow(gTasks[taskId].data[0]);
+    }
+
+    if (JOY_NEW(DPAD_RIGHT))
+    {
+        gTasks[taskId].data[0] += 10;
+
+        if (gTasks[taskId].data[0] > GetCurrentLevelCap())
+            gTasks[taskId].data[0] = GetCurrentLevelCap();
+
+        DrawSetLevelWindow(gTasks[taskId].data[0]);
+    }
+
+    if (JOY_NEW(DPAD_LEFT))
+    {
+        gTasks[taskId].data[0] -= 10;
+
+        if (gTasks[taskId].data[0] < sInitialLevel)
+            gTasks[taskId].data[0] = sInitialLevel;
+
+        DrawSetLevelWindow(gTasks[taskId].data[0]);
+    }
+
+    if (JOY_NEW(A_BUTTON))
+    {
+        ClearStdWindowAndFrame(sLevelWindowId, TRUE);
+        RemoveWindow(sLevelWindowId);
+
+        if (gTasks[taskId].data[0] == sInitialLevel)
+        {
+            // Same behavior as pressing B
+            DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
+            gTasks[taskId].func = Task_HandleSelectionMenuInput;
+        }
+        else
+        {
+            LevelMonToLevel(taskId, gTasks[taskId].data[0]);
+        }
+    }
+
+    if (JOY_NEW(B_BUTTON))
+    {
+        ClearStdWindowAndFrame(sLevelWindowId, TRUE);
+        RemoveWindow(sLevelWindowId);
+
+        DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
+        gTasks[taskId].func = Task_HandleSelectionMenuInput;
+    }
+}
+
+static void DrawSetLevelWindow(u8 level)
+{
+    FillWindowPixelBuffer(sLevelWindowId, PIXEL_FILL(1));
+
+    StringCopy(gStringVar4, COMPOUND_STRING("Set Level"));
+
+    AddTextPrinterParameterized(
+        sLevelWindowId,
+        FONT_NORMAL,
+        gStringVar4,
+        8,
+        2,
+        0,
+        NULL);
+
+    ConvertIntToDecimalStringN(
+        gStringVar1,
+        level,
+        STR_CONV_MODE_LEFT_ALIGN,
+        3);
+
+    StringExpandPlaceholders(
+        gStringVar4,
+        COMPOUND_STRING("Lv. {STR_VAR_1}"));
+
+    AddTextPrinterParameterized(
+        sLevelWindowId,
+        FONT_NORMAL,
+        gStringVar4,
+        8,
+        18,
+        0,
+        NULL);
+
+    CopyWindowToVram(sLevelWindowId, COPYWIN_FULL);
+}
