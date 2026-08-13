@@ -10,6 +10,9 @@ Route110_SeasideCyclingRoadSouthEntrance_EventScript_Clerk::
 
 Route110_SeasideCyclingRoadSouthEntrance_EventScript_BikeCheck::
 	lockall
+	@ Check if player defeated the Rival
+	compare VAR_ROUTE110_STATE, 0
+	goto_if_eq Route110_SeasideCyclingRoadSouthEntrance_EventScript_RivalNotDefeated
 	specialvar VAR_RESULT, GetPlayerAvatarBike
 	goto_if_eq VAR_RESULT, 0, Route110_SeasideCyclingRoadSouthEntrance_EventScript_NoBike
 	setflag FLAG_SYS_CYCLING_ROAD
@@ -47,3 +50,15 @@ Route110_SeasideCyclingRoadSouthEntrance_Text_TooDangerousToWalk:
 	.string "ROAD. It's too dangerous.\p"
 	.string "Please come back with a BIKE.$"
 
+Route110_SeasideCyclingRoadSouthEntrance_EventScript_RivalNotDefeated::
+	msgbox Route110_SeasideCyclingRoadSouthEntrance_Text_RivalNotDefeated, MSGBOX_DEFAULT
+	closemessage
+	applymovement LOCALID_PLAYER, Route110_SeasideCyclingRoadSouthEntrance_Movement_PushPlayerBackFromCounter
+	waitmovement 0
+	releaseall
+	end
+
+Route110_SeasideCyclingRoadSouthEntrance_Text_RivalNotDefeated:
+	.string "Hey buddy, you think you can just\n"
+	.string "skip the rival that easily?\p"
+	.string "Get back out there!$"

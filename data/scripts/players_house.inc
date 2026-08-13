@@ -8,12 +8,18 @@ PlayersHouse_1F_EventScript_EnterHouseMovingIn::
 	waitmovement 0
 	call_if_eq VAR_0x8005, MALE, PlayersHouse_1F_EventScript_MomFacePlayerMovingInMale
 	call_if_eq VAR_0x8005, FEMALE, PlayersHouse_1F_EventScript_MomFacePlayerMovingInFemale
-	msgbox PlayersHouse_1F_Text_MoversPokemonGoSetClock, MSGBOX_DEFAULT
-	closemessage
-	setvar VAR_LITTLEROOT_INTRO_STATE, 4
-	applymovement LOCALID_PLAYER, PlayersHouse_1F_Movement_PlayerWalkIn
-	applymovement VAR_0x8004, Common_Movement_WalkInPlaceFasterUp
-	waitmovement 0
+	msgbox PlayersHouse_1F_Text_MomUnpackedThings, MSGBOX_DEFAULT
+	giveitem ITEM_MACH_BIKE
+	giveitem ITEM_ACRO_BIKE
+	setflag FLAG_RECEIVED_BIKE
+	setflag FLAG_SYS_B_DASH
+	setflag FLAG_RECEIVED_RUNNING_SHOES
+	msgbox PlayersHouse_1F_Text_MomSendsToBirch, MSGBOX_DEFAULT
+	setvar VAR_LITTLEROOT_INTRO_STATE, 7
+	setvar VAR_LITTLEROOT_TOWN_STATE, 1
+	setvar VAR_LITTLEROOT_RIVAL_STATE, 3
+	setflag FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_2F_POKE_BALL
+	clearflag FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_RIVAL_BEDROOM
 	releaseall
 	end
 
@@ -671,3 +677,14 @@ PlayersHouse_1F_Movement_PlayerApproachTVForLatiFemale:
 EventScript_RunningShoesManual::
 	msgbox PlayersHouse_1F_Text_RunningShoesManual, MSGBOX_SIGN
 	end
+
+PlayersHouse_1F_Text_MomUnpackedThings:
+	.string "MOM: I unpacked a few things\n"
+	.string "for you while you were\p"
+	.string "getting settled in the truck.$"
+
+PlayersHouse_1F_Text_MomSendsToBirch:
+	.string "MOM: Professor BIRCH was headed\n"
+	.string "north earlier.\p"
+	.string "Why don't you go introduce\n"
+	.string "yourself if you have time?$"

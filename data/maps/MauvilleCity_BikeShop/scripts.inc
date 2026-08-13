@@ -5,7 +5,7 @@ MauvilleCity_BikeShop_EventScript_Rydel::
 	lock
 	faceplayer
 	goto_if_set FLAG_RECEIVED_BIKE, MauvilleCity_BikeShop_EventScript_AskSwitchBikes
-	goto_if_set FLAG_DECLINED_BIKE, MauvilleCity_BikeShop_EventScript_SkipGreeting
+	goto_if_set FLAG_DECLINED_BIKE, MauvilleCity_BikeShop_EventScript_EnjoyingBikes
 	msgbox MauvilleCity_BikeShop_Text_RydelGreeting, MSGBOX_DEFAULT
 	msgbox MauvilleCity_BikeShop_Text_DidYouComeFromFarAway, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, YES, MauvilleCity_BikeShop_EventScript_YesFar
@@ -320,3 +320,11 @@ MauvilleCity_BikeShop_Text_Jumps:
 	.string "change directions while jumping.\p"
 	.string "Want to read a different page?$"
 
+MauvilleCity_BikeShop_EventScript_EnjoyingBikes::
+	msgbox MauvilleCity_BikeShop_Text_EnjoyingBikes, MSGBOX_DEFAULT
+	release
+	end
+
+MauvilleCity_BikeShop_Text_EnjoyingBikes:
+	.string "Hey there friend! How are you\n"
+	.string "enjoying my signature bikes?$"
