@@ -516,10 +516,9 @@ static const u8 sText_CannotSendMonToBoxPartner[] = _("Cannot send a mon that do
 static bool8 sManualLevelMode;
 static u8 sLevelWindowId;
 
+#include "data/number_picker.h"
 static void CursorCb_LevelToCap(u8);
 static void CursorCb_SetLevel(u8);
-static void Task_SetLevelInput(u8 taskId);
-static void DrawSetLevelWindow(u8 level);
 
 // static const data
 #include "data/party_menu.h"
@@ -8692,10 +8691,37 @@ static void CursorCb_LevelToCap(u8 taskId)
     LevelMonToLevel(taskId, GetCurrentLevelCap());
 }
 
+static void LevelPicker_Draw(s16 currentValue)
+{
+    FillWindowPixelBuffer(sLevelWindowId, PIXEL_FILL(1));
+    StringCopy(gStringVar4, COMPOUND_STRING("Set Level"));
+    AddTextPrinterParameterized(sLevelWindowId, FONT_NORMAL, gStringVar4, 8, 2, 0, NULL);
+    ConvertIntToDecimalStringN(gStringVar1, currentValue, STR_CONV_MODE_LEFT_ALIGN, 3);
+    StringExpandPlaceholders(gStringVar4, COMPOUND_STRING("Lv. {STR_VAR_1}"));
+    AddTextPrinterParameterized(sLevelWindowId, FONT_NORMAL, gStringVar4, 8, 18, 0, NULL);
+    CopyWindowToVram(sLevelWindowId, COPYWIN_FULL);
+}
+
+static void LevelPicker_OnComplete(u8 callerTaskId, s16 result, bool8 cancelled)
+{
+    ClearStdWindowAndFrame(sLevelWindowId, TRUE);
+    RemoveWindow(sLevelWindowId);
+
+    if (cancelled || result == sInitialLevel)
+    {
+        // Same behavior as pressing B, or A on an unchanged value
+        DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
+        gTasks[callerTaskId].func = Task_HandleSelectionMenuInput;
+    }
+    else
+    {
+        LevelMonToLevel(callerTaskId, result);
+    }
+}
+
 static void CursorCb_SetLevel(u8 taskId)
 {
     PlaySE(SE_SELECT);
-
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
 
@@ -8703,111 +8729,7 @@ static void CursorCb_SetLevel(u8 taskId)
     DrawStdFrameWithCustomTileAndPalette(sLevelWindowId, TRUE, 0x4F, 13);
 
     sInitialLevel = GetMonData(&gParties[B_TRAINER_PLAYER][gPartyMenu.slotId], MON_DATA_LEVEL);
-    gTasks[taskId].data[0] = sInitialLevel;
 
-    DrawSetLevelWindow(gTasks[taskId].data[0]);
-
-    gTasks[taskId].func = Task_SetLevelInput;
-}
-
-static void Task_SetLevelInput(u8 taskId)
-{
-    if (JOY_NEW(DPAD_UP))
-    {
-        if (gTasks[taskId].data[0] < GetCurrentLevelCap())
-            gTasks[taskId].data[0]++;
-
-        DrawSetLevelWindow(gTasks[taskId].data[0]);
-    }
-
-    if (JOY_NEW(DPAD_DOWN))
-    {
-        if (gTasks[taskId].data[0] > sInitialLevel)
-            gTasks[taskId].data[0]--;
-
-        DrawSetLevelWindow(gTasks[taskId].data[0]);
-    }
-
-    if (JOY_NEW(DPAD_RIGHT))
-    {
-        gTasks[taskId].data[0] += 10;
-
-        if (gTasks[taskId].data[0] > GetCurrentLevelCap())
-            gTasks[taskId].data[0] = GetCurrentLevelCap();
-
-        DrawSetLevelWindow(gTasks[taskId].data[0]);
-    }
-
-    if (JOY_NEW(DPAD_LEFT))
-    {
-        gTasks[taskId].data[0] -= 10;
-
-        if (gTasks[taskId].data[0] < sInitialLevel)
-            gTasks[taskId].data[0] = sInitialLevel;
-
-        DrawSetLevelWindow(gTasks[taskId].data[0]);
-    }
-
-    if (JOY_NEW(A_BUTTON))
-    {
-        ClearStdWindowAndFrame(sLevelWindowId, TRUE);
-        RemoveWindow(sLevelWindowId);
-
-        if (gTasks[taskId].data[0] == sInitialLevel)
-        {
-            // Same behavior as pressing B
-            DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
-            gTasks[taskId].func = Task_HandleSelectionMenuInput;
-        }
-        else
-        {
-            LevelMonToLevel(taskId, gTasks[taskId].data[0]);
-        }
-    }
-
-    if (JOY_NEW(B_BUTTON))
-    {
-        ClearStdWindowAndFrame(sLevelWindowId, TRUE);
-        RemoveWindow(sLevelWindowId);
-
-        DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
-        gTasks[taskId].func = Task_HandleSelectionMenuInput;
-    }
-}
-
-static void DrawSetLevelWindow(u8 level)
-{
-    FillWindowPixelBuffer(sLevelWindowId, PIXEL_FILL(1));
-
-    StringCopy(gStringVar4, COMPOUND_STRING("Set Level"));
-
-    AddTextPrinterParameterized(
-        sLevelWindowId,
-        FONT_NORMAL,
-        gStringVar4,
-        8,
-        2,
-        0,
-        NULL);
-
-    ConvertIntToDecimalStringN(
-        gStringVar1,
-        level,
-        STR_CONV_MODE_LEFT_ALIGN,
-        3);
-
-    StringExpandPlaceholders(
-        gStringVar4,
-        COMPOUND_STRING("Lv. {STR_VAR_1}"));
-
-    AddTextPrinterParameterized(
-        sLevelWindowId,
-        FONT_NORMAL,
-        gStringVar4,
-        8,
-        18,
-        0,
-        NULL);
-
-    CopyWindowToVram(sLevelWindowId, COPYWIN_FULL);
+    StartNumberPicker(taskId, sInitialLevel, GetCurrentLevelCap(), sInitialLevel,
+                      LevelPicker_OnComplete, LevelPicker_Draw);
 }

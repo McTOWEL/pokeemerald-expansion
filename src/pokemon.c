@@ -7091,20 +7091,16 @@ void SetPokemonToPercentHP(void)
             hp = 1;
             break;
         case 7: // CUSTOM %
-            u32 tens = VarGet(VAR_0x8007);
-            u32 ones = VarGet(VAR_0x8008);
-
-            percent = tens * 10 + ones;
-
-            if (percent == 0) {
-                hp = 1;
-            }
+            percent = VarGet(VAR_0x8008);
+            break;
+        case 8: // CUSTOM HP
+            hp = VarGet(VAR_0x8008);
             break;
     }
 
-    if (hp == 1) 
+    if (hp != 0) 
     {
-        u16 targetHp  = 1;
+        u16 targetHp = hp;
         SetMonData(mon, MON_DATA_HP, &targetHp);
     }
     else

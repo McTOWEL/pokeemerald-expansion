@@ -645,6 +645,8 @@ gSpecials::
 	def_special ApplyIVMax
 	def_special BufferAndCheckIV
 	def_special ApplyStatus
+	def_special ShowNumberPicker, waitstate=1
+	def_special ShowCustomHPPicker, waitstate=1
 	def_special SetPokemonToPercentHP
 	def_special MerchantMenu, waitstate=1
 	def_special GetMerchantItemInfo
