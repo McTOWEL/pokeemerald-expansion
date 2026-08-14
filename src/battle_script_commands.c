@@ -10054,7 +10054,7 @@ static void Cmd_handleballthrow(void)
         gBattleSpritesDataPtr->animationData->criticalCaptureSuccess = FALSE;
 
         //Master Ball check occurs before critical capture check
-        if (odds == CAPTURE_GUARANTEED)
+        if (gBattleStruct->forceCatch || odds == CAPTURE_GUARANTEED)
         {
             FinalizeCapture();
             return;

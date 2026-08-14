@@ -17,6 +17,7 @@
 #include "pokemon.h"
 #include "international_string_util.h"
 #include "item.h"
+#include "item_use.h"
 #include "util.h"
 #include "battle_scripts.h"
 #include "random.h"
@@ -11020,4 +11021,9 @@ void SetValuesOnFaint(enum BattlerId battler)
         gBattleResults.lastOpponentSpecies = GetMonData(GetBattlerMon(battler), MON_DATA_SPECIES);
         gSideTimers[B_SIDE_OPPONENT].retaliateTimer = 2;
     }
+}
+
+bool32 CanCatchInBattle(void)
+{
+    return CanThrowBall() && FlagGet(FLAG_CAN_THROW_BALL);
 }
