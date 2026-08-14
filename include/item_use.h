@@ -51,6 +51,9 @@ void ItemUseOutOfBattle_PokeFlute(u8 taskId);
 void ItemUseOutOfBattle_TownMap(u8 taskId);
 bool8 ItemfinderCheckForHiddenItems(const struct MapEvents *, u8);
 enum Direction GetDirectionToHiddenItem(s16, s16);
+void ItemUseOutOfBattle_InfiniteRepel(u8 taskId);
+void ItemUseOutOfBattle_PortaHeal(u8 taskId);
+void ItemUseOutOfBattle_PortaPP(u8 taskId);
 
 enum {
     BALL_THROW_UNABLE_TWO_MONS,

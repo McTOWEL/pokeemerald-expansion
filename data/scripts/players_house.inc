@@ -11,6 +11,9 @@ PlayersHouse_1F_EventScript_EnterHouseMovingIn::
 	msgbox PlayersHouse_1F_Text_MomUnpackedThings, MSGBOX_DEFAULT
 	giveitem ITEM_MACH_BIKE
 	giveitem ITEM_ACRO_BIKE
+	giveitem ITEM_INFINITE_REPEL
+	giveitem ITEM_PORTA_HEAL
+	giveitem ITEM_PORTA_PP
 	setflag FLAG_RECEIVED_BIKE
 	setflag FLAG_SYS_B_DASH
 	setflag FLAG_RECEIVED_RUNNING_SHOES

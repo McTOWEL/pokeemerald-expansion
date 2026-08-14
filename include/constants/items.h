@@ -1052,6 +1052,11 @@ enum __attribute__((packed)) Item
     ITEM_TATSUGIRINITE = 872,
     ITEM_GLIMMORANITE = 873,
 
+    // My Custom Key Items
+    ITEM_INFINITE_REPEL = 874,
+    ITEM_PORTA_HEAL = 875,
+    ITEM_PORTA_PP = 876,
+
     ITEMS_COUNT,
     ITEM_FIELD_ARROW = ITEMS_COUNT,
 };

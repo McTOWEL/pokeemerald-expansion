@@ -15832,6 +15832,52 @@ const struct ItemInfo gItemsInfo[] =
         .iconPic = gItemIcon_PokeshiDoll,
         .iconPalette = gItemIconPalette_PokeshiDoll,
     },
+
+    [ITEM_INFINITE_REPEL] =
+    {
+        .name = ITEM_NAME("Infinite Repel"),
+        .price = 0,
+        .description = COMPOUND_STRING(
+            "Set and forget\n"
+            "repel\n"
+            "Never runs out."),
+        .importance = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_InfiniteRepel,
+        .iconPic = gItemIcon_Repel,
+        .iconPalette = gItemIconPalette_MaxRepel,
+    },
+
+    [ITEM_PORTA_HEAL] =
+    {
+        .name = ITEM_NAME("Porta-Heal"),
+        .price = 0,
+        .description = COMPOUND_STRING(
+            "Heals your whole\n"
+            "team in one go."),
+        .importance = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_PortaHeal,
+        .iconPic = gItemIcon_LargePotion,
+        .iconPalette = gItemIconPalette_FullRestore,
+    },
+
+    [ITEM_PORTA_PP] =
+    {
+        .name = ITEM_NAME("Porta-PP"),
+        .price = 0,
+        .description = COMPOUND_STRING(
+            "Restores your whole\n"
+            "team's PP in one go."),
+        .importance = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_PortaPP,
+        .iconPic = gItemIcon_Ether,
+        .iconPalette = gItemIconPalette_MaxElixir,
+    },
 };
 
 #undef ITEM_NAME

@@ -904,7 +904,13 @@ static void LoadBagItemListBuffers(u8 pocketId)
     {
         for (i = 0; i < gBagMenu->numItemStacks[pocketId] - 1; i++)
         {
-            GetItemNameFromPocket(sListBuffer2->name[i], GetBagItemId(pocketId, i));
+            enum Item itemId = GetBagItemId(pocketId, i);
+
+            if (itemId == ITEM_INFINITE_REPEL && FlagGet(FLAG_INFINITE_REPEL_ACTIVE))
+                StringCopy(sListBuffer2->name[i], COMPOUND_STRING("{COLOR 14}Infinite Repel"));
+            else
+                GetItemNameFromPocket(sListBuffer2->name[i], itemId);
+
             subBuffer = sListBuffer1->subBuffers;
             subBuffer[i].name = sListBuffer2->name[i];
             subBuffer[i].id = i;
@@ -918,7 +924,13 @@ static void LoadBagItemListBuffers(u8 pocketId)
     {
         for (i = 0; i < gBagMenu->numItemStacks[pocketId]; i++)
         {
-            GetItemNameFromPocket(sListBuffer2->name[i], GetBagItemId(pocketId, i));
+            enum Item itemId = GetBagItemId(pocketId, i);
+
+            if (itemId == ITEM_INFINITE_REPEL && FlagGet(FLAG_INFINITE_REPEL_ACTIVE))
+                StringCopy(sListBuffer2->name[i], COMPOUND_STRING("{COLOR 14}Infinite Repel"));
+            else
+                GetItemNameFromPocket(sListBuffer2->name[i], itemId);
+
             subBuffer = sListBuffer1->subBuffers;
             subBuffer[i].name = sListBuffer2->name[i];
             subBuffer[i].id = i;

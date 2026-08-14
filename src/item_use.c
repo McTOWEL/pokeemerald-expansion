@@ -37,6 +37,7 @@
 #include "pokeblock.h"
 #include "pokemon.h"
 #include "script.h"
+#include "script_pokemon_util.h"
 #include "sound.h"
 #include "strings.h"
 #include "string_util.h"
@@ -1639,6 +1640,72 @@ void ItemUseOutOfBattle_TownMap(u8 taskId)
     {
         gTasks[taskId].func = ItemUseOnFieldCB_TownMap;
     }
+}
+
+void ItemUseOutOfBattle_InfiniteRepel(u8 taskId)
+{
+    if (FlagGet(FLAG_INFINITE_REPEL_ACTIVE))
+    {
+        FlagClear(FLAG_INFINITE_REPEL_ACTIVE);
+        PlaySE(SE_REPEL);
+
+        if (!gTasks[taskId].tUsingRegisteredKeyItem)
+            DisplayItemMessage(taskId, FONT_NORMAL,
+                               COMPOUND_STRING("Infinite Repel turned off.{PAUSE 30}"),
+                               CloseItemMessage);
+        else
+            DisplayItemMessageOnField(taskId,
+                                      COMPOUND_STRING("Infinite Repel turned off.{PAUSE 30}"),
+                                      Task_CloseCantUseKeyItemMessage);
+    }
+    else
+    {
+        FlagSet(FLAG_INFINITE_REPEL_ACTIVE);
+        PlaySE(SE_REPEL);
+
+        if (!gTasks[taskId].tUsingRegisteredKeyItem)
+            DisplayItemMessage(taskId, FONT_NORMAL,
+                               COMPOUND_STRING("Infinite Repel turned on.{PAUSE 30}"),
+                               CloseItemMessage);
+        else
+            DisplayItemMessageOnField(taskId,
+                                      COMPOUND_STRING("Infinite Repel turned on.{PAUSE 30}"),
+                                      Task_CloseCantUseKeyItemMessage);
+    }
+}
+
+void ItemUseOutOfBattle_PortaHeal(u8 taskId)
+{
+    HealPlayerParty();
+    PlaySE(SE_USE_ITEM);
+
+    if (!gTasks[taskId].tUsingRegisteredKeyItem)
+        DisplayItemMessage(taskId, FONT_NORMAL,
+                           COMPOUND_STRING("Your whole team was healed!{PAUSE 30}"),
+                           CloseItemMessage);
+    else
+        DisplayItemMessageOnField(taskId,
+                                  COMPOUND_STRING("Your whole team was healed!{PAUSE 30}"),
+                                  Task_CloseCantUseKeyItemMessage);
+}
+
+void ItemUseOutOfBattle_PortaPP(u8 taskId)
+{
+    u32 i;
+
+    for (i = 0; i < gPartiesCount[B_TRAINER_PLAYER]; i++)
+        MonRestorePP(&gParties[B_TRAINER_PLAYER][i]);
+
+    PlaySE(SE_USE_ITEM);
+
+    if (!gTasks[taskId].tUsingRegisteredKeyItem)
+        DisplayItemMessage(taskId, FONT_NORMAL,
+                           COMPOUND_STRING("Your whole team's PP was restored!{PAUSE 30}"),
+                           CloseItemMessage);
+    else
+        DisplayItemMessageOnField(taskId,
+                                  COMPOUND_STRING("Your whole team's PP was restored!{PAUSE 30}"),
+                                  Task_CloseCantUseKeyItemMessage);
 }
 
 #undef tUsingRegisteredKeyItem
