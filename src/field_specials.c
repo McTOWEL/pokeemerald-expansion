@@ -2508,7 +2508,7 @@ void ShowScrollableMultichoice(void)
         break;
     case SCROLL_MULTI_GENTLEMAN_SERVICES:
         task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
-        task->tNumItems = 5;
+        task->tNumItems = 6;
         task->tLeft = 10;
         task->tTop = 1;
         task->tWidth = 30;
@@ -2529,6 +2529,16 @@ void ShowScrollableMultichoice(void)
     case SCROLL_MULTI_IV_PICKER:
         task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
         task->tNumItems = 6;
+        task->tLeft = 15;
+        task->tTop = 1;
+        task->tWidth = 12;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
+    case SCROLL_MULTI_HIDDEN_POWER_PICKER:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 17;
         task->tLeft = 15;
         task->tTop = 1;
         task->tWidth = 12;
@@ -2770,6 +2780,7 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         COMPOUND_STRING("GIVE HIDDEN ABILITY {CLEAR_TO 120}{COLOR BLUE}{FONT_SMALL}4 credit"),
         COMPOUND_STRING("RESTORE ABILITY {CLEAR_TO 120}{COLOR BLUE}{FONT_SMALL}FREE"),
         COMPOUND_STRING("MAX AN IV {CLEAR_TO 120}{COLOR BLUE}{FONT_SMALL}2 credit"),
+        COMPOUND_STRING("CHANGE HIDDEN POWER {CLEAR_TO 120}{COLOR BLUE}{FONT_SMALL}1 credit"),
         gText_Exit,
     },
     [SCROLL_MULTI_NATURE_PICKER] =
@@ -2808,6 +2819,26 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         COMPOUND_STRING("SP. ATK"),
         COMPOUND_STRING("SP. DEF"),
         COMPOUND_STRING("SPEED"),
+    },
+    [SCROLL_MULTI_HIDDEN_POWER_PICKER] =
+    {
+        COMPOUND_STRING("Fire"),
+        COMPOUND_STRING("Water"),
+        COMPOUND_STRING("Electric"),
+        COMPOUND_STRING("Grass"),
+        COMPOUND_STRING("Ice"),
+        COMPOUND_STRING("Fighting"),
+        COMPOUND_STRING("Poison"),
+        COMPOUND_STRING("Ground"),
+        COMPOUND_STRING("Flying"),
+        COMPOUND_STRING("Psychic"),
+        COMPOUND_STRING("Bug"),
+        COMPOUND_STRING("Rock"),
+        COMPOUND_STRING("Ghost"),
+        COMPOUND_STRING("Dragon"),
+        COMPOUND_STRING("Dark"),
+        COMPOUND_STRING("Steel"),
+        COMPOUND_STRING("Fairy"),
     },
     [SCROLL_MULTI_ASSISTANT_SERVICES] =
     {

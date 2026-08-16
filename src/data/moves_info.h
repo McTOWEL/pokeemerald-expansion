@@ -6484,7 +6484,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
             "The type and effectiveness\n"
             "vary with the user."),
         #endif
-        .power = B_HIDDEN_POWER_DMG >= GEN_6 ? 60 : 1,
+        .power = B_HIDDEN_POWER_DMG >= GEN_6 ? 70 : 1,
         .effect = EFFECT_HIDDEN_POWER,
         .type = TYPE_NORMAL,
         .accuracy = 100,

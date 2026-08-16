@@ -2469,6 +2469,9 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
                 }.combinedValue;
             }
             break;
+        case MON_DATA_HIDDEN_POWER_MODIFIER:
+            retVal = GetSubstruct0(boxMon)->hiddenPowerModifier;
+            break;
         default:
             break;
         }
@@ -2891,6 +2894,9 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
             break;
         case MON_DATA_TERA_TYPE:
             SET8(GetSubstruct0(boxMon)->teraType);
+            break;
+        case MON_DATA_HIDDEN_POWER_MODIFIER:
+            SET8(GetSubstruct0(boxMon)->hiddenPowerModifier);
             break;
         case MON_DATA_EVOLUTION_TRACKER:
         {
@@ -6990,7 +6996,7 @@ void BufferAndCheckIV(void)
     // Fail if already Trained or if the natural IV is already 31
     if (GetMonData(mon, hyperTrainField) || GetMonData(mon, ivField) >= MAX_PER_STAT_IVS)
     {
-        gSpecialVar_Result = FALSE; 
+        gSpecialVar_Result = FALSE;
     }
     else
     {
@@ -7031,7 +7037,59 @@ void ApplyIVMax(void)
     bool32 data = TRUE;
     SetMonData(mon, hyperTrainField, &data);
     CalculateMonStats(mon);
+}
 
+// this list matches the items and order of my SCROLL_MULTI
+static const enum Type sCorrectedTypeOrder[] = {
+    TYPE_FIRE,
+    TYPE_WATER,
+    TYPE_ELECTRIC,
+    TYPE_GRASS,
+    TYPE_ICE,
+    TYPE_FIGHTING,
+    TYPE_POISON,
+    TYPE_GROUND,
+    TYPE_FLYING,
+    TYPE_PSYCHIC,
+    TYPE_BUG,
+    TYPE_ROCK,
+    TYPE_GHOST,
+    TYPE_DRAGON,
+    TYPE_DARK,
+    TYPE_STEEL,
+    TYPE_FAIRY,
+};
+
+void BufferAndCheckHiddenPower(void)
+{
+    u16 menuChoice = VarGet(VAR_0x8005);
+    u16 partyIndex = VarGet(VAR_0x8006);
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][partyIndex];
+
+    enum Type currentHpType = CheckDynamicMoveType(mon, MOVE_HIDDEN_POWER, B_BATTLER_0, MON_OUTSIDE_BATTLE);
+    enum Type selectedHpType = sCorrectedTypeOrder[menuChoice];
+
+    if (currentHpType == selectedHpType)
+    {
+        gSpecialVar_Result = FALSE;
+        StringCopy(gStringVar1, gTypesInfo[currentHpType].name);
+    }
+    else
+    {
+        gSpecialVar_Result = TRUE;
+        StringCopy(gStringVar1, gTypesInfo[selectedHpType].name);
+    }
+}
+
+void ApplyHiddenPower(void)
+{
+    u16 menuChoice = VarGet(VAR_0x8005);
+    u16 partyIndex = VarGet(VAR_0x8006);
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][partyIndex];
+
+    enum Type selectedHpType = sCorrectedTypeOrder[menuChoice];
+
+    SetMonData(mon, MON_DATA_HIDDEN_POWER_MODIFIER, &selectedHpType);
 }
 
 void ApplyStatus(void)

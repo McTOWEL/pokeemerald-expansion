@@ -41,6 +41,9 @@ script ShadyRoom_EventScript_Gentleman_Menu {
             call(ShadyRoom_EventScript_Gentleman_MaxIV)
 
         case 4:
+            call(ShadyRoom_EventScript_Change_HiddenPower)
+
+        case 5:
             setvar(VAR_RESULT, MULTI_B_PRESSED)
 
         case MULTI_B_PRESSED:
@@ -253,6 +256,57 @@ script ShadyRoom_EventScript_Gentleman_MaxIV {
     setvar(VAR_RESULT, MULTI_B_PRESSED)
 }
 
+script ShadyRoom_EventScript_Change_HiddenPower {
+    setvar(VAR_SERVICE_COST, 1)
+    call(ShadyRoom_EventScript_Gentleman_CheckTokens)
+    if (var(VAR_SERVICE_SELECTION_OK) == FALSE || var(VAR_RESULT) == MULTI_B_PRESSED) {
+        return
+    }
+
+    msgbox(ShadyRoom_Text_Gentleman_HPCost, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    call(ShadyRoom_EventScript_SelectPokemon)
+    if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+    elif (var(VAR_SERVICE_SELECTION_OK) == SERVICE_EGG) {
+        msgbox(ShadyRoom_Text_Gentleman_CantSelectEgg)
+        return
+    }
+
+    msgbox("Which type would you like your\nHidden Power to be?")
+    copyvar(VAR_0x8006, VAR_0x8004) # Save Party Index in 0x8006
+
+    setvar(VAR_0x8004, SCROLL_MULTI_HIDDEN_POWER_PICKER)
+    special(ShowScrollableMultichoice)
+    if (var(VAR_RESULT) == MULTI_B_PRESSED) {
+        return
+    }
+
+    copyvar(VAR_0x8005, VAR_RESULT)
+
+    special(BufferAndCheckHiddenPower)
+
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox(ShadyRoom_Text_Gentleman_HPSame)
+        return
+    }
+
+    msgbox(ShadyRoom_Text_Gentleman_HPConfirm, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    special(ApplyHiddenPower)
+
+    subvar(VAR_TOKEN_BALANCE, VAR_SERVICE_COST)
+    msgbox(ShadyRoom_Text_Gentleman_HPApplied)
+    setvar(VAR_RESULT, MULTI_B_PRESSED)
+}
+
 script ShadyRoom_EventScript_Assistant {
     lock
     faceplayer
@@ -427,6 +481,7 @@ script ShadyRoom_EventScript_Abra {
     faceplayer
     addvar(VAR_TOKEN_BALANCE, 1)
     giveegg(SPECIES_RAYQUAZA)
+    warp(MAP_LITTLEROOT_TOWN, 0, 5, 5)
     msgbox(ShadyRoom_Text_Placeholder)
     release
 }
@@ -545,6 +600,29 @@ text ShadyRoom_Text_Gentleman_IVConfirm {
 text ShadyRoom_Text_Gentleman_IVMaxed {
 	"Perfect. You won't find a cleaner\n"
 	"modification job anywhere else."
+}
+
+text ShadyRoom_Text_Gentleman_HPCost {
+    "Hidden Power, hm? A delicate \n"
+    "adjustment.\p"
+    "That will run you one unit of credit.\n"
+    "Do we have a deal?"
+}
+
+text ShadyRoom_Text_Gentleman_HPSame {
+    "My friend, its Hidden Power is already\n"
+    "{STR_VAR_1}-type.\p"
+    "No sense paying me to change nothing."
+}
+
+text ShadyRoom_Text_Gentleman_HPConfirm {
+    "I can recalibrate its Hidden Power to\n"
+    "{STR_VAR_1}-type. Shall I proceed?"
+}
+
+text ShadyRoom_Text_Gentleman_HPApplied {
+    "There. Its Hidden Power has been\n"
+    "recalibrated. Clean and discreet."
 }
 
 text ShadyRoom_Text_Assistant_Greeting {

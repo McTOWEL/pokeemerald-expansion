@@ -5853,6 +5853,19 @@ enum Type GetDynamicMoveType(struct Pokemon *mon, enum Move move, enum BattlerId
             u32 typeBits = 0;
             if (state == MON_IN_BATTLE)
             {
+                struct Pokemon *battleMon;
+
+                if (GetBattlerSide(battler) == B_SIDE_PLAYER)
+                    battleMon = &gParties[B_TRAINER_PLAYER][gBattlerPartyIndexes[battler]];
+                else
+                    battleMon = &gParties[B_TRAINER_OPPONENT_B][gBattlerPartyIndexes[battler]];
+
+                enum Type hiddenPowerModifier =
+                    GetMonData(battleMon, MON_DATA_HIDDEN_POWER_MODIFIER);
+
+                if (hiddenPowerModifier != TYPE_NONE)
+                    return ((hiddenPowerModifier | F_DYNAMIC_TYPE_IGNORE_PHYSICALITY) & 0x3F);
+
                 typeBits = ((gBattleMons[battler].hpIV & 1) << 0)
                         | ((gBattleMons[battler].attackIV & 1) << 1)
                         | ((gBattleMons[battler].defenseIV & 1) << 2)
@@ -5862,6 +5875,11 @@ enum Type GetDynamicMoveType(struct Pokemon *mon, enum Move move, enum BattlerId
             }
             else
             {
+                enum Type hiddenPowerModifier = GetMonData(mon, MON_DATA_HIDDEN_POWER_MODIFIER);
+
+                if (hiddenPowerModifier != TYPE_NONE)
+                    return ((hiddenPowerModifier | F_DYNAMIC_TYPE_IGNORE_PHYSICALITY) & 0x3F);
+
                 typeBits = ((GetMonData(mon, MON_DATA_HP_IV) & 1) << 0)
                         | ((GetMonData(mon, MON_DATA_ATK_IV) & 1) << 1)
                         | ((GetMonData(mon, MON_DATA_DEF_IV) & 1) << 2)

@@ -644,6 +644,8 @@ gSpecials::
 	def_special SetAbilitySlot
 	def_special ApplyIVMax
 	def_special BufferAndCheckIV
+	def_special BufferAndCheckHiddenPower
+	def_special ApplyHiddenPower
 	def_special ApplyStatus
 	def_special ShowNumberPicker, waitstate=1
 	def_special ShowCustomHPPicker, waitstate=1
