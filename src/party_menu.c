@@ -8732,4 +8732,6 @@ static void CursorCb_SetLevel(u8 taskId)
 
     StartNumberPicker(taskId, sInitialLevel, GetCurrentLevelCap(), sInitialLevel,
                       LevelPicker_OnComplete, LevelPicker_Draw);
+
+    gTasks[taskId].func = TaskDummy;
 }
