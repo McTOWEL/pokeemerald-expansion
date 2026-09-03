@@ -3329,6 +3329,33 @@ u32 GetSpeciesBaseStatTotal(enum Species species)
     return total;
 }
 
+bool8 CanSpeciesLearnMove(enum Species species, enum Move move)
+{
+    const struct LevelUpMove *levelUpLearnset = GetSpeciesLevelUpLearnset(species);
+    const u16 *teachableLearnset = GetSpeciesTeachableLearnset(species);
+    const u16 *eggMoves = GetSpeciesEggMoves(species);
+
+    for (u32 i = 0; levelUpLearnset[i].move != MOVE_UNAVAILABLE; i++)
+    {
+        if (levelUpLearnset[i].move == move)
+            return TRUE;
+    }
+
+    for (u32 i = 0; teachableLearnset[i] != MOVE_UNAVAILABLE; i++)
+    {
+        if (teachableLearnset[i] == move)
+            return TRUE;
+    }
+
+    for (u32 i = 0; eggMoves[i] != MOVE_UNAVAILABLE; i++)
+    {
+        if (eggMoves[i] == move)
+            return TRUE;
+    }
+
+    return FALSE;
+}
+
 const struct LevelUpMove *GetSpeciesLevelUpLearnset(enum Species species)
 {
     const struct LevelUpMove *learnset = gSpeciesInfo[SanitizeSpeciesId(species)].levelUpLearnset;

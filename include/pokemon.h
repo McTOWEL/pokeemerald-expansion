@@ -966,6 +966,7 @@ void ApplyIVMax(void);
 void ApplyStatus(void);
 void SetPokemonToPercentHP(void);
 void MerchantMenu(void);
+bool8 CanSpeciesLearnMove(enum Species species, enum Move move);
 
 static inline u32 OWE_GetMovementTypeFromSpecies(enum Species speciesId)
 {

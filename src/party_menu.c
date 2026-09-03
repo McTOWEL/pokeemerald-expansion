@@ -520,6 +520,8 @@ static u8 sLevelWindowId;
 static void CursorCb_LevelToCap(u8);
 static void CursorCb_SetLevel(u8);
 
+static bool32 ShouldShowFieldMoveInPartyMenu(enum FieldMove fieldMove);
+
 // static const data
 #include "data/party_menu.h"
 
@@ -2961,7 +2963,7 @@ static void SetPartyMonSelectionActions(struct Pokemon *mons, u8 slotId, u8 acti
 
 static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
 {
-    u8 i, j;
+    u8 j;
 
     sPartyMenuInternal->numActions = 0;
     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_SUMMARY);
@@ -2976,15 +2978,24 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
         AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_SET_LEVEL);
     }
 
-    // Add field moves to action list
-    for (i = 0; i < MAX_MON_MOVES; i++)
+    // Add field moves the selected Pokémon can learn
+    if (!GetMonData(&mons[slotId], MON_DATA_IS_EGG))
     {
-        for (j = 0; j != FIELD_MOVES_COUNT; j++)
+        enum Species species = GetMonData(&mons[slotId], MON_DATA_SPECIES);
+
+        for (j = 0; j < FIELD_MOVES_COUNT; j++)
         {
-            if (GetMonData(&mons[slotId], i + MON_DATA_MOVE1) == FieldMove_GetMoveId(j))
+            enum Move move = FieldMove_GetMoveId(j);
+
+            if (!ShouldShowFieldMoveInPartyMenu(j))
+                continue;
+
+            if (CanSpeciesLearnMove(species, move) && IsFieldMoveUnlocked(j))
             {
-                AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + MENU_FIELD_MOVES);
-                break;
+                AppendToList(
+                    sPartyMenuInternal->actions,
+                    &sPartyMenuInternal->numActions,
+                    j + MENU_FIELD_MOVES);
             }
         }
     }
@@ -2999,6 +3010,18 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
             AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_ITEM);
     }
     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_CANCEL1);
+}
+
+static bool32 ShouldShowFieldMoveInPartyMenu(enum FieldMove fieldMove)
+{
+    switch (fieldMove)
+    {
+    case FIELD_MOVE_SECRET_POWER:
+    case FIELD_MOVE_FLY:
+        return FALSE;
+    default:
+        return TRUE;
+    }
 }
 
 static u8 GetPartyMenuActionsType(struct Pokemon *mon)
