@@ -112,6 +112,7 @@ enum {
     MENU_CHANGE_ABILITY,
     MENU_LEVEL_TO_CAP,
     MENU_SET_LEVEL,
+    MENU_EVOLVE,
     MENU_FIELD_MOVES
 };
 
@@ -519,6 +520,11 @@ static u8 sLevelWindowId;
 #include "data/number_picker.h"
 static void CursorCb_LevelToCap(u8);
 static void CursorCb_SetLevel(u8);
+static void CursorCb_Evolve(u8);
+static u8 GetLevelEvolutionTargets(struct Pokemon *mon, enum Species *targets);
+static void Task_EvolutionMenuInput(u8);
+static void RedrawEvolutionMenuText(void);
+static void UpdateEvolutionMenuCursor(u8 cursor);
 
 static bool32 ShouldShowFieldMoveInPartyMenu(enum FieldMove fieldMove);
 
@@ -2977,6 +2983,9 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
         AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_LEVEL_TO_CAP);
         AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_SET_LEVEL);
     }
+
+    if (!InBattlePike() && IsMonPastEvolutionLevel(&mons[slotId]))
+        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_EVOLVE);
 
     // Add field moves the selected Pokémon can learn
     if (!GetMonData(&mons[slotId], MON_DATA_IS_EGG))
@@ -8757,4 +8766,189 @@ static void CursorCb_SetLevel(u8 taskId)
                       LevelPicker_OnComplete, LevelPicker_Draw);
 
     gTasks[taskId].func = TaskDummy;
+}
+
+#define MAX_EVOLUTION_CHOICES 8
+
+static enum Species sEvolutionTargets[MAX_EVOLUTION_CHOICES];
+static u8 sEvolutionTargetCount;
+static u8 sEvolutionWindowId;
+
+static void CursorCb_Evolve(u8 taskId)
+{
+    PlaySE(SE_SELECT);
+
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gPartyMenu.slotId];
+
+    sEvolutionTargetCount = GetLevelEvolutionTargets(mon, sEvolutionTargets);
+
+    // Create a local copy of your template to modify safely on the fly
+    struct WindowTemplate dynamicTemplate = sPartyMenuEvolutionWindowTemplate;
+
+    // Calculate exact required height in tiles:
+    // Header row (2 tiles) + 1 choice row per target (2 tiles each) + Cancel row (2 tiles)
+    // 1 target  = 6 tiles tall
+    // 2 targets = 8 tiles tall (your current setup)
+    // 3 targets = 10 tiles tall
+    dynamicTemplate.height = 4 + (sEvolutionTargetCount * 2);
+
+    // Shift the box upward on the screen for 3 choices so it doesn't clip the bottom
+    if (sEvolutionTargetCount == 3)
+        dynamicTemplate.tilemapTop = 8;
+
+    // Allocate the window using our tailored template
+    sEvolutionWindowId = AddWindow(&dynamicTemplate);
+    DrawStdFrameWithCustomTileAndPalette(sEvolutionWindowId, TRUE, 0x4F, 13);
+
+    RedrawEvolutionMenuText();
+
+    gTasks[taskId].data[0] = 0;
+    UpdateEvolutionMenuCursor(0);
+
+    gTasks[taskId].func = Task_EvolutionMenuInput;
+}
+
+static u8 GetLevelEvolutionTargets(struct Pokemon *mon, enum Species *targets)
+{
+    enum Species species = GetMonData(mon, MON_DATA_SPECIES);
+    u8 level = GetMonData(mon, MON_DATA_LEVEL);
+    const struct Evolution *evolutions = GetSpeciesEvolutions(species);
+    u8 count = 0;
+
+    if (evolutions == NULL)
+        return 0;
+
+    for (u32 i = 0; evolutions[i].method != EVOLUTIONS_END; i++)
+    {
+        if (evolutions[i].method != EVO_LEVEL)
+            continue;
+
+        if (SanitizeSpeciesId(evolutions[i].targetSpecies) == SPECIES_NONE)
+            continue;
+
+        if (evolutions[i].param > level)
+            continue;
+
+        if (count < MAX_EVOLUTION_CHOICES)
+            targets[count++] = evolutions[i].targetSpecies;
+    }
+
+    return count;
+}
+
+static void Task_EvolutionMenuInput(u8 taskId)
+{
+    u8 cursor = gTasks[taskId].data[0];
+    u8 oldCursor = cursor;
+
+    if (JOY_NEW(DPAD_UP))
+    {
+        if (cursor == 0)
+            cursor = sEvolutionTargetCount; // Wrap to "Cancel"
+        else
+            cursor--;
+
+        PlaySE(SE_SELECT);
+    }
+    else if (JOY_NEW(DPAD_DOWN))
+    {
+        if (cursor >= sEvolutionTargetCount)
+            cursor = 0; // Wrap to first choice
+        else
+            cursor++;
+
+        PlaySE(SE_SELECT);
+    }
+
+    // Only update the screen if the cursor actually moved
+    if (cursor != oldCursor)
+    {
+        gTasks[taskId].data[0] = cursor;
+        UpdateEvolutionMenuCursor(cursor);
+    }
+
+    if (JOY_NEW(A_BUTTON))
+    {
+        // Cancel row selected
+        if (cursor == sEvolutionTargetCount)
+        {
+            PlaySE(SE_SELECT);
+
+            ClearStdWindowAndFrame(sEvolutionWindowId, TRUE);
+            RemoveWindow(sEvolutionWindowId);
+
+            DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
+            gTasks[taskId].func = Task_HandleSelectionMenuInput;
+            return;
+        }
+
+        // Evolution choice selected
+        {
+            enum Species targetSpecies = sEvolutionTargets[cursor];
+            struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gPartyMenu.slotId];
+
+            PlaySE(SE_SELECT);
+
+            ClearStdWindowAndFrame(sEvolutionWindowId, TRUE);
+            RemoveWindow(sEvolutionWindowId);
+
+            FreePartyPointers();
+
+            gCB2_AfterEvolution = gPartyMenu.exitCallback;
+
+            BeginEvolutionScene(mon, targetSpecies, FALSE, gPartyMenu.slotId);
+            DestroyTask(taskId);
+            return;
+        }
+    }
+
+    if (JOY_NEW(B_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        ClearStdWindowAndFrame(sEvolutionWindowId, TRUE);
+        RemoveWindow(sEvolutionWindowId);
+
+        DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
+        gTasks[taskId].func = Task_HandleSelectionMenuInput;
+    }
+}
+
+// Draws the static list of text options. Call this once on initialization.
+static void RedrawEvolutionMenuText(void)
+{
+    const u8 textColors[] = {1, 2, 3}; // Background, Text, Shadow
+
+    FillWindowPixelBuffer(sEvolutionWindowId, PIXEL_FILL(1));
+
+    // Title
+    AddTextPrinterParameterized4(sEvolutionWindowId, FONT_NORMAL, 8, 2, 0, 0, textColors, TEXT_SKIP_DRAW, COMPOUND_STRING("Evolve Into"));
+
+    // Species Choices (indent to X: 16 to leave room for the hand cursor at X: 8)
+    for (u32 i = 0; i < sEvolutionTargetCount; i++)
+    {
+        const u8 *speciesName = GetSpeciesName(sEvolutionTargets[i]);
+        AddTextPrinterParameterized4(sEvolutionWindowId, FONT_NORMAL, 16, 18 + (i * 16), 0, 0, textColors, TEXT_SKIP_DRAW, speciesName);
+    }
+
+    // Cancel Row
+    AddTextPrinterParameterized4(sEvolutionWindowId, FONT_NORMAL, 16, 18 + (sEvolutionTargetCount * 16), 0, 0, textColors, TEXT_SKIP_DRAW, COMPOUND_STRING("Cancel"));
+
+    CopyWindowToVram(sEvolutionWindowId, COPYWIN_FULL);
+}
+
+// Erases the old cursor tile area and draws the official selector arrow character
+static void UpdateEvolutionMenuCursor(u8 cursor)
+{
+    const u8 textColors[] = {1, 2, 3};
+
+    // Clear the small vertical strip where the hand cursor sits (X: 8, Width: 8)
+    FillWindowPixelRect(sEvolutionWindowId, PIXEL_FILL(1), 8, 18, 8, (sEvolutionTargetCount + 1) * 16);
+
+    // Print the official native hand cursor using the engine's built-in string variable
+    AddTextPrinterParameterized4(sEvolutionWindowId, FONT_NORMAL, 8, 18 + (cursor * 16), 0, 0, textColors, TEXT_SKIP_DRAW, gText_SelectorArrow);
+
+    CopyWindowToVram(sEvolutionWindowId, COPYWIN_GFX);
 }

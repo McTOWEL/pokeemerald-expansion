@@ -699,6 +699,17 @@ static const struct WindowTemplate sPartyMenuLevelWindowTemplate =
         .baseBlock = 0x2E9,
 };
 
+static const struct WindowTemplate sPartyMenuEvolutionWindowTemplate =
+    {
+        .bg = 2,
+        .tilemapLeft = 15,
+        .tilemapTop = 10,
+        .width = 12,
+        .height = 8,
+        .paletteNum = 14,
+        .baseBlock = 0x2E9,
+};
+
 // Plain tilemaps for party menu slots.
 // The versions with no HP bar are used by eggs, and in certain displays like registering at a battle facility.
 // There is no empty version of the main slot because it shouldn't ever be empty.
@@ -834,6 +845,7 @@ struct
     [MENU_CHANGE_ABILITY]  = {COMPOUND_STRING("Change Ability"),  CursorCb_ChangeAbility},
     [MENU_LEVEL_TO_CAP]    = {COMPOUND_STRING("LEVEL TO CAP"),    CursorCb_LevelToCap},
     [MENU_SET_LEVEL]       = {COMPOUND_STRING("SET LEVEL"),       CursorCb_SetLevel},
+    [MENU_EVOLVE]          = {COMPOUND_STRING("EVOLVE"),          CursorCb_Evolve},
 };
 
 static const u8 sPartyMenuAction_SummarySwitchCancel[] = {MENU_SUMMARY, MENU_SWITCH, MENU_CANCEL1};
