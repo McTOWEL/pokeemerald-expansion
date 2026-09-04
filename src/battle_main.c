@@ -5621,7 +5621,7 @@ enum Type GetDynamicMoveType(struct Pokemon *mon, enum Move move, enum BattlerId
                     GetMonData(battleMon, MON_DATA_HIDDEN_POWER_MODIFIER);
 
                 if (hiddenPowerModifier != TYPE_NONE)
-                    return ((hiddenPowerModifier | F_DYNAMIC_TYPE_IGNORE_PHYSICALITY) & 0x3F);
+                    return hiddenPowerModifier;
 
                 typeBits = ((gBattleMons[battler].hpIV & 1) << 0)
                         | ((gBattleMons[battler].attackIV & 1) << 1)
@@ -5635,7 +5635,7 @@ enum Type GetDynamicMoveType(struct Pokemon *mon, enum Move move, enum BattlerId
                 enum Type hiddenPowerModifier = GetMonData(mon, MON_DATA_HIDDEN_POWER_MODIFIER);
 
                 if (hiddenPowerModifier != TYPE_NONE)
-                    return ((hiddenPowerModifier | F_DYNAMIC_TYPE_IGNORE_PHYSICALITY) & 0x3F);
+                    return hiddenPowerModifier;
 
                 typeBits = ((GetMonData(mon, MON_DATA_HP_IV) & 1) << 0)
                         | ((GetMonData(mon, MON_DATA_ATK_IV) & 1) << 1)
