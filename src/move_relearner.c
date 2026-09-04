@@ -3,7 +3,6 @@
 #include "battle.h"
 #include "battle_util.h"
 #include "bg.h"
-#include "bw_summary_screen.h"
 #include "contest_effect.h"
 #include "data.h"
 #include "decompress.h"
@@ -712,11 +711,8 @@ static void DoMoveRelearnerMain(void)
     case MENU_STATE_SHOW_MOVE_SUMMARY_SCREEN:
         if (!gPaletteFade.active)
         {
-            if (BW_SUMMARY_SCREEN)
-                ShowSelectMovePokemonSummaryScreen_BW(gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, CB2_InitLearnMoveReturnFromSelectMove, GetCurrentSelectedMove());
-            else
-                ShowSelectMovePokemonSummaryScreen(gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, CB2_InitLearnMoveReturnFromSelectMove, GetCurrentSelectedMove());
-            
+            ShowSelectMovePokemonSummaryScreen(gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, CB2_InitLearnMoveReturnFromSelectMove, GetCurrentSelectedMove());
+
             FreeMoveRelearnerResources();
         }
         break;
@@ -745,22 +741,13 @@ static void DoMoveRelearnerMain(void)
                 switch (gRelearnMode)
                 {
                 case RELEARN_MODE_PSS_PAGE_BATTLE_MOVES:
-                    if (BW_SUMMARY_SCREEN)
-                        ShowPokemonSummaryScreen_BW(SUMMARY_MODE_RELEARNER_BATTLE, gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, gInitialSummaryScreenCallback);
-                    else    
-                        ShowPokemonSummaryScreen(SUMMARY_MODE_RELEARNER_BATTLE, gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, gInitialSummaryScreenCallback);
+                    ShowPokemonSummaryScreen(SUMMARY_MODE_RELEARNER_BATTLE, gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, gInitialSummaryScreenCallback);
                     break;
                 case RELEARN_MODE_PSS_PAGE_CONTEST_MOVES:
-                    if (BW_SUMMARY_SCREEN)
-                        ShowPokemonSummaryScreen_BW(SUMMARY_MODE_RELEARNER_CONTEST, gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, gInitialSummaryScreenCallback);
-                    else
-                        ShowPokemonSummaryScreen(SUMMARY_MODE_RELEARNER_CONTEST, gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, gInitialSummaryScreenCallback);
+                    ShowPokemonSummaryScreen(SUMMARY_MODE_RELEARNER_CONTEST, gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, gInitialSummaryScreenCallback);
                     break;
                 default:
-                    if (BW_SUMMARY_SCREEN)
-                        ShowPokemonSummaryScreen_BW(SUMMARY_MODE_NORMAL, gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, gInitialSummaryScreenCallback);
-                    else
-                        ShowPokemonSummaryScreen(SUMMARY_MODE_NORMAL, gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, gInitialSummaryScreenCallback);
+                    ShowPokemonSummaryScreen(SUMMARY_MODE_NORMAL, gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, gInitialSummaryScreenCallback);
                     break;
                 }
             }
