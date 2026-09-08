@@ -982,8 +982,8 @@ static void Task_EvolutionScene(u8 taskId)
             {
                 FreeAllWindowBuffers();
                 ShowSelectMovePokemonSummaryScreen(gParties[B_TRAINER_PLAYER], gTasks[taskId].tPartyId,
-                            CB2_EvolutionSceneLoadGraphics,
-                            gMoveToLearn);
+                                                   CB2_EvolutionSceneLoadGraphics,
+                                                   gMoveToLearn);
                 gTasks[taskId].tLearnMoveState++;
             }
             break;
@@ -1383,8 +1383,8 @@ static void Task_TradeEvolutionScene(u8 taskId)
                     ShowSelectMovePokemonSummaryScreen(
                                 gParties[B_TRAINER_PLAYER], 
                                 gTasks[taskId].tPartyId,
-                                CB2_TradeEvolutionSceneLoadGraphics,
-                                gMoveToLearn
+                                                       CB2_TradeEvolutionSceneLoadGraphics,
+                                                       gMoveToLearn
                             );
                 }
                 gTasks[taskId].tLearnMoveState++;

@@ -13,6 +13,8 @@
 #include "battle_z_move.h"
 #include "battle_stat_change.h"
 #include "battle_move_resolution.h"
+#include "constants/moves.h"
+#include "constants/abilities.h"
 #include "item.h"
 #include "item_menu.h"
 #include "util.h"
