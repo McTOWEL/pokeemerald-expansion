@@ -5560,6 +5560,7 @@ void PokemonSummaryDoMonAnimation(struct Sprite *sprite, enum Species species, b
 {
     if (!oneFrame && HasTwoFramesAnimation(species))
         StartSpriteAnim(sprite, 1);
+
     if (gSpeciesInfo[species].frontAnimDelay != 0)
     {
         // Animation has delay, start delay task
@@ -5567,12 +5568,7 @@ void PokemonSummaryDoMonAnimation(struct Sprite *sprite, enum Species species, b
         STORE_PTR_IN_TASK(sprite, taskId, 0);
         gTasks[taskId].sAnimId = gSpeciesInfo[species].frontAnimId;
         gTasks[taskId].sAnimDelay = gSpeciesInfo[species].frontAnimDelay;
-        gTasks[taskId].tIsShadow = isShadow;  // needed to track anim delay task for mon shadow in BW summary screen
-
-        if (isShadow)
-            SummaryScreen_SetShadowAnimDelayTaskId(taskId);
-        else
-
+        SummaryScreen_SetAnimDelayTaskId(taskId);
         SetSpriteCB_MonAnimDummy(sprite);
     }
     else
