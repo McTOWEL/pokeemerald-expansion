@@ -284,8 +284,6 @@ static void Task_HandleReplaceMoveInput(u8);
 static bool8 CanReplaceMove(void);
 static void ShowCantForgetHMsWindow(u8);
 static void Task_HandleInputCantForgetHMsMoves(u8);
-static void DrawPagination(void);
-static void TilemapFiveMovesDisplay(u16 *, u16, bool8);
 static void HandleAppealJamTilemap(u16);
 static void DrawExperienceProgressBar(struct Pokemon *);
 static void DrawHPBar(struct Pokemon *);
@@ -1819,8 +1817,6 @@ static const struct SpritePalette sSpritePal_MonShadow =
 // code
 void ShowPokemonSummaryScreen(u8 mode, void *mons, u8 monIndex, u8 maxMonIndex, void (*callback)(void))
 {
-    u8 pageCount = BW_SUMMARY_SHOW_CONTEST_MOVES ? PSS_PAGE_COUNT : PSS_PAGE_COUNT - 1;
-
     sMonSummaryScreen = AllocZeroed(sizeof(*sMonSummaryScreen));
     sMonSummaryScreen->mode = mode;
     if (monIndex == PC_MON_CHOSEN)
@@ -1844,7 +1840,6 @@ void ShowPokemonSummaryScreen(u8 mode, void *mons, u8 monIndex, u8 maxMonIndex, 
     else
         sMonSummaryScreen->isBoxMon = FALSE;
 
-    u32 maxPageIndex = PSS_PAGE_COUNT - (C_HIDE_CONTEST_DATA) ? 2 : 1;
     switch (mode)
     {
     case SUMMARY_MODE_NORMAL:
@@ -3477,98 +3472,6 @@ u8 GetMoveSlotToReplace(void)
     return sMoveSlotToReplace;
 }
 
-static void DrawPagination(void) // Updates the pagination dots at the top of the summary screen
-{
-    u16 *tilemap = Alloc(8 * PSS_PAGE_COUNT);
-    u8 i;
-
-    for (i = 0; i < PSS_PAGE_COUNT; i++)
-    {
-        u8 j = i * 2;
-
-        if (i < sMonSummaryScreen->minPageIndex)
-        {
-            tilemap[j + 0] = 0x40;
-            tilemap[j + 1] = 0x40;
-            tilemap[j + 2 * PSS_PAGE_COUNT] = 0x50;
-            tilemap[j + 2 * PSS_PAGE_COUNT + 1] = 0x50;
-        }
-        else if (i > sMonSummaryScreen->maxPageIndex)
-        {
-            tilemap[j + 0] = 0x4A;
-            tilemap[j + 1] = 0x4A;
-            tilemap[j + 2 * PSS_PAGE_COUNT] = 0x5A;
-            tilemap[j + 2 * PSS_PAGE_COUNT + 1] = 0x5A;
-        }
-        else if (i < sMonSummaryScreen->currPageIndex)
-        {
-            tilemap[j + 0] = 0x46;
-            tilemap[j + 1] = 0x47;
-            tilemap[j + 2 * PSS_PAGE_COUNT] = 0x56;
-            tilemap[j + 2 * PSS_PAGE_COUNT + 1] = 0x57;
-        }
-        else if (i == sMonSummaryScreen->currPageIndex)
-        {
-            if (i != sMonSummaryScreen->maxPageIndex)
-            {
-                tilemap[j + 0] = 0x41;
-                tilemap[j + 1] = 0x42;
-                tilemap[j + 2 * PSS_PAGE_COUNT] = 0x51;
-                tilemap[j + 2 * PSS_PAGE_COUNT + 1] = 0x52;
-            }
-            else
-            {
-                tilemap[j + 0] = 0x4B;
-                tilemap[j + 1] = 0x4C;
-                tilemap[j + 2 * PSS_PAGE_COUNT] = 0x5B;
-                tilemap[j + 2 * PSS_PAGE_COUNT + 1] = 0x5C;
-            }
-        }
-        else if (i != sMonSummaryScreen->maxPageIndex)
-        {
-            tilemap[j + 0] = 0x43;
-            tilemap[j + 1] = 0x44;
-            tilemap[j + 2 * PSS_PAGE_COUNT] = 0x53;
-            tilemap[j + 2 * PSS_PAGE_COUNT + 1] = 0x54;
-        }
-        else
-        {
-            tilemap[j + 0] = 0x48;
-            tilemap[j + 1] = 0x49;
-            tilemap[j + 2 * PSS_PAGE_COUNT] = 0x58;
-            tilemap[j + 2 * PSS_PAGE_COUNT + 1] = 0x59;
-        }
-    }
-    CopyToBgTilemapBufferRect_ChangePalette(3, tilemap, 11, 0, PSS_PAGE_COUNT * 2, 2, 16);
-    ScheduleBgCopyTilemapToVram(3);
-    Free(tilemap);
-}
-
-static void CopyNColumnsToTilemap(const struct SlidingWindow *slidingWindow, u16 *tilemapDest, u8 visibleColumns, bool8 isOpeningToTheLeft)
-{
-    u16 i;
-    u16 *alloced = Alloc(slidingWindow->width * 2 * slidingWindow->height);
-    CpuFill16(slidingWindow->defaultTile, alloced, slidingWindow->width * 2 * slidingWindow->height);
-    if (slidingWindow->width != visibleColumns)
-    {
-        if (!isOpeningToTheLeft)
-        {
-            for (i = 0; i < slidingWindow->height; i++)
-                CpuCopy16(&slidingWindow->gfx[visibleColumns + slidingWindow->width * i], &alloced[slidingWindow->width * i], (slidingWindow->width - visibleColumns) * 2);
-        }
-        else
-        {
-            for (i = 0; i < slidingWindow->height; i++)
-                CpuCopy16(&slidingWindow->gfx[slidingWindow->width * i], &alloced[visibleColumns + slidingWindow->width * i], (slidingWindow->width - visibleColumns) * 2);
-        }
-    }
-
-    for (i = 0; i < slidingWindow->height; i++)
-        CpuCopy16(&alloced[slidingWindow->width * i], &tilemapDest[(slidingWindow->top + i) * 32 + slidingWindow->left], slidingWindow->width * 2);
-
-    Free(alloced);
-}
-
 #define tMoveTaskState  data[2]
 #define tMosaicStrength data[3]
 
@@ -3813,33 +3716,6 @@ static void OverrideHPBarPalette(void)
         LoadPalette(&palColor, BG_PLTT_ID(HP_BAR_TILE_PAL) + HP_BAR_PAL_SLOT_LIGHT_COLOR, PLTT_SIZEOF(1));
         palColor = HP_BAR_DARK_GREEN;
         LoadPalette(&palColor, BG_PLTT_ID(HP_BAR_TILE_PAL) + HP_BAR_PAL_SLOT_DARK_COLOR, PLTT_SIZEOF(1));
-    }
-}
-
-// Toggles the "Cancel" window that appears when selecting a move
-static void TilemapFiveMovesDisplay(u16 *dst, u16 palette, bool8 remove)
-{
-    u16 i, id;
-
-    palette *= 0x1000;
-    id = 0x56A;
-    if (!remove)
-    {
-        for (i = 0; i < 20; i++)
-        {
-            dst[id + i] = gSummaryScreen_MoveEffect_Cancel_Tilemap[i] + palette;
-            dst[id + i + 0x20] = gSummaryScreen_MoveEffect_Cancel_Tilemap[i] + palette;
-            dst[id + i + 0x40] = gSummaryScreen_MoveEffect_Cancel_Tilemap[i + 20] + palette;
-        }
-    }
-    else // Remove
-    {
-        for (i = 0; i < 20; i++)
-        {
-            dst[id + i] = gSummaryScreen_MoveEffect_Cancel_Tilemap[i + 20] + palette;
-            dst[id + i + 0x20] = gSummaryScreen_MoveEffect_Cancel_Tilemap[i + 40] + palette;
-            dst[id + i + 0x40] = gSummaryScreen_MoveEffect_Cancel_Tilemap[i + 40] + palette;
-        }
     }
 }
 
@@ -5376,7 +5252,7 @@ static void SetMoveTypeIcons(void)
         {
             type = GetMoveType(summary->moves[i]);
             type = SummaryScreen_GetDynamicMoveType(mon, summary->moves[i], type);
-            SetTypeSpritePosAndPal(type, 85, 32 + (i * 16), i + SPRITE_ARR_ID_TYPE);
+            SetTypeSpritePosAndPal(type, 8, 16 + (i * 28), i + SPRITE_ARR_ID_TYPE);
         }
         else
         {
@@ -5896,10 +5772,5 @@ static void CB2_ReturnToSummaryScreenFromNamingScreen(void)
 
 static void CB2_PssChangePokemonNickname(void)
 {
-    GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NICKNAME, gStringVar3);
-    GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NICKNAME, gStringVar2);
-    DoNamingScreen(NAMING_SCREEN_NICKNAME, gStringVar2, GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES, NULL), 
-                   GetMonGender(&gPlayerParty[gSpecialVar_0x8004]), GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_PERSONALITY, NULL), 
-                   CB2_ReturnToSummaryScreenFromNamingScreen);
     ChangePokemonNicknameWithCallback(CB2_ReturnToSummaryScreenFromNamingScreen);
 }
