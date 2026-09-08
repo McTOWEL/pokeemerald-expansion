@@ -92,11 +92,6 @@ enum BWSkillsPageState
 // Above/below the pokemon's portrait (right)
 #define PSS_LABEL_WINDOW_PORTRAIT_NICKNAME_GENDER_LEVEL 10
 
-
-#define PSS_LABEL_WINDOW_PROMPT_IVS 11
-#define PSS_LABEL_WINDOW_PROMPT_EVS 12
-#define PSS_LABEL_WINDOW_PROMPT_STATS 13
-
 // additional button prompts for IVs and EVs
 #define PSS_LABEL_WINDOW_PROMPT_IVS 11
 #define PSS_LABEL_WINDOW_PROMPT_EVS 12
@@ -127,12 +122,6 @@ enum BWSkillsPageState
 
 #define MOVE_SELECTOR_SPRITES_COUNT 15
 #define TYPE_ICON_SPRITE_COUNT (MAX_MON_MOVES + 1)
-
-#define BW_IV_EV_HIDDEN 0
-#define BW_IV_EV_GRADED 1
-#define BW_IV_EV_PRECISE 2
-
-#define BW_SUMMARY_IV_EV_DISPLAY BW_IV_EV_HIDDEN
 
 // for the spriteIds field in PokemonSummaryScreenData
 enum BWSummarySprites
@@ -390,6 +379,7 @@ static bool32 ShouldShowRename(void);
 static void ShowCancelOrRenamePrompt(void);
 static void CB2_ReturnToSummaryScreenFromNamingScreen(void);
 static void CB2_PssChangePokemonNickname(void);
+static inline bool32 ShouldShowIvEvPrompt(void);
 
 // const rom data
 
@@ -408,11 +398,9 @@ static const u8 sText_PkmnSkills[]                          = _("Pokémon Skills
 static const u8 sText_BattleMoves[]                         = _("Battle Moves");
 static const u8 sText_ContestMoves[]                        = _("Contest Moves");
 static const u8 sText_Info[]                                = _("Info");
-static const u8 sText_ViewIVs[]                             = _("View IV");
-static const u8 sText_ViewEVs[]                             = _("View EV");
-static const u8 sText_ViewStats[]                           = _("View Stats");
-static const u8 sText_ViewIVs_Graded[]                      = _("See Innate");
-static const u8 sText_ViewEVs_Graded[]                      = _("See Effort");
+static const u8 sText_ViewIVs[]                             = _("IVs");
+static const u8 sText_ViewEVs[]                             = _("EVs");
+static const u8 sText_ViewStats[]                           = _("Stats");
 static const u8 sText_NextLv[]                              = _("Next Lv.");
 static const u8 sText_RentalPkmn[]                          = _("Rental Pokémon");
 static const u8 sText_None[]                                = _("None");
@@ -424,11 +412,9 @@ static const u8 sText_PkmnSkills[]                          = _("POKéMON SKILLS
 static const u8 sText_BattleMoves[]                         = _("BATTLE MOVES");
 static const u8 sText_ContestMoves[]                        = _("CONTEST MOVES");
 static const u8 sText_Info[]                                = _("INFO");
-static const u8 sText_ViewIVs[]                             = _("VIEW IV");
-static const u8 sText_ViewEVs[]                             = _("VIEW EV");
-static const u8 sText_ViewStats[]                           = _("VIEW STATS");
-static const u8 sText_ViewIVs_Graded[]                      = _("SEE INNATE");
-static const u8 sText_ViewEVs_Graded[]                      = _("SEE EFFORT");
+static const u8 sText_ViewIVs[]                             = _("IVs");
+static const u8 sText_ViewEVs[]                             = _("EVs");
+static const u8 sText_ViewStats[]                           = _("STATS");
 static const u8 sText_NextLv[]                              = _("NEXT LV.");
 static const u8 sText_RentalPkmn[]                          = _("RENTAL POKéMON");
 static const u8 sText_None[]                                = _("NONE");
@@ -1819,6 +1805,9 @@ void ShowPokemonSummaryScreen(u8 mode, void *mons, u8 monIndex, u8 maxMonIndex, 
 {
     sMonSummaryScreen = AllocZeroed(sizeof(*sMonSummaryScreen));
     sMonSummaryScreen->mode = mode;
+    u8 maxPageIndex = C_HIDE_CONTEST_DATA
+                          ? PSS_PAGE_BATTLE_MOVES
+                          : PSS_PAGE_CONTEST_MOVES;
     if (monIndex == PC_MON_CHOSEN)
     {
         sMonSummaryScreen->monList.boxMons = GetBoxedMonPtr(gSpecialVar_MonBoxId, 0);
@@ -1848,24 +1837,26 @@ void ShowPokemonSummaryScreen(u8 mode, void *mons, u8 monIndex, u8 maxMonIndex, 
     case SUMMARY_MODE_RELEARNER_BATTLE:
     case SUMMARY_MODE_RELEARNER_CONTEST:
         sMonSummaryScreen->minPageIndex = 0;
-        sMonSummaryScreen->maxPageIndex = PSS_PAGE_COUNT - 1;
+        sMonSummaryScreen->maxPageIndex = maxPageIndex;
         break;
     case SUMMARY_MODE_LOCK_MOVES:
         sMonSummaryScreen->minPageIndex = 0;
-        sMonSummaryScreen->maxPageIndex = PSS_PAGE_COUNT - 1;
+        sMonSummaryScreen->maxPageIndex = maxPageIndex;
         sMonSummaryScreen->lockMovesFlag = TRUE;
         break;
     case SUMMARY_MODE_SELECT_MOVE:
         sMonSummaryScreen->minPageIndex = PSS_PAGE_BATTLE_MOVES;
-        sMonSummaryScreen->maxPageIndex = PSS_PAGE_COUNT - 1;
+        sMonSummaryScreen->maxPageIndex = maxPageIndex;
         sMonSummaryScreen->lockMonFlag = TRUE;
         break;
     }
 
     if (mode == SUMMARY_MODE_RELEARNER_BATTLE)
         sMonSummaryScreen->currPageIndex = PSS_PAGE_BATTLE_MOVES;
-    else if (mode == SUMMARY_MODE_RELEARNER_CONTEST)
+    else if (mode == SUMMARY_MODE_RELEARNER_CONTEST && !C_HIDE_CONTEST_DATA)
         sMonSummaryScreen->currPageIndex = PSS_PAGE_CONTEST_MOVES;
+    else if (mode == SUMMARY_MODE_RELEARNER_CONTEST)
+        sMonSummaryScreen->currPageIndex = PSS_PAGE_BATTLE_MOVES;
     else
         sMonSummaryScreen->currPageIndex = sMonSummaryScreen->minPageIndex;
 
@@ -2027,7 +2018,7 @@ static bool8 LoadGraphics(void)
         else if (sMonSummaryScreen->mode == SUMMARY_MODE_RELEARNER_CONTEST)
             SetBgTilemapBuffer(2, sMonSummaryScreen->bg2TilemapBuffers[PSS_PAGE_CONTEST_MOVES]);
 
-        if (!BW_SUMMARY_SHOW_CONTEST_MOVES)
+        if (C_HIDE_CONTEST_DATA)
             HideContestPageDots();
         gMain.state++;
         break;
@@ -2226,12 +2217,12 @@ static bool8 DecompressGraphics(void)
         sMonSummaryScreen->switchCounter++;
         break;
     case 18:
-        if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
+        if (ShouldShowIvEvPrompt() && !P_SUMMARY_SCREEN_IV_EV_VALUES && !P_SUMMARY_SCREEN_EV_ONLY)
             LoadCompressedSpriteSheet(&sSpriteSheet_StatGrades);
         sMonSummaryScreen->switchCounter++;
         break;
     case 19:
-        if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
+        if (ShouldShowIvEvPrompt() && !P_SUMMARY_SCREEN_IV_EV_VALUES && !P_SUMMARY_SCREEN_EV_ONLY)
             LoadSpritePalette(&sSpritePal_StatGrades);
         sMonSummaryScreen->switchCounter++;
         break;
@@ -2342,12 +2333,12 @@ static bool8 ExtractMonDataToSummaryStruct(struct Pokemon *mon)
         sum->friendship = GetMonData(mon, MON_DATA_FRIENDSHIP);
         break;
     case 4:
-        sum->ivHp = GetMonData(mon, MON_DATA_HP_IV);
-        sum->ivAtk = GetMonData(mon, MON_DATA_ATK_IV);
-        sum->ivDef = GetMonData(mon, MON_DATA_DEF_IV);
-        sum->ivSpatk = GetMonData(mon, MON_DATA_SPATK_IV);
-        sum->ivSpdef = GetMonData(mon, MON_DATA_SPDEF_IV);
-        sum->ivSpeed = GetMonData(mon, MON_DATA_SPEED_IV);
+        sum->ivHp = GetAdjustedIvData(mon, STAT_HP);
+        sum->ivAtk = GetAdjustedIvData(mon, STAT_ATK);
+        sum->ivDef = GetAdjustedIvData(mon, STAT_DEF);
+        sum->ivSpatk = GetAdjustedIvData(mon, STAT_SPATK);
+        sum->ivSpdef = GetAdjustedIvData(mon, STAT_SPDEF);
+        sum->ivSpeed = GetAdjustedIvData(mon, STAT_SPEED);
         break;
     case 5:
         sum->evHp = GetMonData(mon, MON_DATA_HP_EV);
@@ -2398,7 +2389,7 @@ static void HideInactivePageDots(void)
     sMonSummaryScreen->bg2TilemapBuffers[PSS_PAGE_CONTEST_MOVES][TILEMAP_PAGE_DOT_1_TILE_2] = TILE_BLACK_SQUARE;
     sMonSummaryScreen->bg2TilemapBuffers[PSS_PAGE_CONTEST_MOVES][TILEMAP_PAGE_DOT_2_TILE_1] = TILE_BLACK_SQUARE;
     sMonSummaryScreen->bg2TilemapBuffers[PSS_PAGE_CONTEST_MOVES][TILEMAP_PAGE_DOT_2_TILE_2] = TILE_BLACK_SQUARE;
-    if (!BW_SUMMARY_SHOW_CONTEST_MOVES)
+    if (C_HIDE_CONTEST_DATA)
         HideContestPageDots();
 }
 
@@ -2429,7 +2420,7 @@ static void RestoreSummaryPageDisplay(void)
     sMonSummaryScreen->bg2TilemapBuffers[PSS_PAGE_INFO][TILEMAP_PAGE_DOT_2_TILE_2] = TILE_INACTIVE_SQUARE_BOTTOM;
     sMonSummaryScreen->bg2TilemapBuffers[PSS_PAGE_INFO][TILEMAP_PAGE_DOT_3_TILE_1] = TILE_INACTIVE_SQUARE_TOP;
     sMonSummaryScreen->bg2TilemapBuffers[PSS_PAGE_INFO][TILEMAP_PAGE_DOT_3_TILE_2] = TILE_INACTIVE_SQUARE_BOTTOM;
-    if (BW_SUMMARY_SHOW_CONTEST_MOVES)
+    if (!C_HIDE_CONTEST_DATA)
     {
         sMonSummaryScreen->bg2TilemapBuffers[PSS_PAGE_INFO][TILEMAP_PAGE_DOT_4_TILE_1] = TILE_INACTIVE_SQUARE_TOP;
         sMonSummaryScreen->bg2TilemapBuffers[PSS_PAGE_INFO][TILEMAP_PAGE_DOT_4_TILE_2] = TILE_INACTIVE_SQUARE_BOTTOM;
@@ -2482,48 +2473,59 @@ static void ChangeSummaryState(s16 *data, u8 taskId)
     switch (tSkillsState)
     {
     case SKILL_STATE_STATS:
-        tSkillsState = SKILL_STATE_IVS;
-        break;
-    case SKILL_STATE_IVS:
-        tSkillsState = SKILL_STATE_EVS;
-        break;
-    case SKILL_STATE_EVS:
-        if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
-            tSkillsState = SKILL_STATE_IVS;
+        if (P_SUMMARY_SCREEN_EV_ONLY)
+            tSkillsState = SKILL_STATE_EVS;
         else
+            tSkillsState = SKILL_STATE_IVS;
+        break;
+
+    case SKILL_STATE_IVS:
+        if (P_SUMMARY_SCREEN_IV_ONLY)
             tSkillsState = SKILL_STATE_STATS;
+        else
+            tSkillsState = SKILL_STATE_EVS;
+        break;
+
+    case SKILL_STATE_EVS:
+    default:
+        tSkillsState = SKILL_STATE_STATS;
         break;
     }
 
     gTasks[taskId].func = Task_HandleInput;
 }
 
-// draw button prompts when cycling between stats, IVs and EVs
+// Draw button prompts when cycling between stats, IVs and EVs
 static void DrawNextSkillsButtonPrompt(u8 mode)
 {
+    u8 nextPrompt;
+
+    ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_STATS);
+    ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_IVS);
+    ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_EVS);
+
     switch (mode)
     {
     case SKILL_STATE_STATS:
-        ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_STATS);
-        PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_IVS);
+        nextPrompt = P_SUMMARY_SCREEN_EV_ONLY
+                         ? PSS_LABEL_WINDOW_PROMPT_EVS
+                         : PSS_LABEL_WINDOW_PROMPT_IVS;
         break;
+
     case SKILL_STATE_IVS:
-        ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_IVS);
-        PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_EVS);
+        nextPrompt = P_SUMMARY_SCREEN_IV_ONLY
+                         ? PSS_LABEL_WINDOW_PROMPT_STATS
+                         : PSS_LABEL_WINDOW_PROMPT_EVS;
         break;
+
     case SKILL_STATE_EVS:
-        if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
-        {
-            ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_EVS);
-            PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_IVS);
-        }
-        else
-        {
-            ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_EVS);
-            PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_STATS);
-        }
+    default:
+        nextPrompt = PSS_LABEL_WINDOW_PROMPT_STATS;
         break;
     }
+
+    PutWindowTilemap(nextPrompt);
+    ScheduleBgCopyTilemapToVram(0);
 }
 
 static void HandleMoveRelearnerInput(u8 taskId)
@@ -2548,10 +2550,23 @@ static void HandleMoveRelearnerInput(u8 taskId)
     }
 }
 
+static inline bool32 ShouldShowIvEvPrompt(void)
+{
+    if (P_SUMMARY_SCREEN_IV_EV_BOX_ONLY)
+    {
+        return (P_SUMMARY_SCREEN_IV_EV_INFO || FlagGet(P_FLAG_SUMMARY_SCREEN_IV_EV_INFO)) && (sMonSummaryScreen->mode == SUMMARY_MODE_BOX || sMonSummaryScreen->mode == SUMMARY_MODE_BOX_CURSOR);
+    }
+    else if (!P_SUMMARY_SCREEN_IV_EV_BOX_ONLY)
+    {
+        return (P_SUMMARY_SCREEN_IV_EV_INFO || FlagGet(P_FLAG_SUMMARY_SCREEN_IV_EV_INFO));
+    }
+    return FALSE;
+}
+
 static void Task_HandleInput(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
-    u8 defaultSkillsState = (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED) ? SKILL_STATE_IVS : SKILL_STATE_STATS;
+    u8 defaultSkillsState = SKILL_STATE_STATS;
 
     if (MenuHelpers_ShouldWaitForLinkRecv() != TRUE && !gPaletteFade.active)
     {
@@ -2608,16 +2623,26 @@ static void Task_HandleInput(u8 taskId)
             }
             else
             {
-                if (BW_SUMMARY_IV_EV_DISPLAY != BW_IV_EV_HIDDEN)
+                if (ShouldShowIvEvPrompt())
                 {
-                    // Cycle through IVs/EVs/stats on pressing A
                     ChangeSummaryState(data, taskId);
                     DrawNextSkillsButtonPrompt(tSkillsState);
                     PlaySE(SE_SELECT);
-                    if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
+
+                    if (tSkillsState == SKILL_STATE_IVS && !P_SUMMARY_SCREEN_IV_EV_VALUES)
+                    {
                         ShowGradeIcons(tSkillsState);
+                    }
                     else
+                    {
+                        for (u8 i = SPRITE_ARR_ID_HP_GRADE; i <= SPRITE_ARR_ID_SPE_GRADE; i++)
+                        {
+                            if (sMonSummaryScreen->spriteIds[i] != SPRITE_NONE)
+                                SetSpriteInvisibility(i, TRUE);
+                        }
+
                         BufferAndPrintStats_HandleState(tSkillsState);
+                    }
                 }
             }
         }
@@ -2676,16 +2701,6 @@ void ExtractMonSkillStatsData(struct Pokemon *mon, struct PokeSummary *sum)
     sum->spatk = GetMonData(mon, MON_DATA_SPATK);
     sum->spdef = GetMonData(mon, MON_DATA_SPDEF);
     sum->speed = GetMonData(mon, MON_DATA_SPEED);
-}
-
-void ExtractMonSkillIvData(struct Pokemon *mon, struct PokeSummary *sum)
-{
-    sum->currentHP = GetAdjustedIvData(mon, STAT_HP);
-    sum->atk = GetAdjustedIvData(mon, STAT_ATK);
-    sum->def =  GetAdjustedIvData(mon, STAT_DEF);
-    sum->spatk = GetAdjustedIvData(mon, STAT_SPATK);
-    sum->spdef = GetAdjustedIvData(mon, STAT_SPDEF);
-    sum->speed = GetAdjustedIvData(mon, STAT_SPEED);
 }
 
 void ExtractMonSkillEvData(struct Pokemon *mon, struct PokeSummary *sum)
@@ -2802,17 +2817,14 @@ static void Task_ChangeSummaryMon(u8 taskId)
         {
             gMoveRelearnerState = MOVE_RELEARNER_LEVEL_UP_MOVES;
             UpdateMoveRelearnerState();
-            return;
         }
-        else
+
+        if (P_SUMMARY_SCREEN_MOVE_RELEARNER && (sMonSummaryScreen->currPageIndex == PSS_PAGE_BATTLE_MOVES || sMonSummaryScreen->currPageIndex == PSS_PAGE_CONTEST_MOVES))
         {
-            if (P_SUMMARY_SCREEN_MOVE_RELEARNER && (sMonSummaryScreen->currPageIndex == PSS_PAGE_BATTLE_MOVES || sMonSummaryScreen->currPageIndex == PSS_PAGE_CONTEST_MOVES))
-            {
-                if (ShouldShowMoveRelearner())
-                    ShowMoveRelearner();
-                else
-                    HideMoveRelearner();
-            }
+            if (ShouldShowMoveRelearner())
+                ShowMoveRelearner();
+            else
+                HideMoveRelearner();
         }
         break;
     case 5:
@@ -2870,18 +2882,14 @@ static void Task_ChangeSummaryMon(u8 taskId)
                 ShowCancelOrRenamePrompt();
                 PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_CANCEL);  
             }
-        } 
+        }
         else if (sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS)
         {
-            if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_PRECISE)
+            if (ShouldShowIvEvPrompt())
                 DrawNextSkillsButtonPrompt(SKILL_STATE_STATS);
-            else if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
-                DrawNextSkillsButtonPrompt(SKILL_STATE_IVS);
         }
         break;
     case 12:
-        if (sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS && BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
-            ShowGradeIcons(SKILL_STATE_IVS);
         break;
     case 13:
         gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_MON]].sDelayAnim = 0;
@@ -3045,9 +3053,6 @@ static void PssScrollEnd(u8 taskId)
     TrySetInfoPageIcons();
     TryDrawHPBar();
     TryDrawExperienceProgressBar();
-
-    if (sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS && BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
-        ShowGradeIcons(SKILL_STATE_IVS);
 
     if (sMonSummaryScreen->currPageIndex == PSS_PAGE_INFO)
     {
@@ -3895,40 +3900,23 @@ static void PrintPageNamesAndStats(void)
     PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_SWITCH, FALSE, iconXPos);
     PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_SWITCH, sText_Switch, stringXPos, 1, 0, 1);
 
-    if (BW_SUMMARY_IV_EV_DISPLAY != BW_IV_EV_HIDDEN)
+    if (ShouldShowIvEvPrompt())
     {
-        if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
-        {
-            stringXPos = GetStringRightAlignXOffset(FONT_NORMAL, sText_ViewIVs_Graded, skillsLabelWidth);
-            iconXPos = stringXPos - 16;
-            if (iconXPos < 0)
-                iconXPos = 0;
-            PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_IVS, FALSE, iconXPos);
-            PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_IVS, sText_ViewIVs_Graded, stringXPos, 1, 0, 1);
+        const u8 *ivPromptText = sText_ViewIVs;
 
-            stringXPos = GetStringRightAlignXOffset(FONT_NORMAL, sText_ViewEVs_Graded, skillsLabelWidth);
-            iconXPos = stringXPos - 16;
-            if (iconXPos < 0)
-                iconXPos = 0;
-            PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_EVS, FALSE, iconXPos);
-            PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_EVS, sText_ViewEVs_Graded, stringXPos, 1, 0, 1);
-        }
-        else // precise display
-        {
-            stringXPos = GetStringRightAlignXOffset(FONT_NORMAL, sText_ViewIVs, skillsLabelWidth);
-            iconXPos = stringXPos - 16;
-            if (iconXPos < 0)
-                iconXPos = 0;
-            PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_IVS, FALSE, iconXPos);
-            PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_IVS, sText_ViewIVs, stringXPos, 1, 0, 1);
+        stringXPos = GetStringRightAlignXOffset(FONT_NORMAL, ivPromptText, skillsLabelWidth);
+        iconXPos = stringXPos - 16;
+        if (iconXPos < 0)
+            iconXPos = 0;
+        PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_IVS, FALSE, iconXPos);
+        PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_IVS, ivPromptText, stringXPos, 1, 0, 1);
 
-            stringXPos = GetStringRightAlignXOffset(FONT_NORMAL, sText_ViewEVs, skillsLabelWidth);
-            iconXPos = stringXPos - 16;
-            if (iconXPos < 0)
-                iconXPos = 0;
-            PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_EVS, FALSE, iconXPos);
-            PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_EVS, sText_ViewEVs, stringXPos, 1, 0, 1);
-        }
+        stringXPos = GetStringRightAlignXOffset(FONT_NORMAL, sText_ViewEVs, skillsLabelWidth);
+        iconXPos = stringXPos - 16;
+        if (iconXPos < 0)
+            iconXPos = 0;
+        PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_EVS, FALSE, iconXPos);
+        PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_EVS, sText_ViewEVs, stringXPos, 1, 0, 1);
 
         stringXPos = GetStringRightAlignXOffset(FONT_NORMAL, sText_ViewStats, skillsLabelWidth);
         iconXPos = stringXPos - 16;
@@ -3959,10 +3947,13 @@ static void PutPageWindowTilemaps(u8 page)
     case PSS_PAGE_SKILLS:
         PutWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_TITLE);
         PutWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_EXP);
-        if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_PRECISE)
-            PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_IVS);
-        else if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
-            PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_EVS);
+        if (ShouldShowIvEvPrompt())
+        {
+            if (P_SUMMARY_SCREEN_EV_ONLY)
+                PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_EVS);
+            else
+                PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_IVS);
+        }
         break;
     case PSS_PAGE_BATTLE_MOVES:
         PutWindowTilemap(PSS_LABEL_WINDOW_BATTLE_MOVES_TITLE);
@@ -4006,7 +3997,7 @@ static void ClearPageWindowTilemaps(u8 page)
         break;
     case PSS_PAGE_SKILLS:
         ClearWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_EXP);
-        if (BW_SUMMARY_IV_EV_DISPLAY != BW_IV_EV_HIDDEN)
+        if (ShouldShowIvEvPrompt())
         {
             ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_STATS);
             ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_EVS);
@@ -4517,7 +4508,7 @@ static void BufferStat(u8 *dst, s8 statIndex, u32 stat, u32 strId, u32 align)
     u8 *txtPtr;
 
     if (statIndex == 0 
-        || !BW_SUMMARY_NATURE_COLORS 
+        || !P_SUMMARY_SCREEN_NATURE_COLORS
         || gNaturesInfo[sMonSummaryScreen->summary.mintNature].statUp == gNaturesInfo[sMonSummaryScreen->summary.mintNature].statDown)
         txtPtr = StringCopy(dst, sTextNatureNeutral);
     else if (statIndex == gNaturesInfo[sMonSummaryScreen->summary.mintNature].statUp)

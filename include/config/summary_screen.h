@@ -6,11 +6,11 @@
 #define P_SUMMARY_SCREEN_RENAME          TRUE   // If TRUE, an option to change Pokémon nicknames replaces the cancel prompt on the summary screen info page.
 
 // IV/EV settings
-#define P_SUMMARY_SCREEN_IV_EV_INFO      FALSE  // If TRUE, will allow player to cycle through the Stats, IVs, and EVs in the summary screen skills page.
+#define P_SUMMARY_SCREEN_IV_EV_INFO      TRUE   // If TRUE, will allow player to cycle through the Stats, IVs, and EVs in the summary screen skills page.
 #define P_SUMMARY_SCREEN_IV_EV_BOX_ONLY  FALSE  // If TRUE, will allow player to cycle through the Stats, IVs, and EVs in the summary screen skills page, but only in the PC storage box.
 #define P_SUMMARY_SCREEN_IV_HYPERTRAIN   TRUE   // If TRUE, stats that have been hyper trained will show as 31/S when viewing them in the summary screen
 #define P_SUMMARY_SCREEN_IV_EV_TILESET   FALSE  // If TRUE, loads an alternate tileset to allow changing the "STATS" label in the summary screen skills page. Note: if it's still loading the alternate tileset after changing this and recompiling, you may need a `make clean` before compilation.
-#define P_SUMMARY_SCREEN_IV_EV_VALUES    FALSE  // If TRUE, will show the actual IV value instead of the letter grade.
+#define P_SUMMARY_SCREEN_IV_EV_VALUES    TRUE   // If TRUE, will show the actual IV value instead of the letter grade.
 /*
 LETTER GRADE GUIDE:
 
@@ -23,7 +23,7 @@ LETTER GRADE GUIDE:
 
 Info taken from https://bulbapedia.bulbagarden.net/wiki/Stats_judge.
 */
-#define P_SUMMARY_SCREEN_IV_ONLY         FALSE  // If TRUE, will only show IV info in the summary screen.
+#define P_SUMMARY_SCREEN_IV_ONLY         TRUE   // If TRUE, will only show IV info in the summary screen.
 #define P_SUMMARY_SCREEN_EV_ONLY         FALSE  // If TRUE, will only show EV info in the summary screen.
 
 // IV/EV flags
@@ -60,11 +60,10 @@ Info taken from https://bulbapedia.bulbagarden.net/wiki/Stats_judge.
 
 // configs
 #define BW_SUMMARY_AUTO_FORMAT_MOVE_DESCRIPTIONS TRUE  // automatically formats move descriptions to fit the new box size. disable if you want to format them manually
-#define BW_SUMMARY_NATURE_COLORS                 TRUE  // color stats increased or reduced by nature, red = boosted, blue = reduced
 #define BW_SUMMARY_NATURE_ARROWS                 FALSE // arrows to show stats increased or reduced by nature
 #define BW_SUMMARY_CATEGORY_ICONS                TRUE  // determines whether category (split) icons are shown or not
 #define BW_SUMMARY_DECAP                         FALSE // indicates if summary screen-specific strings should be decapitalized
-#define BW_SUMMARY_SHOW_FRIENDSHIP               FALSE // show a heart that fills up to indicate friendship value
+#define BW_SUMMARY_SHOW_FRIENDSHIP               TRUE  // show a heart that fills up to indicate friendship value
 #define BW_SUMMARY_BW_STATUS_ICONS               TRUE  // use Gen 5 style status icons instead of the default ones.
 #define BW_SUMMARY_BW_TYPE_ICONS                 TRUE  // use Gen 5 style type icons instead of the default ones.
                                                        // out of the box the vanilla icons don't fit well, this is mostly a compatibility
@@ -74,8 +73,6 @@ Info taken from https://bulbapedia.bulbagarden.net/wiki/Stats_judge.
 #define BW_SUMMARY_MON_IDLE_ANIMS                TRUE  // loops the mon animations regularly as an "idle" anim
 #define BW_SUMMARY_MON_SHADOWS                   TRUE  // displays a shadow for the mon sprite
 #define BW_SUMMARY_SHOW_TERA_TYPE                FALSE // show tera type icons
-#define BW_SUMMARY_SHOW_CONTEST_MOVES            TRUE  // show the contest moves page
-
 
 // Renaming and move relearner behavior use the standard Expansion configs above:
 // P_SUMMARY_SCREEN_RENAME

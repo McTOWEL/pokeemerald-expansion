@@ -8179,7 +8179,7 @@ static void Task_BattlePyramidChooseMonHeldItems(u8 taskId)
 
 void MoveDeleterChooseMoveToForget(void)
 {
-    ShowPokemonSummaryScreen(SUMMARY_MODE_SELECT_MOVE, gPlayerParty, gSpecialVar_0x8004, gPlayerPartyCount - 1, CB2_ReturnToField);
+    ShowPokemonSummaryScreen(SUMMARY_MODE_SELECT_MOVE, gParties[B_TRAINER_PLAYER], gSpecialVar_0x8004, gPartiesCount[B_TRAINER_PLAYER] - 1, CB2_ReturnToField);
     gFieldCallback = FieldCB_ContinueScriptHandleMusic;
 }
 
