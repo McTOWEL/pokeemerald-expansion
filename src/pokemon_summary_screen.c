@@ -143,6 +143,7 @@ enum BWSummarySprites
     SPRITE_ARR_ID_SPE_GRADE,
     SPRITE_ARR_ID_RELEARN_PROMPT,
     SPRITE_ARR_ID_TERA_TYPE,
+    SPRITE_ARR_ID_HIDDEN_POWER_TYPE,
     SPRITE_ARR_ID_TYPE, // 2 for mon types, 5 for move types(4 moves and 1 to learn), used interchangeably, because mon types and move types aren't shown on the same screen
     SPRITE_ARR_ID_MOVE_SELECTOR1 = SPRITE_ARR_ID_TYPE + TYPE_ICON_SPRITE_COUNT, // 10 sprites that make up the selector
     SPRITE_ARR_ID_MOVE_SELECTOR2 = SPRITE_ARR_ID_MOVE_SELECTOR1 + MOVE_SELECTOR_SPRITES_COUNT,
@@ -380,6 +381,10 @@ static void ShowCancelOrRenamePrompt(void);
 static void CB2_ReturnToSummaryScreenFromNamingScreen(void);
 static void CB2_PssChangePokemonNickname(void);
 static inline bool32 ShouldShowIvEvPrompt(void);
+static void SetTypeSpritePosAndPal(u8 typeId, u8 x, u8 y, u8 spriteArrayId);
+static void SetHiddenPowerTypeIcon(void);
+static void ShowHiddenPowerLabel(void);
+static void HideHiddenPowerLabel(void);
 
 // const rom data
 
@@ -844,6 +849,7 @@ static const u8 sText_Relearn[] = _("{START_BUTTON} RELEARN"); // future note: d
 #define TAG_TERA_TYPE 30009
 #define TAG_MON_SHADOW 30010
 #define TAG_RELEARN_PROMPT 30011
+#define TAG_CATEGORY_ICONS_BW 30012
 
 enum BWCategoryIcon
 {
@@ -854,6 +860,13 @@ enum BWCategoryIcon
 
 static const struct OamData sOamData_CategoryIcons =
 {
+    .size = SPRITE_SIZE(16x16),
+    .shape = SPRITE_SHAPE(16x16),
+    .priority = 0,
+};
+
+static const struct OamData sOamData_CategoryIcons_BW =
+{
     .size = SPRITE_SIZE(32x16),
     .shape = SPRITE_SHAPE(32x16),
     .priority = 0,
@@ -863,7 +876,7 @@ static const struct CompressedSpriteSheet sSpriteSheet_CategoryIcons =
 {
     .data = sCategoryIcons_Gfx,
     .size = 32*16*3/2,
-    .tag = TAG_CATEGORY_ICONS,
+    .tag = TAG_CATEGORY_ICONS_BW,
 };
 
 const struct CompressedSpriteSheet gSpriteSheet_CategoryIcons =
@@ -875,8 +888,14 @@ const struct CompressedSpriteSheet gSpriteSheet_CategoryIcons =
 
 const struct SpritePalette gSpritePal_CategoryIcons =
 {
-    .data = sCategoryIcons_Pal,
+    .data = gCategoryIcons_Pal,
     .tag = TAG_CATEGORY_ICONS
+};
+
+static const struct SpritePalette sSpritePal_CategoryIcons_BW =
+{
+    .data = sCategoryIcons_Pal,
+    .tag = TAG_CATEGORY_ICONS_BW,
 };
 
 static const union AnimCmd sSpriteAnim_CategoryPhysical[] =
@@ -887,11 +906,29 @@ static const union AnimCmd sSpriteAnim_CategoryPhysical[] =
 
 static const union AnimCmd sSpriteAnim_CategorySpecial[] =
 {
-    ANIMCMD_FRAME(8, 0),
+    ANIMCMD_FRAME(4, 0),
     ANIMCMD_END
 };
 
 static const union AnimCmd sSpriteAnim_CategoryStatus[] =
+{
+    ANIMCMD_FRAME(8, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sSpriteAnim_CategoryPhysical_BW[] =
+{
+    ANIMCMD_FRAME(0, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sSpriteAnim_CategorySpecial_BW[] =
+{
+    ANIMCMD_FRAME(8, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sSpriteAnim_CategoryStatus_BW[] =
 {
     ANIMCMD_FRAME(16, 0),
     ANIMCMD_END
@@ -905,12 +942,28 @@ static const union AnimCmd *const sSpriteAnimTable_CategoryIcons[] =
     sSpriteAnim_CategoryStatus,
 };
 
+static const union AnimCmd *const sSpriteAnimTable_CategoryIcons_BW[] =
+{
+    NULL,
+    sSpriteAnim_CategoryPhysical_BW,
+    sSpriteAnim_CategorySpecial_BW,
+    sSpriteAnim_CategoryStatus_BW,
+};
+
 const struct SpriteTemplate gSpriteTemplate_CategoryIcons =
 {
     .tileTag = TAG_CATEGORY_ICONS,
     .paletteTag = TAG_CATEGORY_ICONS,
     .oam = &sOamData_CategoryIcons,
     .anims = sSpriteAnimTable_CategoryIcons,
+};
+
+static const struct SpriteTemplate sSpriteTemplate_CategoryIcons_BW =
+{
+    .tileTag = TAG_CATEGORY_ICONS_BW,
+    .paletteTag = TAG_CATEGORY_ICONS_BW,
+    .oam = &sOamData_CategoryIcons_BW,
+    .anims = sSpriteAnimTable_CategoryIcons_BW,
 };
 
 static const struct OamData sOamData_RelearnPrompt =
@@ -923,7 +976,7 @@ static const struct OamData sOamData_RelearnPrompt =
 static const struct CompressedSpriteSheet sSpriteSheet_RelearnPrompt =
     {
         .data = sRelearnPrompt_Gfx,
-        .size = 0x100,
+        .size = 64 * 32 / 2,
         .tag = TAG_RELEARN_PROMPT,
 };
 
@@ -1701,7 +1754,7 @@ static const u16 sMarkings_Pal[] = INCGFX_U16("graphics/summary_screen/markings.
 static void ShowCategoryIcon(u16 move)
 {
     if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_CATEGORY] == SPRITE_NONE)
-        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_CATEGORY] = CreateSprite(&gSpriteTemplate_CategoryIcons, 223, 96, 0);
+        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_CATEGORY] = CreateSprite(&sSpriteTemplate_CategoryIcons_BW, 223, 96, 0);
 
     gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_CATEGORY]].invisible = FALSE;
 
@@ -2213,7 +2266,7 @@ static bool8 DecompressGraphics(void)
         break;
     case 17:
         if (BW_SUMMARY_CATEGORY_ICONS)
-            LoadSpritePalette(&gSpritePal_CategoryIcons);
+            LoadSpritePalette(&sSpritePal_CategoryIcons_BW);
         sMonSummaryScreen->switchCounter++;
         break;
     case 18:
@@ -2546,6 +2599,10 @@ static void HandleMoveRelearnerInput(u8 taskId)
         }
         StopPokemonAnimations();
         PlaySE(SE_SELECT);
+
+        SetSpriteInvisibility(SPRITE_ARR_ID_HIDDEN_POWER_TYPE, TRUE);
+        HideHiddenPowerLabel();
+
         BeginCloseSummaryScreen(taskId);
     }
 }
@@ -3092,6 +3149,8 @@ static void SwitchToMoveSelection(u8 taskId)
     }
 
     CreateTask(Task_ShowEffectTilemap, 1);
+    SetSpriteInvisibility(SPRITE_ARR_ID_HIDDEN_POWER_TYPE, TRUE);
+    HideHiddenPowerLabel();
 
     CreateMoveSelectorSprites(SPRITE_ARR_ID_MOVE_SELECTOR1);
     gTasks[taskId].func = Task_HandleInput_MoveSelect;
@@ -3565,6 +3624,10 @@ static void Task_HideEffectTilemap(u8 taskId)
         HideBg(1);
         SetGpuReg(REG_OFFSET_MOSAIC, 0);
         ClearGpuRegBits(REG_OFFSET_BG1CNT, BGCNT_MOSAIC);
+
+        if (sMonSummaryScreen->currPageIndex == PSS_PAGE_BATTLE_MOVES)
+            SetHiddenPowerTypeIcon();
+
         DestroyTask(taskId);
     }
 }
@@ -5106,6 +5169,51 @@ static void HidePageSpecificSprites(void)
     sMonSummaryScreen->markingsSprite->invisible = TRUE;
 }
 
+static void SetHiddenPowerTypeIcon(void)
+{
+    if (sMonSummaryScreen->mode == SUMMARY_MODE_SELECT_MOVE)
+    {
+        SetSpriteInvisibility(SPRITE_ARR_ID_HIDDEN_POWER_TYPE, TRUE);
+        HideHiddenPowerLabel();
+        return;
+    }
+
+    // enum Type type = CheckDynamicMoveType(
+    //     &sMonSummaryScreen->currentMon,
+    //     MOVE_HIDDEN_POWER,
+    //     B_BATTLER_0,
+    //     MON_OUTSIDE_BATTLE);
+
+    // SetTypeSpritePosAndPal(type, 180, 136, SPRITE_ARR_ID_HIDDEN_POWER_TYPE);
+    // ShowHiddenPowerLabel();
+}
+
+static void ShowHiddenPowerLabel(void)
+{
+    const u8 *text = COMPOUND_STRING("HP:");
+    // u8 windowId = AddWindowFromTemplateList(
+    //     sPageMovesTemplate,
+    //     PSS_DATA_WINDOW_MOVE_DESCRIPTION);
+
+    // // The description window begins at screen Y=112.
+    // // Draw the label at screen Y=137, inside its existing pixel buffer.
+    // PrintTextOnWindow(windowId, text, 42, 25, 0, 0);
+    // PutWindowTilemap(windowId);
+    // ScheduleBgCopyTilemapToVram(0);
+}
+
+static void HideHiddenPowerLabel(void)
+{
+    u8 windowId = sMonSummaryScreen->windowIds[PSS_DATA_WINDOW_MOVE_DESCRIPTION];
+
+    if (windowId != WINDOW_NONE)
+    {
+        // Clear only the label's area, not the entire description window.
+        FillWindowPixelRect(windowId, PIXEL_FILL(0), 42, 25, 24, 16);
+        CopyWindowToVram(windowId, COPYWIN_GFX);
+    }
+}
+
 static void SetTypeIcons(void)
 {
     switch (sMonSummaryScreen->currPageIndex)
@@ -5116,6 +5224,7 @@ static void SetTypeIcons(void)
     case PSS_PAGE_BATTLE_MOVES:
         SetMoveTypeIcons();
         SetNewMoveTypeIcon();
+        SetHiddenPowerTypeIcon();
         break;
     case PSS_PAGE_CONTEST_MOVES:
         SetContestMoveTypeIcons();
