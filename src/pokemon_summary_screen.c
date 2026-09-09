@@ -383,8 +383,6 @@ static void CB2_PssChangePokemonNickname(void);
 static inline bool32 ShouldShowIvEvPrompt(void);
 static void SetTypeSpritePosAndPal(u8 typeId, u8 x, u8 y, u8 spriteArrayId);
 static void SetHiddenPowerTypeIcon(void);
-static void ShowHiddenPowerLabel(void);
-static void HideHiddenPowerLabel(void);
 
 // const rom data
 
@@ -834,8 +832,6 @@ static void (*const sTextPrinterTasks[])(u8 taskId) =
     [PSS_PAGE_BATTLE_MOVES] = Task_PrintBattleMoves,
     [PSS_PAGE_CONTEST_MOVES] = Task_PrintContestMoves
 };
-
-static const u8 sText_Relearn[] = _("{START_BUTTON} RELEARN"); // future note: don't decap this, because it mimics the summary screen BG graphics which will not get decapped
 
 #define TAG_MOVE_SELECTOR 30000
 #define TAG_MON_STATUS 30001
@@ -2601,7 +2597,6 @@ static void HandleMoveRelearnerInput(u8 taskId)
         PlaySE(SE_SELECT);
 
         SetSpriteInvisibility(SPRITE_ARR_ID_HIDDEN_POWER_TYPE, TRUE);
-        HideHiddenPowerLabel();
 
         BeginCloseSummaryScreen(taskId);
     }
@@ -3150,7 +3145,6 @@ static void SwitchToMoveSelection(u8 taskId)
 
     CreateTask(Task_ShowEffectTilemap, 1);
     SetSpriteInvisibility(SPRITE_ARR_ID_HIDDEN_POWER_TYPE, TRUE);
-    HideHiddenPowerLabel();
 
     CreateMoveSelectorSprites(SPRITE_ARR_ID_MOVE_SELECTOR1);
     gTasks[taskId].func = Task_HandleInput_MoveSelect;
@@ -5169,49 +5163,34 @@ static void HidePageSpecificSprites(void)
     sMonSummaryScreen->markingsSprite->invisible = TRUE;
 }
 
+static void ShowHiddenPowerLabel(void)
+{
+    const u8 *text = COMPOUND_STRING("HP:");
+    u8 windowId = AddWindowFromTemplateList(
+        sPageMovesTemplate,
+        PSS_DATA_WINDOW_MOVE_DESCRIPTION);
+
+    PrintTextOnWindowWithFont(windowId, text, 50, 22, 0, 1, FONT_SMALL);
+    PutWindowTilemap(windowId);
+    ScheduleBgCopyTilemapToVram(0);
+}
+
 static void SetHiddenPowerTypeIcon(void)
 {
     if (sMonSummaryScreen->mode == SUMMARY_MODE_SELECT_MOVE)
     {
         SetSpriteInvisibility(SPRITE_ARR_ID_HIDDEN_POWER_TYPE, TRUE);
-        HideHiddenPowerLabel();
         return;
     }
 
-    // enum Type type = CheckDynamicMoveType(
-    //     &sMonSummaryScreen->currentMon,
-    //     MOVE_HIDDEN_POWER,
-    //     B_BATTLER_0,
-    //     MON_OUTSIDE_BATTLE);
+    enum Type type = CheckDynamicMoveType(
+        &sMonSummaryScreen->currentMon,
+        MOVE_HIDDEN_POWER,
+        B_BATTLER_0,
+        MON_OUTSIDE_BATTLE);
 
-    // SetTypeSpritePosAndPal(type, 180, 136, SPRITE_ARR_ID_HIDDEN_POWER_TYPE);
-    // ShowHiddenPowerLabel();
-}
-
-static void ShowHiddenPowerLabel(void)
-{
-    const u8 *text = COMPOUND_STRING("HP:");
-    // u8 windowId = AddWindowFromTemplateList(
-    //     sPageMovesTemplate,
-    //     PSS_DATA_WINDOW_MOVE_DESCRIPTION);
-
-    // // The description window begins at screen Y=112.
-    // // Draw the label at screen Y=137, inside its existing pixel buffer.
-    // PrintTextOnWindow(windowId, text, 42, 25, 0, 0);
-    // PutWindowTilemap(windowId);
-    // ScheduleBgCopyTilemapToVram(0);
-}
-
-static void HideHiddenPowerLabel(void)
-{
-    u8 windowId = sMonSummaryScreen->windowIds[PSS_DATA_WINDOW_MOVE_DESCRIPTION];
-
-    if (windowId != WINDOW_NONE)
-    {
-        // Clear only the label's area, not the entire description window.
-        FillWindowPixelRect(windowId, PIXEL_FILL(0), 42, 25, 24, 16);
-        CopyWindowToVram(windowId, COPYWIN_GFX);
-    }
+    SetTypeSpritePosAndPal(type, 188, 133, SPRITE_ARR_ID_HIDDEN_POWER_TYPE);
+    ShowHiddenPowerLabel();
 }
 
 static void SetTypeIcons(void)
