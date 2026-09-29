@@ -1,0 +1,31 @@
+script GlobalScript_AbraTeleport {
+    lock
+    faceplayer
+
+    call(Script_RandomMessage)
+    closemessage
+
+    special(SaveCurrentMapToAbraVariables)
+
+    warp(MAP_SHADYROOM, 1, 6)
+}
+
+script GlobalScript_AbraReturn {
+    lock
+    faceplayer
+
+    call(Script_RandomMessage)
+    closemessage
+
+    special(WarpToAbraSavedVariables)
+}
+
+script Script_RandomMessage {
+    random(3)
+
+    switch (var(VAR_RESULT)) {
+        case 0: msgbox("Abra...")
+        case 1: msgbox("..bra..")
+        default: msgbox("Abra stares at you intently")
+    }
+}

@@ -28,6 +28,9 @@ RustboroCity_PokemonCenter_1F_EventScript_Girl::
 	msgbox RustboroCity_PokemonCenter_1F_Text_HMCutNextDoor, MSGBOX_NPC
 	end
 
+RustboroCity_PokemonCenter_1F_EventScript_Abra::
+    goto GlobalScript_AbraTeleport
+
 RustboroCity_PokemonCenter_1F_Text_PokemonHavePersonalities:
 	.string "My POKéMON has a NAIVE nature, and my\n"
 	.string "friend's has a JOLLY nature.\p"

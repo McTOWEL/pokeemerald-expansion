@@ -2542,7 +2542,7 @@ void ShowScrollableMultichoice(void)
         break;
     case SCROLL_MULTI_ASSISTANT_SERVICES:
         task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
-        task->tNumItems = 3;
+        task->tNumItems = 6;
         task->tLeft = 15;
         task->tTop = 1;
         task->tWidth = 16;
@@ -2838,6 +2838,9 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
     {
         COMPOUND_STRING("SET STATUS {CLEAR_TO 80}{COLOR BLUE}{FONT_SMALL}FREE"),
         COMPOUND_STRING("SET DAMAGE {CLEAR_TO 80}{COLOR BLUE}{FONT_SMALL}FREE"),
+        COMPOUND_STRING("EDGE PARTY XP {CLEAR_TO 80}{COLOR BLUE}{FONT_SMALL}FREE"),
+        COMPOUND_STRING("EDGE POKEMON XP {CLEAR_TO 80}{COLOR BLUE}{FONT_SMALL}FREE"),
+        COMPOUND_STRING("TOGGLE POKEMON SHINY {CLEAR_TO 80}{COLOR BLUE}{FONT_SMALL}FREE"),
         gText_Exit,
     },
     [SCROLL_MULTI_STATUS_PICKER] =

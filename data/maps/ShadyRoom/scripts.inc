@@ -80,7 +80,7 @@ ShadyRoom_EventScript_Gentleman_Menu_5:
 
 ShadyRoom_EventScript_Gentleman_Menu_6:
 # 44 "data/maps/ShadyRoom/scripts.pory"
-	call ShadyRoom_EventScript_Change_HiddenPower
+	call ShadyRoom_EventScript_Gentleman_HiddenPower
 	return
 
 ShadyRoom_EventScript_Gentleman_Menu_7:
@@ -92,109 +92,83 @@ ShadyRoom_EventScript_Gentleman_Menu_8:
 	return
 
 
-ShadyRoom_EventScript_SelectPokemon::
-# 55 "data/maps/ShadyRoom/scripts.pory"
-	special ChoosePartyMon
-# 57 "data/maps/ShadyRoom/scripts.pory"
-	compare VAR_0x8004, PARTY_NOTHING_CHOSEN
-	goto_if_eq ShadyRoom_EventScript_SelectPokemon_2
-# 62 "data/maps/ShadyRoom/scripts.pory"
-	special IsSelectedMonEgg
-# 64 "data/maps/ShadyRoom/scripts.pory"
-	compare VAR_RESULT, TRUE
-	goto_if_eq ShadyRoom_EventScript_SelectPokemon_5
-# 69 "data/maps/ShadyRoom/scripts.pory"
-	setvar VAR_SERVICE_SELECTION_OK, TRUE
-	return
-
-ShadyRoom_EventScript_SelectPokemon_2:
-# 58 "data/maps/ShadyRoom/scripts.pory"
-	setvar VAR_SERVICE_SELECTION_OK, FALSE
-	return
-
-ShadyRoom_EventScript_SelectPokemon_5:
-# 65 "data/maps/ShadyRoom/scripts.pory"
-	setvar VAR_SERVICE_SELECTION_OK, 2
-	return
-
-
 ShadyRoom_EventScript_Gentleman_CheckTokens::
-# 74 "data/maps/ShadyRoom/scripts.pory"
+# 55 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_TOKEN_BALANCE, 0
 	goto_if_eq ShadyRoom_EventScript_Gentleman_CheckTokens_2
-# 80 "data/maps/ShadyRoom/scripts.pory"
+# 61 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_TOKEN_BALANCE, VAR_SERVICE_COST
 	goto_if_lt ShadyRoom_EventScript_Gentleman_CheckTokens_5
-# 86 "data/maps/ShadyRoom/scripts.pory"
+# 67 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_SERVICE_SELECTION_OK, TRUE
 	return
 
 ShadyRoom_EventScript_Gentleman_CheckTokens_2:
-# 75 "data/maps/ShadyRoom/scripts.pory"
+# 56 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_NoTokens
-# 76 "data/maps/ShadyRoom/scripts.pory"
+# 57 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_RESULT, MULTI_B_PRESSED
 	return
 
 ShadyRoom_EventScript_Gentleman_CheckTokens_5:
-# 81 "data/maps/ShadyRoom/scripts.pory"
+# 62 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_InsufficientTokens
-# 82 "data/maps/ShadyRoom/scripts.pory"
+# 63 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_SERVICE_SELECTION_OK, FALSE
 	return
 
 
 ShadyRoom_EventScript_Gentleman_ChangeNature::
-# 91 "data/maps/ShadyRoom/scripts.pory"
+# 72 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_SERVICE_COST, 2
-# 92 "data/maps/ShadyRoom/scripts.pory"
+# 73 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_Gentleman_CheckTokens
-# 93 "data/maps/ShadyRoom/scripts.pory"
+# 74 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, FALSE
 	goto_if_eq ShadyRoom_EventScript_Gentleman_ChangeNature_2
-# 93 "data/maps/ShadyRoom/scripts.pory"
+# 74 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
 	goto_if_eq ShadyRoom_EventScript_Gentleman_ChangeNature_2
-# 97 "data/maps/ShadyRoom/scripts.pory"
+# 78 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_NatureCost, MSGBOX_YESNO
-# 98 "data/maps/ShadyRoom/scripts.pory"
+# 79 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, NO
 	goto_if_eq ShadyRoom_EventScript_Gentleman_ChangeNature_7
-# 102 "data/maps/ShadyRoom/scripts.pory"
+# 83 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_SelectPokemon
-# 103 "data/maps/ShadyRoom/scripts.pory"
+# 84 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, FALSE
 	goto_if_eq ShadyRoom_EventScript_Gentleman_ChangeNature_10
-# 106 "data/maps/ShadyRoom/scripts.pory"
+# 87 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, 2
 	goto_if_eq ShadyRoom_EventScript_Gentleman_ChangeNature_11
-# 111 "data/maps/ShadyRoom/scripts.pory"
+# 92 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8006, VAR_0x8004
-# 112 "data/maps/ShadyRoom/scripts.pory"
+# 93 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_0x8004, SCROLL_MULTI_NATURE_PICKER
-# 113 "data/maps/ShadyRoom/scripts.pory"
+# 94 "data/maps/ShadyRoom/scripts.pory"
 	special ShowScrollableMultichoice
-# 115 "data/maps/ShadyRoom/scripts.pory"
+# 96 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
 	goto_if_eq ShadyRoom_EventScript_Gentleman_ChangeNature_15
-# 119 "data/maps/ShadyRoom/scripts.pory"
+# 100 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8004, VAR_0x8006
-# 120 "data/maps/ShadyRoom/scripts.pory"
+# 101 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8005, VAR_RESULT
-# 122 "data/maps/ShadyRoom/scripts.pory"
+# 103 "data/maps/ShadyRoom/scripts.pory"
 	special IsNatureSameAsCurrent
-# 123 "data/maps/ShadyRoom/scripts.pory"
+# 104 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, TRUE
 	goto_if_eq ShadyRoom_EventScript_Gentleman_ChangeNature_18
-# 128 "data/maps/ShadyRoom/scripts.pory"
+# 109 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_RESULT, VAR_0x8005
-# 129 "data/maps/ShadyRoom/scripts.pory"
+# 110 "data/maps/ShadyRoom/scripts.pory"
 	special SetHiddenNature
-# 130 "data/maps/ShadyRoom/scripts.pory"
+# 111 "data/maps/ShadyRoom/scripts.pory"
 	subvar VAR_TOKEN_BALANCE, VAR_SERVICE_COST
-# 131 "data/maps/ShadyRoom/scripts.pory"
+# 112 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_NatureChanged
-# 132 "data/maps/ShadyRoom/scripts.pory"
+# 113 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_RESULT, MULTI_B_PRESSED
 	return
 
@@ -208,7 +182,7 @@ ShadyRoom_EventScript_Gentleman_ChangeNature_10:
 	return
 
 ShadyRoom_EventScript_Gentleman_ChangeNature_11:
-# 107 "data/maps/ShadyRoom/scripts.pory"
+# 88 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_CantSelectEgg
 	return
 
@@ -216,54 +190,54 @@ ShadyRoom_EventScript_Gentleman_ChangeNature_15:
 	return
 
 ShadyRoom_EventScript_Gentleman_ChangeNature_18:
-# 124 "data/maps/ShadyRoom/scripts.pory"
+# 105 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_SameNature
 	return
 
 
 ShadyRoom_EventScript_Gentleman_HiddenAbility::
-# 136 "data/maps/ShadyRoom/scripts.pory"
+# 117 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_SERVICE_COST, 4
-# 137 "data/maps/ShadyRoom/scripts.pory"
+# 118 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_Gentleman_CheckTokens
-# 138 "data/maps/ShadyRoom/scripts.pory"
+# 119 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, FALSE
 	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenAbility_2
-# 138 "data/maps/ShadyRoom/scripts.pory"
+# 119 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
 	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenAbility_2
-# 142 "data/maps/ShadyRoom/scripts.pory"
+# 123 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_HiddenAbilityCost, MSGBOX_YESNO
-# 143 "data/maps/ShadyRoom/scripts.pory"
+# 124 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, NO
 	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenAbility_7
-# 147 "data/maps/ShadyRoom/scripts.pory"
+# 128 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_SelectPokemon
-# 148 "data/maps/ShadyRoom/scripts.pory"
+# 129 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, FALSE
 	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenAbility_10
-# 151 "data/maps/ShadyRoom/scripts.pory"
+# 132 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, 2
 	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenAbility_11
-# 156 "data/maps/ShadyRoom/scripts.pory"
+# 137 "data/maps/ShadyRoom/scripts.pory"
 	special MonHasHiddenAbility
-# 157 "data/maps/ShadyRoom/scripts.pory"
+# 138 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, TRUE
 	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenAbility_15
-# 162 "data/maps/ShadyRoom/scripts.pory"
+# 143 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_HiddenAbilityConfirm, MSGBOX_YESNO
-# 163 "data/maps/ShadyRoom/scripts.pory"
+# 144 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, NO
 	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenAbility_18
-# 167 "data/maps/ShadyRoom/scripts.pory"
+# 148 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_0x8005, 2
-# 168 "data/maps/ShadyRoom/scripts.pory"
+# 149 "data/maps/ShadyRoom/scripts.pory"
 	special SetAbilitySlot
-# 170 "data/maps/ShadyRoom/scripts.pory"
+# 151 "data/maps/ShadyRoom/scripts.pory"
 	subvar VAR_TOKEN_BALANCE, VAR_SERVICE_COST
-# 171 "data/maps/ShadyRoom/scripts.pory"
+# 152 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_HAApplied
-# 172 "data/maps/ShadyRoom/scripts.pory"
+# 153 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_RESULT, MULTI_B_PRESSED
 	return
 
@@ -277,12 +251,12 @@ ShadyRoom_EventScript_Gentleman_HiddenAbility_10:
 	return
 
 ShadyRoom_EventScript_Gentleman_HiddenAbility_11:
-# 152 "data/maps/ShadyRoom/scripts.pory"
+# 133 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_CantSelectEgg
 	return
 
 ShadyRoom_EventScript_Gentleman_HiddenAbility_15:
-# 158 "data/maps/ShadyRoom/scripts.pory"
+# 139 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_AlreadyHiddenAbility
 	return
 
@@ -291,36 +265,36 @@ ShadyRoom_EventScript_Gentleman_HiddenAbility_18:
 
 
 ShadyRoom_EventScript_Gentleman_RegularAbility::
-# 176 "data/maps/ShadyRoom/scripts.pory"
+# 157 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_RestoreAbilityOffer, MSGBOX_YESNO
-# 177 "data/maps/ShadyRoom/scripts.pory"
+# 158 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, NO
 	goto_if_eq ShadyRoom_EventScript_Gentleman_RegularAbility_2
-# 181 "data/maps/ShadyRoom/scripts.pory"
+# 162 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_SelectPokemon
-# 182 "data/maps/ShadyRoom/scripts.pory"
+# 163 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, FALSE
 	goto_if_eq ShadyRoom_EventScript_Gentleman_RegularAbility_5
-# 185 "data/maps/ShadyRoom/scripts.pory"
+# 166 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, 2
 	goto_if_eq ShadyRoom_EventScript_Gentleman_RegularAbility_6
-# 190 "data/maps/ShadyRoom/scripts.pory"
+# 171 "data/maps/ShadyRoom/scripts.pory"
 	special MonHasHiddenAbility
-# 191 "data/maps/ShadyRoom/scripts.pory"
+# 172 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, FALSE
 	goto_if_eq ShadyRoom_EventScript_Gentleman_RegularAbility_10
-# 196 "data/maps/ShadyRoom/scripts.pory"
+# 177 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_RestoreAbilityConfirm, MSGBOX_YESNO
-# 197 "data/maps/ShadyRoom/scripts.pory"
+# 178 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, NO
 	goto_if_eq ShadyRoom_EventScript_Gentleman_RegularAbility_13
-# 201 "data/maps/ShadyRoom/scripts.pory"
+# 182 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_0x8005, 0
-# 202 "data/maps/ShadyRoom/scripts.pory"
+# 183 "data/maps/ShadyRoom/scripts.pory"
 	special SetAbilitySlot
-# 204 "data/maps/ShadyRoom/scripts.pory"
+# 185 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_AbilityRestored
-# 205 "data/maps/ShadyRoom/scripts.pory"
+# 186 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_RESULT, MULTI_B_PRESSED
 	return
 
@@ -331,12 +305,12 @@ ShadyRoom_EventScript_Gentleman_RegularAbility_5:
 	return
 
 ShadyRoom_EventScript_Gentleman_RegularAbility_6:
-# 186 "data/maps/ShadyRoom/scripts.pory"
+# 167 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_CantSelectEgg
 	return
 
 ShadyRoom_EventScript_Gentleman_RegularAbility_10:
-# 192 "data/maps/ShadyRoom/scripts.pory"
+# 173 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_AlreadyRegularAbility
 	return
 
@@ -345,59 +319,59 @@ ShadyRoom_EventScript_Gentleman_RegularAbility_13:
 
 
 ShadyRoom_EventScript_Gentleman_MaxIV::
-# 209 "data/maps/ShadyRoom/scripts.pory"
+# 190 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_SERVICE_COST, 2
-# 210 "data/maps/ShadyRoom/scripts.pory"
+# 191 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_Gentleman_CheckTokens
-# 211 "data/maps/ShadyRoom/scripts.pory"
+# 192 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, FALSE
 	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_2
-# 211 "data/maps/ShadyRoom/scripts.pory"
+# 192 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
 	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_2
-# 215 "data/maps/ShadyRoom/scripts.pory"
+# 196 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_IVCost, MSGBOX_YESNO
-# 216 "data/maps/ShadyRoom/scripts.pory"
+# 197 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, NO
 	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_7
-# 220 "data/maps/ShadyRoom/scripts.pory"
+# 201 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_SelectPokemon
-# 221 "data/maps/ShadyRoom/scripts.pory"
+# 202 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, FALSE
 	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_10
-# 224 "data/maps/ShadyRoom/scripts.pory"
+# 205 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, 2
 	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_11
-# 229 "data/maps/ShadyRoom/scripts.pory"
+# 210 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_EventScript_Gentleman_MaxIV_Text_0
-# 230 "data/maps/ShadyRoom/scripts.pory"
+# 211 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8006, VAR_0x8004
-# 232 "data/maps/ShadyRoom/scripts.pory"
+# 213 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_0x8004, SCROLL_MULTI_IV_PICKER
-# 233 "data/maps/ShadyRoom/scripts.pory"
+# 214 "data/maps/ShadyRoom/scripts.pory"
 	special ShowScrollableMultichoice
-# 234 "data/maps/ShadyRoom/scripts.pory"
+# 215 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
 	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_15
-# 238 "data/maps/ShadyRoom/scripts.pory"
+# 219 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8005, VAR_RESULT
-# 240 "data/maps/ShadyRoom/scripts.pory"
+# 221 "data/maps/ShadyRoom/scripts.pory"
 	special BufferAndCheckIV
-# 242 "data/maps/ShadyRoom/scripts.pory"
+# 223 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, FALSE
 	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_18
-# 247 "data/maps/ShadyRoom/scripts.pory"
+# 228 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_IVConfirm, MSGBOX_YESNO
-# 248 "data/maps/ShadyRoom/scripts.pory"
+# 229 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, NO
 	goto_if_eq ShadyRoom_EventScript_Gentleman_MaxIV_21
-# 252 "data/maps/ShadyRoom/scripts.pory"
+# 233 "data/maps/ShadyRoom/scripts.pory"
 	special ApplyIVMax
-# 254 "data/maps/ShadyRoom/scripts.pory"
+# 235 "data/maps/ShadyRoom/scripts.pory"
 	subvar VAR_TOKEN_BALANCE, VAR_SERVICE_COST
-# 255 "data/maps/ShadyRoom/scripts.pory"
+# 236 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_IVMaxed
-# 256 "data/maps/ShadyRoom/scripts.pory"
+# 237 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_RESULT, MULTI_B_PRESSED
 	return
 
@@ -411,7 +385,7 @@ ShadyRoom_EventScript_Gentleman_MaxIV_10:
 	return
 
 ShadyRoom_EventScript_Gentleman_MaxIV_11:
-# 225 "data/maps/ShadyRoom/scripts.pory"
+# 206 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_CantSelectEgg
 	return
 
@@ -419,7 +393,7 @@ ShadyRoom_EventScript_Gentleman_MaxIV_15:
 	return
 
 ShadyRoom_EventScript_Gentleman_MaxIV_18:
-# 243 "data/maps/ShadyRoom/scripts.pory"
+# 224 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_IVAlreadyMax
 	return
 
@@ -427,190 +401,211 @@ ShadyRoom_EventScript_Gentleman_MaxIV_21:
 	return
 
 
-ShadyRoom_EventScript_Change_HiddenPower::
-# 260 "data/maps/ShadyRoom/scripts.pory"
+ShadyRoom_EventScript_Gentleman_HiddenPower::
+# 241 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_SERVICE_COST, 1
-# 261 "data/maps/ShadyRoom/scripts.pory"
+# 242 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_Gentleman_CheckTokens
-# 262 "data/maps/ShadyRoom/scripts.pory"
+# 243 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, FALSE
-	goto_if_eq ShadyRoom_EventScript_Change_HiddenPower_2
-# 262 "data/maps/ShadyRoom/scripts.pory"
+	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenPower_2
+# 243 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
-	goto_if_eq ShadyRoom_EventScript_Change_HiddenPower_2
-# 266 "data/maps/ShadyRoom/scripts.pory"
+	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenPower_2
+# 247 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_HPCost, MSGBOX_YESNO
-# 267 "data/maps/ShadyRoom/scripts.pory"
+# 248 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, NO
-	goto_if_eq ShadyRoom_EventScript_Change_HiddenPower_7
-# 271 "data/maps/ShadyRoom/scripts.pory"
+	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenPower_7
+# 252 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_SelectPokemon
-# 272 "data/maps/ShadyRoom/scripts.pory"
+# 253 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, FALSE
-	goto_if_eq ShadyRoom_EventScript_Change_HiddenPower_10
-# 275 "data/maps/ShadyRoom/scripts.pory"
+	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenPower_10
+# 256 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, 2
-	goto_if_eq ShadyRoom_EventScript_Change_HiddenPower_11
-# 280 "data/maps/ShadyRoom/scripts.pory"
-	msgbox ShadyRoom_EventScript_Change_HiddenPower_Text_0
-# 281 "data/maps/ShadyRoom/scripts.pory"
+	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenPower_11
+# 261 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_EventScript_Gentleman_HiddenPower_Text_0
+# 262 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8006, VAR_0x8004
-# 283 "data/maps/ShadyRoom/scripts.pory"
+# 264 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_0x8004, SCROLL_MULTI_HIDDEN_POWER_PICKER
-# 284 "data/maps/ShadyRoom/scripts.pory"
+# 265 "data/maps/ShadyRoom/scripts.pory"
 	special ShowScrollableMultichoice
-# 285 "data/maps/ShadyRoom/scripts.pory"
+# 266 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
-	goto_if_eq ShadyRoom_EventScript_Change_HiddenPower_15
-# 289 "data/maps/ShadyRoom/scripts.pory"
+	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenPower_15
+# 270 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8005, VAR_RESULT
-# 291 "data/maps/ShadyRoom/scripts.pory"
+# 272 "data/maps/ShadyRoom/scripts.pory"
 	special BufferAndCheckHiddenPower
-# 293 "data/maps/ShadyRoom/scripts.pory"
+# 274 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, FALSE
-	goto_if_eq ShadyRoom_EventScript_Change_HiddenPower_18
-# 298 "data/maps/ShadyRoom/scripts.pory"
+	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenPower_18
+# 279 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_HPConfirm, MSGBOX_YESNO
-# 299 "data/maps/ShadyRoom/scripts.pory"
+# 280 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, NO
-	goto_if_eq ShadyRoom_EventScript_Change_HiddenPower_21
-# 303 "data/maps/ShadyRoom/scripts.pory"
+	goto_if_eq ShadyRoom_EventScript_Gentleman_HiddenPower_21
+# 284 "data/maps/ShadyRoom/scripts.pory"
 	special ApplyHiddenPower
-# 305 "data/maps/ShadyRoom/scripts.pory"
+# 286 "data/maps/ShadyRoom/scripts.pory"
 	subvar VAR_TOKEN_BALANCE, VAR_SERVICE_COST
-# 306 "data/maps/ShadyRoom/scripts.pory"
+# 287 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_HPApplied
-# 307 "data/maps/ShadyRoom/scripts.pory"
+# 288 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_RESULT, MULTI_B_PRESSED
 	return
 
-ShadyRoom_EventScript_Change_HiddenPower_2:
+ShadyRoom_EventScript_Gentleman_HiddenPower_2:
 	return
 
-ShadyRoom_EventScript_Change_HiddenPower_7:
+ShadyRoom_EventScript_Gentleman_HiddenPower_7:
 	return
 
-ShadyRoom_EventScript_Change_HiddenPower_10:
+ShadyRoom_EventScript_Gentleman_HiddenPower_10:
 	return
 
-ShadyRoom_EventScript_Change_HiddenPower_11:
-# 276 "data/maps/ShadyRoom/scripts.pory"
+ShadyRoom_EventScript_Gentleman_HiddenPower_11:
+# 257 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_CantSelectEgg
 	return
 
-ShadyRoom_EventScript_Change_HiddenPower_15:
+ShadyRoom_EventScript_Gentleman_HiddenPower_15:
 	return
 
-ShadyRoom_EventScript_Change_HiddenPower_18:
-# 294 "data/maps/ShadyRoom/scripts.pory"
+ShadyRoom_EventScript_Gentleman_HiddenPower_18:
+# 275 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Gentleman_HPSame
 	return
 
-ShadyRoom_EventScript_Change_HiddenPower_21:
+ShadyRoom_EventScript_Gentleman_HiddenPower_21:
 	return
 
 
 ShadyRoom_EventScript_Assistant::
-# 311 "data/maps/ShadyRoom/scripts.pory"
+# 292 "data/maps/ShadyRoom/scripts.pory"
 	lock
-# 312 "data/maps/ShadyRoom/scripts.pory"
+# 293 "data/maps/ShadyRoom/scripts.pory"
 	faceplayer
-# 314 "data/maps/ShadyRoom/scripts.pory"
+# 295 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_RESULT, FALSE
-# 315 "data/maps/ShadyRoom/scripts.pory"
+# 296 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Assistant_Greeting
 ShadyRoom_EventScript_Assistant_2:
-# 317 "data/maps/ShadyRoom/scripts.pory"
+# 298 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
 	goto_if_ne ShadyRoom_EventScript_Assistant_3
-# 321 "data/maps/ShadyRoom/scripts.pory"
+# 302 "data/maps/ShadyRoom/scripts.pory"
 	closemessage
-# 322 "data/maps/ShadyRoom/scripts.pory"
+# 303 "data/maps/ShadyRoom/scripts.pory"
 	release
 	return
 
 ShadyRoom_EventScript_Assistant_3:
-# 318 "data/maps/ShadyRoom/scripts.pory"
+# 299 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_Assistant_Menu
 	goto ShadyRoom_EventScript_Assistant_2
 
 
 ShadyRoom_EventScript_Assistant_Menu::
-# 326 "data/maps/ShadyRoom/scripts.pory"
+# 307 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_0x8004, SCROLL_MULTI_ASSISTANT_SERVICES
-# 328 "data/maps/ShadyRoom/scripts.pory"
+# 309 "data/maps/ShadyRoom/scripts.pory"
 	message ShadyRoom_Text_Assistant_Menu
-# 329 "data/maps/ShadyRoom/scripts.pory"
+# 310 "data/maps/ShadyRoom/scripts.pory"
 	waitmessage
-# 331 "data/maps/ShadyRoom/scripts.pory"
+# 312 "data/maps/ShadyRoom/scripts.pory"
 	special ShowScrollableMultichoice
-# 333 "data/maps/ShadyRoom/scripts.pory"
+# 314 "data/maps/ShadyRoom/scripts.pory"
 	switch VAR_RESULT
-# 334 "data/maps/ShadyRoom/scripts.pory"
+# 315 "data/maps/ShadyRoom/scripts.pory"
 	case 0, ShadyRoom_EventScript_Assistant_Menu_2
-# 337 "data/maps/ShadyRoom/scripts.pory"
+# 318 "data/maps/ShadyRoom/scripts.pory"
 	case 1, ShadyRoom_EventScript_Assistant_Menu_3
-# 340 "data/maps/ShadyRoom/scripts.pory"
+# 321 "data/maps/ShadyRoom/scripts.pory"
 	case 2, ShadyRoom_EventScript_Assistant_Menu_4
-# 343 "data/maps/ShadyRoom/scripts.pory"
-	case MULTI_B_PRESSED, ShadyRoom_EventScript_Assistant_Menu_5
+# 324 "data/maps/ShadyRoom/scripts.pory"
+	case 3, ShadyRoom_EventScript_Assistant_Menu_5
+# 327 "data/maps/ShadyRoom/scripts.pory"
+	case 4, ShadyRoom_EventScript_Assistant_Menu_6
+# 330 "data/maps/ShadyRoom/scripts.pory"
+	case 5, ShadyRoom_EventScript_Assistant_Menu_7
+# 333 "data/maps/ShadyRoom/scripts.pory"
+	case MULTI_B_PRESSED, ShadyRoom_EventScript_Assistant_Menu_8
 	return
 
 ShadyRoom_EventScript_Assistant_Menu_2:
-# 335 "data/maps/ShadyRoom/scripts.pory"
+# 316 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_Assistant_SetStatus
 	return
 
 ShadyRoom_EventScript_Assistant_Menu_3:
-# 338 "data/maps/ShadyRoom/scripts.pory"
+# 319 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_Assistant_SetDamage
 	return
 
 ShadyRoom_EventScript_Assistant_Menu_4:
-# 341 "data/maps/ShadyRoom/scripts.pory"
-	setvar VAR_RESULT, MULTI_B_PRESSED
+# 322 "data/maps/ShadyRoom/scripts.pory"
+	call ShadyRoom_EventScript_Assistant_EdgePartyXP
 	return
 
 ShadyRoom_EventScript_Assistant_Menu_5:
+# 325 "data/maps/ShadyRoom/scripts.pory"
+	call ShadyRoom_EventScript_Assistant_EdgePokemonXP
+	return
+
+ShadyRoom_EventScript_Assistant_Menu_6:
+# 328 "data/maps/ShadyRoom/scripts.pory"
+	call ShadyRoom_EventScript_Assistant_ToggleShiny
+	return
+
+ShadyRoom_EventScript_Assistant_Menu_7:
+# 331 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_RESULT, MULTI_B_PRESSED
+	return
+
+ShadyRoom_EventScript_Assistant_Menu_8:
 	return
 
 
 ShadyRoom_EventScript_Assistant_SetStatus::
-# 349 "data/maps/ShadyRoom/scripts.pory"
+# 339 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Assistant_StatusFlavor, MSGBOX_YESNO
-# 350 "data/maps/ShadyRoom/scripts.pory"
+# 340 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, NO
 	goto_if_eq ShadyRoom_EventScript_Assistant_SetStatus_2
-# 354 "data/maps/ShadyRoom/scripts.pory"
+# 344 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_SelectPokemon
-# 355 "data/maps/ShadyRoom/scripts.pory"
+# 345 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, FALSE
 	goto_if_eq ShadyRoom_EventScript_Assistant_SetStatus_5
-# 358 "data/maps/ShadyRoom/scripts.pory"
+# 348 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, 2
 	goto_if_eq ShadyRoom_EventScript_Assistant_SetStatus_6
-# 363 "data/maps/ShadyRoom/scripts.pory"
+# 353 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_EventScript_Assistant_SetStatus_Text_0
-# 364 "data/maps/ShadyRoom/scripts.pory"
+# 354 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8006, VAR_0x8004
-# 366 "data/maps/ShadyRoom/scripts.pory"
+# 356 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_0x8004, SCROLL_MULTI_STATUS_PICKER
-# 367 "data/maps/ShadyRoom/scripts.pory"
+# 357 "data/maps/ShadyRoom/scripts.pory"
 	special ShowScrollableMultichoice
-# 369 "data/maps/ShadyRoom/scripts.pory"
+# 359 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
 	goto_if_eq ShadyRoom_EventScript_Assistant_SetStatus_10
-# 373 "data/maps/ShadyRoom/scripts.pory"
+# 363 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8005, VAR_RESULT
-# 375 "data/maps/ShadyRoom/scripts.pory"
+# 365 "data/maps/ShadyRoom/scripts.pory"
 	special ApplyStatus
-# 377 "data/maps/ShadyRoom/scripts.pory"
+# 367 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_0x8005, 6
 	goto_if_eq ShadyRoom_EventScript_Assistant_SetStatus_13
-# 381 "data/maps/ShadyRoom/scripts.pory"
+# 371 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Assistant_StatusInflicted
 ShadyRoom_EventScript_Assistant_SetStatus_12:
-# 383 "data/maps/ShadyRoom/scripts.pory"
+# 373 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_RESULT, MULTI_B_PRESSED
 	return
 
@@ -621,7 +616,7 @@ ShadyRoom_EventScript_Assistant_SetStatus_5:
 	return
 
 ShadyRoom_EventScript_Assistant_SetStatus_6:
-# 359 "data/maps/ShadyRoom/scripts.pory"
+# 349 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Assistant_CantSelectEgg
 	return
 
@@ -629,49 +624,49 @@ ShadyRoom_EventScript_Assistant_SetStatus_10:
 	return
 
 ShadyRoom_EventScript_Assistant_SetStatus_13:
-# 378 "data/maps/ShadyRoom/scripts.pory"
+# 368 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Assistant_StatusCured
 	goto ShadyRoom_EventScript_Assistant_SetStatus_12
 
 
 ShadyRoom_EventScript_Assistant_SetDamage::
-# 387 "data/maps/ShadyRoom/scripts.pory"
+# 377 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Assistant_DamageFlavor, MSGBOX_YESNO
-# 388 "data/maps/ShadyRoom/scripts.pory"
+# 378 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, NO
 	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_2
-# 392 "data/maps/ShadyRoom/scripts.pory"
+# 382 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_SelectPokemon
-# 393 "data/maps/ShadyRoom/scripts.pory"
+# 383 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, FALSE
 	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_5
-# 396 "data/maps/ShadyRoom/scripts.pory"
+# 386 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_SERVICE_SELECTION_OK, 2
 	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_6
-# 401 "data/maps/ShadyRoom/scripts.pory"
+# 391 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8006, VAR_0x8004
-# 403 "data/maps/ShadyRoom/scripts.pory"
+# 393 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_0x8004, SCROLL_MULTI_DAMAGE_PICKER
-# 404 "data/maps/ShadyRoom/scripts.pory"
+# 394 "data/maps/ShadyRoom/scripts.pory"
 	special ShowScrollableMultichoice
-# 406 "data/maps/ShadyRoom/scripts.pory"
+# 396 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
 	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_10
-# 410 "data/maps/ShadyRoom/scripts.pory"
+# 400 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8005, VAR_RESULT
-# 412 "data/maps/ShadyRoom/scripts.pory"
+# 402 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_0x8005, 7
 	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_13
 ShadyRoom_EventScript_Assistant_SetDamage_12:
-# 423 "data/maps/ShadyRoom/scripts.pory"
+# 413 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_0x8005, 8
 	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_16
 ShadyRoom_EventScript_Assistant_SetDamage_15:
-# 431 "data/maps/ShadyRoom/scripts.pory"
+# 421 "data/maps/ShadyRoom/scripts.pory"
 	special SetPokemonToPercentHP
-# 432 "data/maps/ShadyRoom/scripts.pory"
+# 422 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Assistant_DamageApplied
-# 433 "data/maps/ShadyRoom/scripts.pory"
+# 423 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_RESULT, MULTI_B_PRESSED
 	return
 
@@ -682,7 +677,7 @@ ShadyRoom_EventScript_Assistant_SetDamage_5:
 	return
 
 ShadyRoom_EventScript_Assistant_SetDamage_6:
-# 397 "data/maps/ShadyRoom/scripts.pory"
+# 387 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Assistant_CantSelectEgg
 	return
 
@@ -690,28 +685,28 @@ ShadyRoom_EventScript_Assistant_SetDamage_10:
 	return
 
 ShadyRoom_EventScript_Assistant_SetDamage_13:
-# 413 "data/maps/ShadyRoom/scripts.pory"
+# 403 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_0x8009, 1
-# 414 "data/maps/ShadyRoom/scripts.pory"
+# 404 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_0x800A, 100
-# 415 "data/maps/ShadyRoom/scripts.pory"
+# 405 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_0x800B, 50
-# 416 "data/maps/ShadyRoom/scripts.pory"
+# 406 "data/maps/ShadyRoom/scripts.pory"
 	special ShowNumberPicker
-# 417 "data/maps/ShadyRoom/scripts.pory"
+# 407 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
 	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_19
-# 420 "data/maps/ShadyRoom/scripts.pory"
+# 410 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8008, VAR_RESULT
 	goto ShadyRoom_EventScript_Assistant_SetDamage_12
 
 ShadyRoom_EventScript_Assistant_SetDamage_16:
-# 424 "data/maps/ShadyRoom/scripts.pory"
+# 414 "data/maps/ShadyRoom/scripts.pory"
 	special ShowCustomHPPicker
-# 425 "data/maps/ShadyRoom/scripts.pory"
+# 415 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
 	goto_if_eq ShadyRoom_EventScript_Assistant_SetDamage_22
-# 428 "data/maps/ShadyRoom/scripts.pory"
+# 418 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8008, VAR_RESULT
 	goto ShadyRoom_EventScript_Assistant_SetDamage_15
 
@@ -722,60 +717,187 @@ ShadyRoom_EventScript_Assistant_SetDamage_22:
 	return
 
 
-ShadyRoom_EventScript_Merchant::
-# 437 "data/maps/ShadyRoom/scripts.pory"
-	lock
+ShadyRoom_EventScript_Assistant_EdgePartyXP::
+# 427 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_EdgePartyXPFlavorConfirm, MSGBOX_YESNO
+# 428 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, NO
+	goto_if_eq ShadyRoom_EventScript_Assistant_EdgePartyXP_2
+# 432 "data/maps/ShadyRoom/scripts.pory"
+	special SetPartytoEdgeXP
+# 433 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_EdgePartyXPApplied
+# 434 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_RESULT, MULTI_B_PRESSED
+	return
+
+ShadyRoom_EventScript_Assistant_EdgePartyXP_2:
+	return
+
+
+ShadyRoom_EventScript_Assistant_EdgePokemonXP::
 # 438 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_EdgeXPFlavor, MSGBOX_YESNO
+# 439 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, NO
+	goto_if_eq ShadyRoom_EventScript_Assistant_EdgePokemonXP_2
+# 443 "data/maps/ShadyRoom/scripts.pory"
+	call ShadyRoom_EventScript_SelectPokemon
+# 444 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_SERVICE_SELECTION_OK, FALSE
+	goto_if_eq ShadyRoom_EventScript_Assistant_EdgePokemonXP_5
+# 447 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_SERVICE_SELECTION_OK, 2
+	goto_if_eq ShadyRoom_EventScript_Assistant_EdgePokemonXP_6
+# 452 "data/maps/ShadyRoom/scripts.pory"
+	copyvar VAR_0x8006, VAR_0x8004
+# 454 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_EdgeXPConfirm, MSGBOX_YESNO
+# 455 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, NO
+	goto_if_eq ShadyRoom_EventScript_Assistant_EdgePokemonXP_10
+# 459 "data/maps/ShadyRoom/scripts.pory"
+	special SetPokemontoEdgeXP
+# 460 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_EdgeXPApplied
+# 461 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_RESULT, MULTI_B_PRESSED
+	return
+
+ShadyRoom_EventScript_Assistant_EdgePokemonXP_2:
+	return
+
+ShadyRoom_EventScript_Assistant_EdgePokemonXP_5:
+	return
+
+ShadyRoom_EventScript_Assistant_EdgePokemonXP_6:
+# 448 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_CantSelectEgg
+	return
+
+ShadyRoom_EventScript_Assistant_EdgePokemonXP_10:
+	return
+
+
+ShadyRoom_EventScript_Assistant_ToggleShiny::
+# 465 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_ToggleShinyFlavor, MSGBOX_YESNO
+# 466 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, NO
+	goto_if_eq ShadyRoom_EventScript_Assistant_ToggleShiny_2
+# 470 "data/maps/ShadyRoom/scripts.pory"
+	call ShadyRoom_EventScript_SelectPokemon
+# 471 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_SERVICE_SELECTION_OK, FALSE
+	goto_if_eq ShadyRoom_EventScript_Assistant_ToggleShiny_5
+# 474 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_SERVICE_SELECTION_OK, 2
+	goto_if_eq ShadyRoom_EventScript_Assistant_ToggleShiny_6
+# 479 "data/maps/ShadyRoom/scripts.pory"
+	copyvar VAR_0x8006, VAR_0x8004
+# 481 "data/maps/ShadyRoom/scripts.pory"
+	special CheckPokemonShiny
+# 483 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, FALSE
+	goto_if_eq ShadyRoom_EventScript_Assistant_ToggleShiny_10
+# 492 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_UnshinyConfirm, MSGBOX_YESNO
+# 493 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, NO
+	goto_if_eq ShadyRoom_EventScript_Assistant_ToggleShiny_17
+# 496 "data/maps/ShadyRoom/scripts.pory"
+	special TogglePokemonShiny
+# 497 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_UnshinyApplied
+ShadyRoom_EventScript_Assistant_ToggleShiny_9:
+# 500 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_RESULT, MULTI_B_PRESSED
+	return
+
+ShadyRoom_EventScript_Assistant_ToggleShiny_2:
+	return
+
+ShadyRoom_EventScript_Assistant_ToggleShiny_5:
+	return
+
+ShadyRoom_EventScript_Assistant_ToggleShiny_6:
+# 475 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_CantSelectEgg
+	return
+
+ShadyRoom_EventScript_Assistant_ToggleShiny_10:
+# 484 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_ShinyConfirm, MSGBOX_YESNO
+# 485 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, NO
+	goto_if_eq ShadyRoom_EventScript_Assistant_ToggleShiny_14
+# 488 "data/maps/ShadyRoom/scripts.pory"
+	special TogglePokemonShiny
+# 489 "data/maps/ShadyRoom/scripts.pory"
+	msgbox ShadyRoom_Text_Assistant_ShinyApplied
+	goto ShadyRoom_EventScript_Assistant_ToggleShiny_9
+
+ShadyRoom_EventScript_Assistant_ToggleShiny_14:
+	return
+
+ShadyRoom_EventScript_Assistant_ToggleShiny_17:
+	return
+
+
+ShadyRoom_EventScript_Merchant::
+# 504 "data/maps/ShadyRoom/scripts.pory"
+	lock
+# 505 "data/maps/ShadyRoom/scripts.pory"
 	faceplayer
-# 440 "data/maps/ShadyRoom/scripts.pory"
+# 507 "data/maps/ShadyRoom/scripts.pory"
 	setvar VAR_RESULT, FALSE
-# 441 "data/maps/ShadyRoom/scripts.pory"
+# 508 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Merchant_Greeting
 ShadyRoom_EventScript_Merchant_2:
-# 443 "data/maps/ShadyRoom/scripts.pory"
+# 510 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
 	goto_if_ne ShadyRoom_EventScript_Merchant_3
-# 447 "data/maps/ShadyRoom/scripts.pory"
+# 514 "data/maps/ShadyRoom/scripts.pory"
 	closemessage
-# 448 "data/maps/ShadyRoom/scripts.pory"
+# 515 "data/maps/ShadyRoom/scripts.pory"
 	release
 	return
 
 ShadyRoom_EventScript_Merchant_3:
-# 444 "data/maps/ShadyRoom/scripts.pory"
+# 511 "data/maps/ShadyRoom/scripts.pory"
 	call ShadyRoom_EventScript_Merchant_Menu
 	goto ShadyRoom_EventScript_Merchant_2
 
 
 ShadyRoom_EventScript_Merchant_Menu::
-# 452 "data/maps/ShadyRoom/scripts.pory"
+# 519 "data/maps/ShadyRoom/scripts.pory"
 	buffernumberstring STR_VAR_3, VAR_TOKEN_BALANCE
-# 453 "data/maps/ShadyRoom/scripts.pory"
+# 520 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Merchant_Menu
-# 454 "data/maps/ShadyRoom/scripts.pory"
+# 521 "data/maps/ShadyRoom/scripts.pory"
 	waitmessage
-# 456 "data/maps/ShadyRoom/scripts.pory"
+# 523 "data/maps/ShadyRoom/scripts.pory"
 	special MerchantMenu
-# 457 "data/maps/ShadyRoom/scripts.pory"
+# 524 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, MULTI_B_PRESSED
 	goto_if_eq ShadyRoom_EventScript_Merchant_Menu_2
-# 461 "data/maps/ShadyRoom/scripts.pory"
+# 528 "data/maps/ShadyRoom/scripts.pory"
 	copyvar VAR_0x8004, VAR_RESULT
-# 462 "data/maps/ShadyRoom/scripts.pory"
+# 529 "data/maps/ShadyRoom/scripts.pory"
 	special GetMerchantItemInfo
-# 464 "data/maps/ShadyRoom/scripts.pory"
+# 531 "data/maps/ShadyRoom/scripts.pory"
 	special CanAffordMerchantItem
-# 465 "data/maps/ShadyRoom/scripts.pory"
+# 532 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, FALSE
 	goto_if_eq ShadyRoom_EventScript_Merchant_Menu_5
-# 470 "data/maps/ShadyRoom/scripts.pory"
+# 537 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Merchant_PurchaseConfirm, MSGBOX_YESNO
-# 471 "data/maps/ShadyRoom/scripts.pory"
+# 538 "data/maps/ShadyRoom/scripts.pory"
 	compare VAR_RESULT, NO
 	goto_if_eq ShadyRoom_EventScript_Merchant_Menu_8
-# 475 "data/maps/ShadyRoom/scripts.pory"
+# 542 "data/maps/ShadyRoom/scripts.pory"
 	special PurchaseMerchantItem
-# 476 "data/maps/ShadyRoom/scripts.pory"
+# 543 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Merchant_PurchaseCommit
 	return
 
@@ -783,7 +905,7 @@ ShadyRoom_EventScript_Merchant_Menu_2:
 	return
 
 ShadyRoom_EventScript_Merchant_Menu_5:
-# 466 "data/maps/ShadyRoom/scripts.pory"
+# 533 "data/maps/ShadyRoom/scripts.pory"
 	msgbox ShadyRoom_Text_Merchant_InsufficientFunds
 	return
 
@@ -792,240 +914,316 @@ ShadyRoom_EventScript_Merchant_Menu_8:
 
 
 ShadyRoom_EventScript_Abra::
-# 480 "data/maps/ShadyRoom/scripts.pory"
+# 547 "data/maps/ShadyRoom/scripts.pory"
 	lock
-# 481 "data/maps/ShadyRoom/scripts.pory"
+# 548 "data/maps/ShadyRoom/scripts.pory"
 	faceplayer
-# 482 "data/maps/ShadyRoom/scripts.pory"
+# 549 "data/maps/ShadyRoom/scripts.pory"
 	addvar VAR_TOKEN_BALANCE, 1
-# 483 "data/maps/ShadyRoom/scripts.pory"
-	giveegg SPECIES_RAYQUAZA
-# 484 "data/maps/ShadyRoom/scripts.pory"
-	warp MAP_LITTLEROOT_TOWN, 0, 5, 5
-# 485 "data/maps/ShadyRoom/scripts.pory"
-	msgbox ShadyRoom_Text_Placeholder
-# 486 "data/maps/ShadyRoom/scripts.pory"
-	release
+# 550 "data/maps/ShadyRoom/scripts.pory"
+	call GlobalScript_AbraReturn
+	return
+
+
+ShadyRoom_EventScript_SelectPokemon::
+# 554 "data/maps/ShadyRoom/scripts.pory"
+	special ChoosePartyMon
+# 556 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_0x8004, PARTY_NOTHING_CHOSEN
+	goto_if_eq ShadyRoom_EventScript_SelectPokemon_2
+# 561 "data/maps/ShadyRoom/scripts.pory"
+	special IsSelectedMonEgg
+# 563 "data/maps/ShadyRoom/scripts.pory"
+	compare VAR_RESULT, TRUE
+	goto_if_eq ShadyRoom_EventScript_SelectPokemon_5
+# 568 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_SERVICE_SELECTION_OK, TRUE
+	return
+
+ShadyRoom_EventScript_SelectPokemon_2:
+# 557 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_SERVICE_SELECTION_OK, FALSE
+	return
+
+ShadyRoom_EventScript_SelectPokemon_5:
+# 564 "data/maps/ShadyRoom/scripts.pory"
+	setvar VAR_SERVICE_SELECTION_OK, 2
 	return
 
 
 ShadyRoom_EventScript_Gentleman_MaxIV_Text_0:
-# 229 "data/maps/ShadyRoom/scripts.pory"
+# 210 "data/maps/ShadyRoom/scripts.pory"
 	.string "Which stat would you like to train?$"
 
-ShadyRoom_EventScript_Change_HiddenPower_Text_0:
-# 280 "data/maps/ShadyRoom/scripts.pory"
+ShadyRoom_EventScript_Gentleman_HiddenPower_Text_0:
+# 261 "data/maps/ShadyRoom/scripts.pory"
 	.string "Which type would you like your\nHidden Power to be?$"
 
 ShadyRoom_EventScript_Assistant_SetStatus_Text_0:
-# 363 "data/maps/ShadyRoom/scripts.pory"
+# 353 "data/maps/ShadyRoom/scripts.pory"
 	.string "Which status would you like to inflict?$"
 
 ShadyRoom_Text_Placeholder::
-# 489 "data/maps/ShadyRoom/scripts.pory"
+# 572 "data/maps/ShadyRoom/scripts.pory"
 	.string "This feature hasn't been implemented yet.$"
 
 ShadyRoom_Text_Gentleman_Greeting::
-# 493 "data/maps/ShadyRoom/scripts.pory"
+# 576 "data/maps/ShadyRoom/scripts.pory"
 	.string "GENTLEMAN: Keep your voice down...\n"
 	.string "Let's see. You have {STR_VAR_1} unit(s) of credit.\p"
 	.string "I specialize in... off-the-record\n"
 	.string "modifications. What do you need?$"
 
 ShadyRoom_Text_Gentleman_Menu::
-# 500 "data/maps/ShadyRoom/scripts.pory"
+# 583 "data/maps/ShadyRoom/scripts.pory"
 	.string "What can I do for you?\n"
 	.string "You have {STR_VAR_1} unit(s) of credit.$"
 
 ShadyRoom_Text_Gentleman_CantSelectEgg::
-# 505 "data/maps/ShadyRoom/scripts.pory"
+# 588 "data/maps/ShadyRoom/scripts.pory"
 	.string "An Egg? Too early. Come back when\n"
 	.string "there's something to work with.$"
 
 ShadyRoom_Text_Gentleman_InsufficientTokens::
-# 510 "data/maps/ShadyRoom/scripts.pory"
+# 593 "data/maps/ShadyRoom/scripts.pory"
 	.string "Look, I like you, but I don't work\n"
 	.string "pro bono. You're short on credit.\p"
 	.string "Come back when you can afford my rates.$"
 
 ShadyRoom_Text_Gentleman_NoTokens::
-# 516 "data/maps/ShadyRoom/scripts.pory"
+# 599 "data/maps/ShadyRoom/scripts.pory"
 	.string "Come now, let's not waste time.\n"
 	.string "Your line of credit is tapped out.$"
 
 ShadyRoom_Text_Gentleman_NatureCost::
-# 521 "data/maps/ShadyRoom/scripts.pory"
+# 604 "data/maps/ShadyRoom/scripts.pory"
 	.string "A complete shift in Nature, is it?\n"
 	.string "That will run you two units of credit.\p"
 	.string "Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_SameNature::
-# 527 "data/maps/ShadyRoom/scripts.pory"
+# 610 "data/maps/ShadyRoom/scripts.pory"
 	.string "My friend, it already behaves like that.\n"
 	.string "No need to pay me for something that's\p"
 	.string "already been done.$"
 
 ShadyRoom_Text_Gentleman_NatureChanged::
-# 533 "data/maps/ShadyRoom/scripts.pory"
+# 616 "data/maps/ShadyRoom/scripts.pory"
 	.string "Pleasure doing business with you.\n"
 	.string "Its mindset has been... optimized.$"
 
 ShadyRoom_Text_Gentleman_HiddenAbilityCost::
-# 538 "data/maps/ShadyRoom/scripts.pory"
+# 621 "data/maps/ShadyRoom/scripts.pory"
 	.string "Ah, looking for the premium stock?\n"
 	.string "Unlocking a Hidden Ability isn't cheap.\p"
 	.string "That will run you four units of credit.\p"
 	.string "Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_AlreadyHiddenAbility::
-# 545 "data/maps/ShadyRoom/scripts.pory"
+# 628 "data/maps/ShadyRoom/scripts.pory"
 	.string "This one's already received the upgrade\n"
 	.string "No sense charging you twice.$"
 
 ShadyRoom_Text_Gentleman_HiddenAbilityConfirm::
-# 550 "data/maps/ShadyRoom/scripts.pory"
+# 633 "data/maps/ShadyRoom/scripts.pory"
 	.string "I can unlock {STR_VAR_1} for this one.\n"
 	.string "Shall I proceed?$"
 
 ShadyRoom_Text_Gentleman_HAApplied::
-# 555 "data/maps/ShadyRoom/scripts.pory"
+# 638 "data/maps/ShadyRoom/scripts.pory"
 	.string "There. The latent potential has been\n"
 	.string "unlocked. Keep this between us, eh?$"
 
 ShadyRoom_Text_Gentleman_RestoreAbilityOffer::
-# 560 "data/maps/ShadyRoom/scripts.pory"
+# 643 "data/maps/ShadyRoom/scripts.pory"
 	.string "Want to put things back the way\n"
 	.string "nature intended?\p"
 	.string "I can restore its standard Ability.\n"
 	.string "No charge. Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_AlreadyRegularAbility::
-# 567 "data/maps/ShadyRoom/scripts.pory"
+# 650 "data/maps/ShadyRoom/scripts.pory"
 	.string "Looks to me like this one's already\n"
 	.string "running the factory settings.\p"
 	.string "Nothing for me to do.$"
 
 ShadyRoom_Text_Gentleman_RestoreAbilityConfirm::
-# 573 "data/maps/ShadyRoom/scripts.pory"
+# 656 "data/maps/ShadyRoom/scripts.pory"
 	.string "I can restore {STR_VAR_1} for this one.\n"
 	.string "Shall I proceed?$"
 
 ShadyRoom_Text_Gentleman_AbilityRestored::
-# 578 "data/maps/ShadyRoom/scripts.pory"
+# 661 "data/maps/ShadyRoom/scripts.pory"
 	.string "There. Back to the standard model.\n"
 	.string "Sometimes less attention is the best disguise.$"
 
 ShadyRoom_Text_Gentleman_IVCost::
-# 583 "data/maps/ShadyRoom/scripts.pory"
+# 666 "data/maps/ShadyRoom/scripts.pory"
 	.string "Ah, maxing out potential? Radical changes\n"
 	.string "carry a steeper premium.\p"
 	.string "That will cost two units of credit.\n"
 	.string "Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_IVAlreadyMax::
-# 590 "data/maps/ShadyRoom/scripts.pory"
+# 673 "data/maps/ShadyRoom/scripts.pory"
 	.string "That stat is already at its peak.\n"
 	.string "No point wasting credit on it.$"
 
 ShadyRoom_Text_Gentleman_IVConfirm::
-# 595 "data/maps/ShadyRoom/scripts.pory"
+# 678 "data/maps/ShadyRoom/scripts.pory"
 	.string "I can push its {STR_VAR_1} to the\n"
 	.string "absolute limit. Shall I proceed?$"
 
 ShadyRoom_Text_Gentleman_IVMaxed::
-# 600 "data/maps/ShadyRoom/scripts.pory"
+# 683 "data/maps/ShadyRoom/scripts.pory"
 	.string "Perfect. You won't find a cleaner\n"
 	.string "modification job anywhere else.$"
 
 ShadyRoom_Text_Gentleman_HPCost::
-# 605 "data/maps/ShadyRoom/scripts.pory"
+# 688 "data/maps/ShadyRoom/scripts.pory"
 	.string "Hidden Power, hm? A delicate \n"
 	.string "adjustment.\p"
 	.string "That will run you one unit of credit.\n"
 	.string "Do we have a deal?$"
 
 ShadyRoom_Text_Gentleman_HPSame::
-# 612 "data/maps/ShadyRoom/scripts.pory"
+# 695 "data/maps/ShadyRoom/scripts.pory"
 	.string "My friend, its Hidden Power is already\n"
 	.string "{STR_VAR_1}-type.\p"
 	.string "No sense paying me to change nothing.$"
 
 ShadyRoom_Text_Gentleman_HPConfirm::
-# 618 "data/maps/ShadyRoom/scripts.pory"
+# 701 "data/maps/ShadyRoom/scripts.pory"
 	.string "I can recalibrate its Hidden Power to\n"
 	.string "{STR_VAR_1}-type. Shall I proceed?$"
 
 ShadyRoom_Text_Gentleman_HPApplied::
-# 623 "data/maps/ShadyRoom/scripts.pory"
+# 706 "data/maps/ShadyRoom/scripts.pory"
 	.string "There. Its Hidden Power has been\n"
 	.string "recalibrated. Clean and discreet.$"
 
 ShadyRoom_Text_Assistant_Greeting::
-# 628 "data/maps/ShadyRoom/scripts.pory"
+# 711 "data/maps/ShadyRoom/scripts.pory"
 	.string "ASSISTANT: Please state your request.\n"
 	.string "The Gentleman has approved my services.\p"
 	.string "I will handle any procedures you require.$"
 
 ShadyRoom_Text_Assistant_Menu::
-# 634 "data/maps/ShadyRoom/scripts.pory"
+# 717 "data/maps/ShadyRoom/scripts.pory"
 	.string "Please specify your request.$"
 
 ShadyRoom_Text_Assistant_CantSelectEgg::
-# 638 "data/maps/ShadyRoom/scripts.pory"
+# 721 "data/maps/ShadyRoom/scripts.pory"
 	.string "The subject has not yet developed.\n"
 	.string "Procedure cannot be performed.$"
 
 ShadyRoom_Text_Assistant_StatusFlavor::
-# 643 "data/maps/ShadyRoom/scripts.pory"
+# 726 "data/maps/ShadyRoom/scripts.pory"
 	.string "Status manipulation is a simple\n"
 	.string "procedure when properly monitored.\p"
 	.string "Shall we begin?$"
 
 ShadyRoom_Text_Assistant_StatusCured::
-# 649 "data/maps/ShadyRoom/scripts.pory"
+# 732 "data/maps/ShadyRoom/scripts.pory"
 	.string "Status condition removed.\n"
 	.string "The subject has returned to normal.$"
 
 ShadyRoom_Text_Assistant_StatusInflicted::
-# 654 "data/maps/ShadyRoom/scripts.pory"
+# 737 "data/maps/ShadyRoom/scripts.pory"
 	.string "Procedure complete.\n"
 	.string "The requested condition has been applied.$"
 
 ShadyRoom_Text_Assistant_DamageFlavor::
-# 659 "data/maps/ShadyRoom/scripts.pory"
+# 742 "data/maps/ShadyRoom/scripts.pory"
 	.string "I will apply controlled damage.\n"
 	.string "Minor discomfort is to be expected.\p"
 	.string "Try not to move.$"
 
 ShadyRoom_Text_Assistant_DamageApplied::
-# 665 "data/maps/ShadyRoom/scripts.pory"
+# 748 "data/maps/ShadyRoom/scripts.pory"
 	.string "Procedure complete.\n"
 	.string "The subject is within acceptable limits.$"
 
+ShadyRoom_Text_Assistant_EdgePartyXPFlavorConfirm::
+# 753 "data/maps/ShadyRoom/scripts.pory"
+	.string "Optimizing experience thresholds.\n"
+	.string "All viable subjects will be adjusted to\l"
+	.string "one unit below growth transition.\p"
+	.string "Shall I execute the full party calibration?$"
+
+ShadyRoom_Text_Assistant_EdgePartyXPApplied::
+# 760 "data/maps/ShadyRoom/scripts.pory"
+	.string "Procedure complete.\n"
+	.string "Entire party calibrated to maximum\l"
+	.string "sub-level threshold.$"
+
+ShadyRoom_Text_Assistant_EdgeXPFlavor::
+# 766 "data/maps/ShadyRoom/scripts.pory"
+	.string "Targeted experience optimization.\n"
+	.string "Please select the single subject\l"
+	.string "requiring threshold adjustment.$"
+
+ShadyRoom_Text_Assistant_EdgeXPConfirm::
+# 772 "data/maps/ShadyRoom/scripts.pory"
+	.string "Selected subject will be advanced to\n"
+	.string "one unit below growth transition.\p"
+	.string "Confirm targeted calibration?$"
+
+ShadyRoom_Text_Assistant_EdgeXPApplied::
+# 778 "data/maps/ShadyRoom/scripts.pory"
+	.string "Procedure complete.\n"
+	.string "Subject threshold locked at terminal value.$"
+
+ShadyRoom_Text_Assistant_ToggleShinyFlavor::
+# 784 "data/maps/ShadyRoom/scripts.pory"
+	.string "Pigmentation manipulation protocol.\n"
+	.string "Please select the subject for\l"
+	.string "coloration inversion.$"
+
+ShadyRoom_Text_Assistant_ShinyConfirm::
+# 790 "data/maps/ShadyRoom/scripts.pory"
+	.string "The subject exhibits baseline coloration.\n"
+	.string "Proceed with rare pigmentation activation?$"
+
+ShadyRoom_Text_Assistant_ShinyApplied::
+# 795 "data/maps/ShadyRoom/scripts.pory"
+	.string "Procedure complete.\n"
+	.string "Dermal refraction markers adjusted.$"
+
+ShadyRoom_Text_Assistant_UnshinyConfirm::
+# 800 "data/maps/ShadyRoom/scripts.pory"
+	.string "The subject exhibits anomalous coloration.\n"
+	.string "Revert to standard baseline aesthetics?$"
+
+ShadyRoom_Text_Assistant_UnshinyApplied::
+# 805 "data/maps/ShadyRoom/scripts.pory"
+	.string "Procedure complete.\n"
+	.string "Pigmentation reverted to default specs.$"
+
 ShadyRoom_Text_Merchant_Greeting::
-# 670 "data/maps/ShadyRoom/scripts.pory"
+# 811 "data/maps/ShadyRoom/scripts.pory"
 	.string "Welcome. Please ignore the\n"
 	.string "suspicious atmosphere.\p"
 	.string "Everything here is completely\n"
 	.string "legitimate.$"
 
 ShadyRoom_Text_Merchant_Menu::
-# 677 "data/maps/ShadyRoom/scripts.pory"
+# 818 "data/maps/ShadyRoom/scripts.pory"
 	.string "Take a look.\n"
 	.string "If you don't see what you need,\p"
 	.string "I probably don't have it.\p"
 	.string "You have {STR_VAR_3} credit(s)$"
 
 ShadyRoom_Text_Merchant_PurchaseConfirm::
-# 684 "data/maps/ShadyRoom/scripts.pory"
+# 825 "data/maps/ShadyRoom/scripts.pory"
 	.string "{STR_VAR_2} for {STR_VAR_1} credit\n"
 	.string "Is that all you need?$"
 
 ShadyRoom_Text_Merchant_PurchaseCommit::
-# 689 "data/maps/ShadyRoom/scripts.pory"
+# 830 "data/maps/ShadyRoom/scripts.pory"
 	.string "Purchase confirmed!$"
 
 ShadyRoom_Text_Merchant_InsufficientFunds::
-# 693 "data/maps/ShadyRoom/scripts.pory"
+# 834 "data/maps/ShadyRoom/scripts.pory"
 	.string "Come back when your credit catches\n"
 	.string "up with your ambition.$"

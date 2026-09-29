@@ -638,6 +638,8 @@ gSpecials::
 	def_special UpdateTrainerCardPhotoIcons
 	def_special StickerManGetBragFlags
 	def_special CheckAddCoins
+	def_special SaveCurrentMapToAbraVariables
+	def_special WarpToAbraSavedVariables
 	def_special IsNatureSameAsCurrent
 	def_special MonHasHiddenAbility
 	def_special SetAbilitySlot
@@ -649,6 +651,10 @@ gSpecials::
 	def_special ShowNumberPicker, waitstate=1
 	def_special ShowCustomHPPicker, waitstate=1
 	def_special SetPokemonToPercentHP
+	def_special SetPartytoEdgeXP
+	def_special SetPokemontoEdgeXP
+	def_special CheckPokemonShiny
+	def_special TogglePokemonShiny
 	def_special MerchantMenu, waitstate=1
 	def_special GetMerchantItemInfo
 	def_special CanAffordMerchantItem

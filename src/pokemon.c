@@ -19,6 +19,7 @@
 #include "event_object_movement.h"
 #include "evolution_scene.h"
 #include "field_player_avatar.h"
+#include "field_screen_effect.h"
 #include "field_specials.h"
 #include "field_weather.h"
 #include "fishing.h"
@@ -7010,6 +7011,24 @@ void CreateMonFromTemplate(struct Pokemon *mon, const struct PokemonTemplate *mo
     TryFormChange(mon, FORM_CHANGE_ITEM_HOLD, B_TRAINER_PLAYER);
 }
 
+void SaveCurrentMapToAbraVariables(void)
+{
+    VarSet(VAR_ABRA_MAP_GROUP, gSaveBlock1Ptr->location.mapGroup);
+    VarSet(VAR_ABRA_MAP_NUM, gSaveBlock1Ptr->location.mapNum);
+}
+
+void WarpToAbraSavedVariables(void)
+{
+    u8 mapGroup = VarGet(VAR_ABRA_MAP_GROUP);
+    u8 mapNum = VarGet(VAR_ABRA_MAP_NUM);
+    s8 x = 12;
+    s8 y = 3;
+
+    SetWarpDestination(mapGroup, mapNum, WARP_ID_NONE, x, y);
+    DoWarp();
+    ResetInitialPlayerAvatarState();
+}
+
 void IsNatureSameAsCurrent(void)
 {
     struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gSpecialVar_0x8004];
@@ -7274,6 +7293,63 @@ void SetPokemonToPercentHP(void)
     }
 }
 
+void SetPartytoEdgeXP(void)
+{
+    u32 i;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][i];
+        u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
+
+        if (species != SPECIES_NONE && !GetMonData(mon, MON_DATA_IS_EGG, NULL))
+        {
+            u8 currentLevel = GetMonData(mon, MON_DATA_LEVEL, NULL);
+
+            if (currentLevel < 100)
+            {
+                u32 targetExp = gExperienceTables[gSpeciesInfo[species].growthRate][currentLevel + 1] - 1;
+                SetMonData(mon, MON_DATA_EXP, &targetExp);
+                CalculateMonStats(mon);
+            }
+        }
+    }
+}
+
+void SetPokemontoEdgeXP(void)
+{
+    u16 partyIndex = VarGet(VAR_0x8006);
+
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][partyIndex];
+
+    u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
+    u8 currentLevel = GetMonData(mon, MON_DATA_LEVEL, NULL);
+
+    if (currentLevel < 100)
+    {
+        u32 targetExp = gExperienceTables[gSpeciesInfo[species].growthRate][currentLevel + 1] - 1;
+        SetMonData(mon, MON_DATA_EXP, &targetExp);
+        CalculateMonStats(mon);
+    }
+}
+
+void CheckPokemonShiny(void)
+{
+    u16 partyIndex = VarGet(VAR_0x8006);
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][partyIndex];
+
+    gSpecialVar_Result = IsMonShiny(mon);
+}
+
+void TogglePokemonShiny(void)
+{
+    u16 partyIndex = VarGet(VAR_0x8006);
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][partyIndex];
+
+    bool8 newShinyState = !GetMonData(mon, MON_DATA_IS_SHINY, NULL);
+    SetMonData(mon, MON_DATA_IS_SHINY, &newShinyState);
+}
+
 struct MerchantItem
 {
     u16 itemId;
@@ -7283,6 +7359,7 @@ struct MerchantItem
 
 static const struct MerchantItem sMerchantItems[] =
 {
+    // Placeholder prices, will change
     { ITEM_CHOICE_BAND,    5, FLAG_BOUGHT_CHOICE_BAND },
     { ITEM_CHOICE_SPECS,   5, FLAG_BOUGHT_CHOICE_SPECS },
     { ITEM_CHOICE_SCARF,   5, FLAG_BOUGHT_CHOICE_SCARF },

@@ -269,8 +269,8 @@
 #define VAR_TOKEN_BALANCE                                0x40F7 // My custom Token variable
 #define VAR_SERVICE_COST                                 0x40F8 // My custom Service cost
 #define VAR_SERVICE_SELECTION_OK                         0x40F9 // My custom Service selection verifier
-#define VAR_UNUSED_0x40FA                                0x40FA // Unused Var
-#define VAR_UNUSED_0x40FB                                0x40FB // Unused Var
+#define VAR_ABRA_MAP_GROUP                               0x40FA
+#define VAR_ABRA_MAP_NUM                                 0x40FB
 #define VAR_UNUSED_0x40FC                                0x40FC // Unused Var
 #define VAR_UNUSED_0x40FD                                0x40FD // Unused Var
 #define VAR_UNUSED_0x40FE                                0x40FE // Unused Var

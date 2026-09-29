@@ -41,7 +41,7 @@ script ShadyRoom_EventScript_Gentleman_Menu {
             call(ShadyRoom_EventScript_Gentleman_MaxIV)
 
         case 4:
-            call(ShadyRoom_EventScript_Change_HiddenPower)
+            call(ShadyRoom_EventScript_Gentleman_HiddenPower)
 
         case 5:
             setvar(VAR_RESULT, MULTI_B_PRESSED)
@@ -49,25 +49,6 @@ script ShadyRoom_EventScript_Gentleman_Menu {
         case MULTI_B_PRESSED:
             return
     }
-}
-
-script ShadyRoom_EventScript_SelectPokemon {
-    special(ChoosePartyMon)
-
-    if (var(VAR_0x8004) == PARTY_NOTHING_CHOSEN) {
-        setvar(VAR_SERVICE_SELECTION_OK, FALSE)
-        return
-    }
-
-    special(IsSelectedMonEgg)
-
-    if (var(VAR_RESULT) == TRUE) {
-        setvar(VAR_SERVICE_SELECTION_OK, SERVICE_EGG)
-        return
-    }
-
-    setvar(VAR_SERVICE_SELECTION_OK, TRUE)
-    return
 }
 
 script ShadyRoom_EventScript_Gentleman_CheckTokens {
@@ -256,7 +237,7 @@ script ShadyRoom_EventScript_Gentleman_MaxIV {
     setvar(VAR_RESULT, MULTI_B_PRESSED)
 }
 
-script ShadyRoom_EventScript_Change_HiddenPower {
+script ShadyRoom_EventScript_Gentleman_HiddenPower {
     setvar(VAR_SERVICE_COST, 1)
     call(ShadyRoom_EventScript_Gentleman_CheckTokens)
     if (var(VAR_SERVICE_SELECTION_OK) == FALSE || var(VAR_RESULT) == MULTI_B_PRESSED) {
@@ -338,6 +319,15 @@ script ShadyRoom_EventScript_Assistant_Menu {
             call(ShadyRoom_EventScript_Assistant_SetDamage)
 
         case 2:
+            call(ShadyRoom_EventScript_Assistant_EdgePartyXP)
+
+        case 3:
+            call(ShadyRoom_EventScript_Assistant_EdgePokemonXP)
+
+        case 4:
+            call(ShadyRoom_EventScript_Assistant_ToggleShiny)
+
+        case 5:
             setvar(VAR_RESULT, MULTI_B_PRESSED)
 
         case MULTI_B_PRESSED:
@@ -433,6 +423,83 @@ script ShadyRoom_EventScript_Assistant_SetDamage {
     setvar(VAR_RESULT, MULTI_B_PRESSED)
 }
 
+script ShadyRoom_EventScript_Assistant_EdgePartyXP {
+    msgbox(ShadyRoom_Text_Assistant_EdgePartyXPFlavorConfirm, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    special(SetPartytoEdgeXP)
+    msgbox(ShadyRoom_Text_Assistant_EdgePartyXPApplied)
+    setvar(VAR_RESULT, MULTI_B_PRESSED)
+}
+
+script ShadyRoom_EventScript_Assistant_EdgePokemonXP {
+    msgbox(ShadyRoom_Text_Assistant_EdgeXPFlavor, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    call(ShadyRoom_EventScript_SelectPokemon)
+    if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+    elif (var(VAR_SERVICE_SELECTION_OK) == SERVICE_EGG) {
+        msgbox(ShadyRoom_Text_Assistant_CantSelectEgg)
+        return
+    }
+
+    copyvar(VAR_0x8006, VAR_0x8004)
+
+    msgbox(ShadyRoom_Text_Assistant_EdgeXPConfirm, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    special(SetPokemontoEdgeXP)
+    msgbox(ShadyRoom_Text_Assistant_EdgeXPApplied)
+    setvar(VAR_RESULT, MULTI_B_PRESSED)
+}
+
+script ShadyRoom_EventScript_Assistant_ToggleShiny {
+    msgbox(ShadyRoom_Text_Assistant_ToggleShinyFlavor, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        return
+    }
+
+    call(ShadyRoom_EventScript_SelectPokemon)
+    if (var(VAR_SERVICE_SELECTION_OK) == FALSE) {
+        return
+    }
+    elif (var(VAR_SERVICE_SELECTION_OK) == SERVICE_EGG) {
+        msgbox(ShadyRoom_Text_Assistant_CantSelectEgg)
+        return
+    }
+
+    copyvar(VAR_0x8006, VAR_0x8004)
+
+    special(CheckPokemonShiny)
+
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox(ShadyRoom_Text_Assistant_ShinyConfirm, MSGBOX_YESNO)
+        if (var(VAR_RESULT) == NO) { 
+            return 
+        }
+        special(TogglePokemonShiny)
+        msgbox(ShadyRoom_Text_Assistant_ShinyApplied)
+
+    } else {
+        msgbox(ShadyRoom_Text_Assistant_UnshinyConfirm, MSGBOX_YESNO)
+        if (var(VAR_RESULT) == NO) {
+            return 
+        }
+        special(TogglePokemonShiny)
+        msgbox(ShadyRoom_Text_Assistant_UnshinyApplied)
+    }
+
+    setvar(VAR_RESULT, MULTI_B_PRESSED)
+}
+
 script ShadyRoom_EventScript_Merchant {
     lock
     faceplayer
@@ -480,10 +547,26 @@ script ShadyRoom_EventScript_Abra {
     lock
     faceplayer
     addvar(VAR_TOKEN_BALANCE, 1)
-    giveegg(SPECIES_RAYQUAZA)
-    warp(MAP_LITTLEROOT_TOWN, 0, 5, 5)
-    msgbox(ShadyRoom_Text_Placeholder)
-    release
+    call(GlobalScript_AbraReturn)
+}
+
+script ShadyRoom_EventScript_SelectPokemon {
+    special(ChoosePartyMon)
+
+    if (var(VAR_0x8004) == PARTY_NOTHING_CHOSEN) {
+        setvar(VAR_SERVICE_SELECTION_OK, FALSE)
+        return
+    }
+
+    special(IsSelectedMonEgg)
+
+    if (var(VAR_RESULT) == TRUE) {
+        setvar(VAR_SERVICE_SELECTION_OK, SERVICE_EGG)
+        return
+    }
+
+    setvar(VAR_SERVICE_SELECTION_OK, TRUE)
+    return
 }
 
 text ShadyRoom_Text_Placeholder {
@@ -666,6 +749,64 @@ text ShadyRoom_Text_Assistant_DamageApplied {
     "Procedure complete.\n"
     "The subject is within acceptable limits."
 }
+
+text ShadyRoom_Text_Assistant_EdgePartyXPFlavorConfirm {
+    "Optimizing experience thresholds.\n"
+    "All viable subjects will be adjusted to\l"
+    "one unit below growth transition.\p"
+    "Shall I execute the full party calibration?"
+}
+
+text ShadyRoom_Text_Assistant_EdgePartyXPApplied {
+    "Procedure complete.\n"
+    "Entire party calibrated to maximum\l"
+    "sub-level threshold."
+}
+
+text ShadyRoom_Text_Assistant_EdgeXPFlavor {
+    "Targeted experience optimization.\n"
+    "Please select the single subject\l"
+    "requiring threshold adjustment."
+}
+
+text ShadyRoom_Text_Assistant_EdgeXPConfirm {
+    "Selected subject will be advanced to\n"
+    "one unit below growth transition.\p"
+    "Confirm targeted calibration?"
+}
+
+text ShadyRoom_Text_Assistant_EdgeXPApplied {
+    "Procedure complete.\n"
+    "Subject threshold locked at terminal value."
+}
+
+
+text ShadyRoom_Text_Assistant_ToggleShinyFlavor {
+    "Pigmentation manipulation protocol.\n"
+    "Please select the subject for\l"
+    "coloration inversion."
+}
+
+text ShadyRoom_Text_Assistant_ShinyConfirm {
+    "The subject exhibits baseline coloration.\n"
+    "Proceed with rare pigmentation activation?"
+}
+
+text ShadyRoom_Text_Assistant_ShinyApplied {
+    "Procedure complete.\n"
+    "Dermal refraction markers adjusted."
+}
+
+text ShadyRoom_Text_Assistant_UnshinyConfirm {
+    "The subject exhibits anomalous coloration.\n"
+    "Revert to standard baseline aesthetics?"
+}
+
+text ShadyRoom_Text_Assistant_UnshinyApplied {
+    "Procedure complete.\n"
+    "Pigmentation reverted to default specs."
+}
+
 
 text ShadyRoom_Text_Merchant_Greeting {
     "Welcome. Please ignore the\n"
