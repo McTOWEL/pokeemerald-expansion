@@ -81,6 +81,8 @@
 #include "constants/rgb.h"
 #include "constants/songs.h"
 
+#include "custom/number_picker.h"
+
 enum {
     MENU_SUMMARY,
     MENU_SWITCH,
@@ -517,7 +519,6 @@ static const u8 sText_CannotSendMonToBoxPartner[] = _("Cannot send a mon that do
 static bool8 sManualLevelMode;
 static u8 sLevelWindowId;
 
-#include "data/number_picker.h"
 static void CursorCb_LevelToCap(u8);
 static void CursorCb_SetLevel(u8);
 static void CursorCb_Evolve(u8);

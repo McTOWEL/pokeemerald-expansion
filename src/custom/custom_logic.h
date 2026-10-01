@@ -1,0 +1,16 @@
+bool8 CanSpeciesLearnMove(enum Species species, enum Move move);
+bool32 CanCatchInBattle(void);
+void SaveCurrentMapToAbraVariables(void);
+void WarpToAbraSavedVariables(void);
+void IsNatureSameAsCurrent(void);
+void MonHasHiddenAbility(void);
+void SetAbilitySlot(void);
+void BufferAndCheckIV(void);
+void ApplyIVMax(void);
+void ApplyStatus(void);
+void SetPokemonToPercentHP(void);
+void SetPartytoEdgeXP(void);
+void SetPokemontoEdgeXP(void);
+void CheckPokemonShiny(void);
+void TogglePokemonShiny(void);
+void MerchantMenu(void);

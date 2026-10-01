@@ -3,6 +3,9 @@
 
 #include "global.h"
 
+void ShowNumberPicker(void);
+void ShowCustomHPPicker(void);
+
 // Called when the player accepts (A) or cancels (B).
 typedef void (*NumberPickerCallback)(u8 callerTaskId, s16 result, bool8 cancelled);
 

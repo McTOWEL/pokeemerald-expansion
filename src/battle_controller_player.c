@@ -50,6 +50,8 @@
 #include "pokedex.h"
 #include "test/battle.h"
 
+#include "custom/custom_logic.h"
+
 static void PlayerHandleLoadMonSprite(enum BattlerId battler);
 static void PlayerHandleDrawTrainerPic(enum BattlerId battler);
 static void PlayerHandleTrainerSlide(enum BattlerId battler);
